@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Node.js – Senior/Architect Interview Prep</title>
+
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f7f8fa;color:#1f2328;font-size:15px;line-height:1.7}
+
+#app{display:flex;min-height:100vh}
+
+#sidebar{width:280px;min-width:280px;background:#1e2330;color:#c9d1d9;position:sticky;top:0;height:100vh;overflow-y:auto;padding:0 0 40px}
+
+#main{flex:1;max-width:900px;padding:40px 48px 100px;overflow-x:hidden}
+
+#sidebar-header{padding:20px 20px 14px;border-bottom:1px solid #30363d}
+
+#sidebar-header h1{font-size:14px;font-weight:700;color:#e6edf3}
+
+#sidebar-header p{font-size:11px;color:#8b949e;margin-top:2px}
+
+.pb-wrap{margin:8px 20px 0;background:#30363d;border-radius:4px;height:5px}
+
+.pb-fill{height:5px;background:#56d364;border-radius:4px;transition:width .4s ease;width:0%}
+
+.pb-label{font-size:11px;color:#8b949e;padding:3px 20px 0}
+
+.nav-section{padding:12px 20px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8b949e}
+
+.nav-item{display:flex;align-items:center;gap:7px;padding:6px 20px;cursor:pointer;font-size:12.5px;color:#8b949e;border-left:3px solid transparent;transition:background .12s,color .12s}
+
+.nav-item:hover{background:#2d333b;color:#e6edf3}
+
+.nav-item.active{background:#2d333b;color:#79c0ff;border-left-color:#56d364}
+
+.nav-item.done .ck{color:#3fb950}
+
+.nav-item .ck{font-size:11px;min-width:13px}
+
+.nav-item .num{font-size:10px;background:#30363d;border-radius:10px;padding:1px 5px;min-width:20px;text-align:center}
+
+.nav-item.active .num{background:#166534;color:#dcfce7}
+
+.section{display:none;animation:fadeIn .2s ease}
+
+.section.active{display:block}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase}
+
+.badge-green{background:#dcfce7;color:#166534}
+
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+
+.badge-amber{background:#fef3c7;color:#92400e}
+
+.badge-red{background:#fee2e2;color:#991b1b}
+
+.badge-purple{background:#ede9fe;color:#6d28d9}
+
+.badge-runtime{background:#fef3c7;color:#92400e}
+
+.badge-prod{background:#dbeafe;color:#1d4ed8}
+
+.badge-obs{background:#ede9fe;color:#6d28d9}
+
+.badge-arch{background:#dcfce7;color:#166534}
+
+h2.t{font-size:25px;font-weight:800;margin-bottom:5px}
+
+.intro{color:#57606a;margin-bottom:26px;font-size:15px}
+
+h3{font-size:16px;font-weight:700;margin:26px 0 7px;color:#1f2328}
+
+h4{font-size:14px;font-weight:700;margin:16px 0 5px;color:#444d56}
+
+p{margin-bottom:11px}ul,ol{padding-left:22px;margin-bottom:11px}li{margin-bottom:4px}
+
+strong{color:#1f2328}
+
+.cw{position:relative;margin:12px 0}
+
+pre{background:#161b22;color:#e6edf3;border-radius:8px;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.6;border:1px solid #30363d}
+
+code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+
+pre code{background:none;padding:0}
+
+p code,li code{background:#f0f2f5;color:#d63384;padding:1px 5px;border-radius:4px;font-size:12.5px;font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+
+.cp{position:absolute;top:7px;right:9px;background:#30363d;color:#8b949e;border:none;border-radius:5px;padding:2px 9px;font-size:11px;cursor:pointer}
+
+.cp:hover{background:#444d56;color:#e6edf3}
+
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}.nm{color:#79c0ff}.dc{color:#ffa657}.bl{color:#56d364}.op{color:#ff7b72}
+
+.callout{border-left:4px solid #56d364;background:#ecfdf5;padding:11px 15px;border-radius:0 6px 6px 0;margin:14px 0;font-size:14px}
+
+.callout.warn{border-color:#f59e0b;background:#fffbeb}
+
+.callout.danger{border-color:#ef4444;background:#fef2f2}
+
+.callout.info{border-color:#3b82d4;background:#eff6ff}
+
+.ct{font-weight:700;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#065f46}
+
+.callout.warn .ct{color:#92400e}.callout.danger .ct{color:#991b1b}.callout.info .ct{color:#1d4ed8}
+
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+
+th{background:#f0f2f5;text-align:left;padding:8px 13px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;border:1px solid #e5e7eb}
+
+td{padding:8px 13px;border:1px solid #e5e7eb;vertical-align:top}
+
+tr:nth-child(even) td{background:#fafafa}
+
+.qbox{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px 22px;margin:22px 0}
+
+.qbox h4{margin-top:0;font-size:14.5px}
+
+.qopts{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+
+.qopt{padding:9px 13px;border:2px solid #e5e7eb;border-radius:7px;cursor:pointer;font-size:13.5px;transition:border-color .12s,background .12s}
+
+.qopt:hover{border-color:#56d364;background:#ecfdf5}
+
+.qopt.correct{border-color:#10b981;background:#ecfdf5}
+
+.qopt.wrong{border-color:#ef4444;background:#fef2f2}
+
+.qopt.disabled{pointer-events:none}
+
+.qfb{margin-top:10px;font-size:13.5px;padding:9px 13px;border-radius:7px;display:none}
+
+.qfb.show{display:block}
+
+.qfb.ok{background:#ecfdf5;color:#065f46}
+
+.qfb.bad{background:#fef2f2;color:#991b1b}
+
+.nav-btns{display:flex;gap:10px;margin-top:38px;padding-top:22px;border-top:1px solid #e5e7eb}
+
+.btn{padding:8px 20px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:background .12s}
+
+.btn-p{background:#166534;color:#fff}.btn-p:hover{background:#14532d}
+
+.btn-s{background:#f0f2f5;color:#444d56;border:1px solid #e5e7eb}.btn-s:hover{background:#e5e7eb}
+
+.diagram{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 18px;margin:14px 0;font-family:"Cascadia Code",monospace;font-size:12px;color:#8b949e;line-height:1.8;overflow-x:auto;white-space:pre}
+
+.diagram .hl{color:#79c0ff}.diagram .hl2{color:#56d364}.diagram .hl3{color:#ffa657}.diagram .hl4{color:#ff7b72}
+
+hr.div{border:none;border-top:1px solid #e5e7eb;margin:28px 0}
+
+#sidebar::-webkit-scrollbar{width:4px}
+
+#sidebar::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
+
+@media(max-width:768px){#sidebar{display:none}#main{padding:22px 16px 60px}}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="app">
+
+<nav id="sidebar">
+
+<div id="sidebar-header">
+
+  <h1>🟢 Node.js — Senior/Architect</h1>
+
+  <p>Complete Interview Preparation</p>
+
+  <div class="pb-wrap"><div class="pb-fill" id="pb"></div></div>
+
+  <div class="pb-label" id="pbl">0 of 25 completed</div>
+
+</div>
+
+<div class="nav-section">Track 1 · JS & Async Foundations</div>
+
+<div class="nav-item active" onclick="goTo(0)" id="n0"><span class="ck" id="c0">○</span><span class="num">1</span>Welcome &amp; Node.js Architecture</div>
+
+<div class="nav-item" onclick="goTo(1)" id="n1"><span class="ck" id="c1">○</span><span class="num">2</span>JS Async: Callbacks → Promises → Async/Await</div>
+
+<div class="nav-item" onclick="goTo(2)" id="n2"><span class="ck" id="c2">○</span><span class="num">3</span>Modules: CommonJS vs ESM</div>
+
+<div class="nav-item" onclick="goTo(3)" id="n3"><span class="ck" id="c3">○</span><span class="num">4</span>HTTP &amp; Express Fundamentals</div>
+
+<div class="nav-section">Track 2 · Runtime Internals</div>
+
+<div class="nav-item" onclick="goTo(4)" id="n4"><span class="ck" id="c4">○</span><span class="num">5</span>Event Loop Deep Dive</div>
+
+<div class="nav-item" onclick="goTo(5)" id="n5"><span class="ck" id="c5">○</span><span class="num">6</span>libuv &amp; Thread Pool</div>
+
+<div class="nav-item" onclick="goTo(6)" id="n6"><span class="ck" id="c6">○</span><span class="num">7</span>Streams &amp; Buffers</div>
+
+<div class="nav-item" onclick="goTo(7)" id="n7"><span class="ck" id="c7">○</span><span class="num">8</span>Error Handling Patterns</div>
+
+<div class="nav-item" onclick="goTo(8)" id="n8"><span class="ck" id="c8">○</span><span class="num">9</span>Worker Threads &amp; Clustering</div>
+
+<div class="nav-item" onclick="goTo(9)" id="n9"><span class="ck" id="c9">○</span><span class="num">10</span>Memory Leaks &amp; Diagnostics</div>
+
+<div class="nav-section">Track 3 · Production Engineering</div>
+
+<div class="nav-item" onclick="goTo(10)" id="n10"><span class="ck" id="c10">○</span><span class="num">11</span>Graceful Shutdown</div>
+
+<div class="nav-item" onclick="goTo(11)" id="n11"><span class="ck" id="c11">○</span><span class="num">12</span>Express Middleware Patterns</div>
+
+<div class="nav-item" onclick="goTo(12)" id="n12"><span class="ck" id="c12">○</span><span class="num">13</span>TypeScript with Node.js</div>
+
+<div class="nav-item" onclick="goTo(13)" id="n13"><span class="ck" id="c13">○</span><span class="num">14</span>Testing: Jest &amp; Supertest</div>
+
+<div class="nav-item" onclick="goTo(14)" id="n14"><span class="ck" id="c14">○</span><span class="num">15</span>Mocking in Node.js</div>
+
+<div class="nav-section">Track 4 · Observability &amp; Security</div>
+
+<div class="nav-item" onclick="goTo(15)" id="n15"><span class="ck" id="c15">○</span><span class="num">16</span>Structured Logging with Pino</div>
+
+<div class="nav-item" onclick="goTo(16)" id="n16"><span class="ck" id="c16">○</span><span class="num">17</span>Security: Helmet, CORS &amp; Validation</div>
+
+<div class="nav-item" onclick="goTo(17)" id="n17"><span class="ck" id="c17">○</span><span class="num">18</span>Caching with Redis</div>
+
+<div class="nav-item" onclick="goTo(18)" id="n18"><span class="ck" id="c18">○</span><span class="num">19</span>Database Patterns &amp; N+1</div>
+
+<div class="nav-item" onclick="goTo(19)" id="n19"><span class="ck" id="c19">○</span><span class="num">20</span>OpenTelemetry &amp; Tracing</div>
+
+<div class="nav-section">Track 5 · Architecture</div>
+
+<div class="nav-item" onclick="goTo(20)" id="n20"><span class="ck" id="c20">○</span><span class="num">21</span>API Design Best Practices</div>
+
+<div class="nav-item" onclick="goTo(21)" id="n21"><span class="ck" id="c21">○</span><span class="num">22</span>Config &amp; Environment Management</div>
+
+<div class="nav-item" onclick="goTo(22)" id="n22"><span class="ck" id="c22">○</span><span class="num">23</span>CI/CD &amp; Deployment Patterns</div>
+
+<div class="nav-item" onclick="goTo(23)" id="n23"><span class="ck" id="c23">○</span><span class="num">24</span>Performance Optimization</div>
+
+<div class="nav-item" onclick="goTo(24)" id="n24"><span class="ck" id="c24">○</span><span class="num">25</span>Anti-patterns &amp; Wrap-up</div>
+
+</nav>
+
+<main id="main">
+
+
+
+<!-- ===== SECTION 0 ===== -->
+
+<div class="section active" id="s0">
+
+<span class="badge badge-green">Welcome</span>
+
+<h2 class="t">Welcome &amp; Node.js Architecture</h2>
+
+<p class="intro">Node.js is a JavaScript runtime built on Chrome's V8 engine. Its non-blocking, event-driven model makes it ideal for I/O-intensive APIs and microservices.</p>
+
+
+
+<h3>What Makes Node.js Different</h3>
+
+<div class="diagram">Traditional server (Java/PHP/Ruby):
+
+  Thread per request → 1,000 connections = 1,000 threads = ~4GB RAM
+
+
+
+<span class="hl">Node.js architecture:</span>
+
+  <span class="hl2">Single Thread</span> + <span class="hl3">Non-blocking I/O</span> + <span class="hl2">Event Loop</span>
+
+  = 1,000 connections on ONE thread with minimal memory
+
+
+
+  Why? Node delegates I/O to the OS; it only runs JS when data is ready</div>
+
+
+
+<h3>Node.js Runtime Stack</h3>
+
+<div class="diagram"><span class="hl">Your JavaScript Code</span>  (application logic)
+
+         │
+
+<span class="hl2">Node.js APIs</span>  (fs, http, crypto, path…)
+
+         │
+
+<span class="hl3">V8 Engine</span>  (compiles JS → machine code, GC)
+
+         │
+
+<span class="hl2">libuv</span>  (event loop, thread pool, async I/O)
+
+         │
+
+<span class="hl3">OS</span>  (epoll/kqueue/IOCP — actual I/O)</div>
+
+
+
+<h3>Node.js Version Management</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Use nvm (Node Version Manager) for production</span>
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+
+
+nvm install 20          <span class="cm"># install LTS</span>
+
+nvm use 20
+
+nvm alias default 20    <span class="cm"># set default</span>
+
+node --version          <span class="cm"># v20.x.x</span>
+
+
+
+<span class="cm"># Or use .nvmrc in project root</span>
+
+echo "20" > .nvmrc
+
+nvm use  <span class="cm"># reads .nvmrc automatically</span></code></pre></div>
+
+
+
+<h3>When to Use Node.js</h3>
+
+<table><thead><tr><th>✅ Great For</th><th>❌ Avoid For</th></tr></thead><tbody>
+
+<tr><td>REST/GraphQL APIs with high concurrency</td><td>CPU-intensive computation (video encoding, ML inference)</td></tr>
+
+<tr><td>Real-time apps (WebSockets, SSE)</td><td>Long-running CPU loops that block the event loop</td></tr>
+
+<tr><td>I/O-bound microservices</td><td>Heavy matrix math (use Python/NumPy instead)</td></tr>
+
+<tr><td>Streaming data pipelines</td><td>Anything requiring strict type safety at runtime (use TypeScript)</td></tr>
+
+</tbody></table>
+
+
+
+<div class="qbox" id="q0">
+
+<h4>Q: Why can Node.js handle thousands of concurrent connections on a single thread?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q0','c')">A) It uses green threads internally to parallelize work</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q0','c')">B) V8 is extremely fast at switching between requests</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q0','c')">C) I/O operations are delegated to the OS — Node only runs JS when data is ready, so the thread is never blocking</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q0','c')">D) Node.js uses multiple cores automatically via the cluster module</div>
+
+</div>
+
+<div class="qfb ok">✓ Correct! Node's non-blocking I/O model lets the event loop register interest in I/O with the OS, then continue serving other requests while the OS waits for data.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 1 ===== -->
+
+<div class="section" id="s1">
+
+<span class="badge badge-green">Foundations</span>
+
+<h2 class="t">JS Async: Callbacks → Promises → Async/Await</h2>
+
+<p class="intro">The evolution of async JavaScript is a core interview topic — know the problems each pattern solves and when to use each.</p>
+
+
+
+<h3>Callbacks — The Original Pattern</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">const</span> fs = require(<span class="st">'fs'</span>);
+
+
+
+<span class="cm">// Node-style callback: (err, data) pattern</span>
+
+fs.<span class="fn">readFile</span>(<span class="st">'data.txt'</span>, <span class="st">'utf8'</span>, (err, data) => {
+
+  <span class="kw">if</span> (err) <span class="kw">return</span> console.<span class="fn">error</span>(err);
+
+  console.<span class="fn">log</span>(data);
+
+});
+
+
+
+<span class="cm">// Callback hell — nested callbacks become unreadable</span>
+
+db.<span class="fn">getUser</span>(id, (err, user) => {
+
+  db.<span class="fn">getOrders</span>(user.id, (err, orders) => {
+
+    db.<span class="fn">getItems</span>(orders[<span class="nm">0</span>].id, (err, items) => {
+
+      <span class="cm">// pyramid of doom...</span>
+
+    });
+
+  });
+
+});</code></pre></div>
+
+
+
+<h3>Promises</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">const</span> fs = require(<span class="st">'fs/promises'</span>);
+
+
+
+<span class="cm">// Sequential</span>
+
+<span class="kw">const</span> data = <span class="kw">await</span> fs.<span class="fn">readFile</span>(<span class="st">'data.txt'</span>, <span class="st">'utf8'</span>);
+
+
+
+<span class="cm">// Parallel — both start concurrently</span>
+
+<span class="kw">const</span> [a, b] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+
+  fs.<span class="fn">readFile</span>(<span class="st">'a.txt'</span>, <span class="st">'utf8'</span>),
+
+  fs.<span class="fn">readFile</span>(<span class="st">'b.txt'</span>, <span class="st">'utf8'</span>),
+
+]);
+
+
+
+<span class="cm">// allSettled — wait for all, don't fail-fast</span>
+
+<span class="kw">const</span> results = <span class="kw">await</span> Promise.<span class="fn">allSettled</span>([p1, p2, p3]);
+
+results.<span class="fn">forEach</span>(r => {
+
+  <span class="kw">if</span> (r.status === <span class="st">'fulfilled'</span>) <span class="fn">process</span>(r.value);
+
+  <span class="kw">else</span> logger.<span class="fn">warn</span>(r.reason);
+
+});
+
+
+
+<span class="cm">// race — first to settle wins</span>
+
+<span class="kw">const</span> result = <span class="kw">await</span> Promise.<span class="fn">race</span>([fetchFromPrimary(), fetchFromFallback()]);</code></pre></div>
+
+
+
+<h3>Async/Await Anti-patterns</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// ❌ Sequential when parallel is possible</span>
+
+<span class="kw">const</span> user = <span class="kw">await</span> <span class="fn">getUser</span>(id);
+
+<span class="kw">const</span> orders = <span class="kw">await</span> <span class="fn">getOrders</span>(id);  <span class="cm">// waits unnecessarily</span>
+
+
+
+<span class="cm">// ✅ Parallel — save ~50% time</span>
+
+<span class="kw">const</span> [user, orders] = <span class="kw">await</span> Promise.<span class="fn">all</span>([<span class="fn">getUser</span>(id), <span class="fn">getOrders</span>(id)]);
+
+
+
+<span class="cm">// ❌ await in forEach — doesn't wait for each iteration</span>
+
+items.<span class="fn">forEach</span>(<span class="kw">async</span> item => { <span class="kw">await</span> <span class="fn">process</span>(item); });  <span class="cm">// WRONG</span>
+
+
+
+<span class="cm">// ✅ Use for...of for sequential async iteration</span>
+
+<span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> items) { <span class="kw">await</span> <span class="fn">process</span>(item); }
+
+
+
+<span class="cm">// ✅ Or Promise.all for parallel (if order doesn't matter)</span>
+
+<span class="kw">await</span> Promise.<span class="fn">all</span>(items.<span class="fn">map</span>(item => <span class="fn">process</span>(item)));</code></pre></div>
+
+
+
+<div class="qbox" id="q1">
+
+<h4>Q: What is the key difference between <code>Promise.all()</code> and <code>Promise.allSettled()</code>?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q1','b')">A) <code>Promise.all</code> is faster since it stops on first result</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q1','b')">B) <code>Promise.all</code> rejects immediately if any promise rejects; <code>allSettled</code> always waits for all, returning each outcome (fulfilled or rejected)</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q1','b')">C) They are identical — different names for the same behavior</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q1','b')">D) <code>allSettled</code> only works with arrays of the same type</div>
+
+</div>
+
+<div class="qfb ok">✓ Correct! Use <code>allSettled</code> when you need ALL results regardless of failures — perfect for batch operations where partial success is acceptable.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 2 ===== -->
+
+<div class="section" id="s2">
+
+<span class="badge badge-green">Foundations</span>
+
+<h2 class="t">Modules: CommonJS vs ESM</h2>
+
+<p class="intro">Node.js has two module systems. Knowing their differences, gotchas, and interop rules is a common senior interview topic.</p>
+
+
+
+<h3>CommonJS vs ES Modules</h3>
+
+<table><thead><tr><th></th><th>CommonJS (CJS)</th><th>ES Modules (ESM)</th></tr></thead><tbody>
+
+<tr><td>Syntax</td><td><code>require()</code> / <code>module.exports</code></td><td><code>import</code> / <code>export</code></td></tr>
+
+<tr><td>Loading</td><td>Synchronous</td><td>Asynchronous</td></tr>
+
+<tr><td>Binding</td><td>Dynamic (runtime)</td><td>Static (parse time)</td></tr>
+
+<tr><td>Tree shaking</td><td>❌</td><td>✅</td></tr>
+
+<tr><td>Top-level await</td><td>❌</td><td>✅</td></tr>
+
+<tr><td><code>__dirname</code></td><td>✅</td><td>❌ use <code>import.meta.url</code></td></tr>
+
+<tr><td>Can import CJS?</td><td>—</td><td>✅ (as default export)</td></tr>
+
+<tr><td>Can require ESM?</td><td>❌</td><td>—</td></tr>
+
+</tbody></table>
+
+
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// === CommonJS ===</span>
+
+<span class="cm">// math.js</span>
+
+<span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
+
+module.exports = { add };
+
+
+
+<span class="cm">// app.js</span>
+
+<span class="kw">const</span> { add } = require(<span class="st">'./math'</span>);
+
+<span class="cm">// require() is synchronous AND cached — same object returned every time</span>
+
+require(<span class="st">'./math'</span>) === require(<span class="st">'./math'</span>)  <span class="cm">// true</span>
+
+
+
+<span class="cm">// === ES Modules ===</span>
+
+<span class="cm">// math.mjs  (or set "type":"module" in package.json)</span>
+
+<span class="kw">export function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
+
+<span class="kw">export default</span> 42;
+
+
+
+<span class="cm">// app.mjs</span>
+
+<span class="kw">import</span> { add } <span class="kw">from</span> <span class="st">'./math.mjs'</span>;
+
+
+
+<span class="cm">// __dirname equivalent in ESM</span>
+
+<span class="kw">import</span> { fileURLToPath } <span class="kw">from</span> <span class="st">'url'</span>;
+
+<span class="kw">import</span> { dirname } <span class="kw">from</span> <span class="st">'path'</span>;
+
+<span class="kw">const</span> __filename = <span class="fn">fileURLToPath</span>(import.meta.url);
+
+<span class="kw">const</span> __dirname = <span class="fn">dirname</span>(__filename);
+
+
+
+<span class="cm">// Top-level await (ESM only)</span>
+
+<span class="kw">const</span> config = <span class="kw">await</span> <span class="fn">loadConfig</span>();  <span class="cm">// works at module top level</span></code></pre></div>
+
+
+
+<div class="callout warn"><div class="ct">Interop Gotcha</div>You <strong>cannot</strong> <code>require()</code> an ES Module from CJS — you'll get <code>ERR_REQUIRE_ESM</code>. CJS can be imported in ESM as a default export. When writing new packages, prefer ESM with a CJS wrapper via <code>"exports"</code> field in package.json for dual mode.</div>
+
+
+
+<div class="qbox" id="q2">
+
+<h4>Q: Can you use top-level <code>await</code> in a CommonJS module?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q2','b')">A) Yes — it works in Node.js 18+</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q2','b')">B) No — top-level await is exclusive to ES Modules</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q2','b')">C) Only with the <code>--experimental-top-level-await</code> flag</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q2','b')">D) Yes, using an IIFE async wrapper pattern</div>
+
+</div>
+
+<div class="qfb ok">✓ Correct! Top-level <code>await</code> is an ESM-only feature. In CJS you must wrap in an <code>async</code> IIFE: <code>(async () => { const x = await ...; })();</code></div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 3 ===== -->
+
+<div class="section" id="s3">
+
+<span class="badge badge-green">Foundations</span>
+
+<h2 class="t">HTTP &amp; Express Fundamentals</h2>
+
+<p class="intro">Express is the most-used Node.js web framework — mastering its routing, middleware chain, and error handling is essential for any backend role.</p>
+
+
+
+<h3>Production Express Setup</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">const</span> express = require(<span class="st">'express'</span>);
+
+<span class="kw">const</span> helmet = require(<span class="st">'helmet'</span>);
+
+<span class="kw">const</span> pino = require(<span class="st">'pino-http'</span>);
+
+
+
+<span class="kw">const</span> app = <span class="fn">express</span>();
+
+
+
+<span class="cm">// Security headers</span>
+
+app.<span class="fn">use</span>(<span class="fn">helmet</span>());
+
+<span class="cm">// Request logging</span>
+
+app.<span class="fn">use</span>(<span class="fn">pino</span>());
+
+<span class="cm">// JSON body parser with size limit</span>
+
+app.<span class="fn">use</span>(express.<span class="fn">json</span>({ limit: <span class="st">'100kb'</span> }));
+
+<span class="cm">// Disable x-powered-by header</span>
+
+app.<span class="fn">disable</span>(<span class="st">'x-powered-by'</span>);
+
+
+
+<span class="cm">// Route handler with async error handling</span>
+
+app.<span class="fn">get</span>(<span class="st">'/users/:id'</span>, <span class="fn">asyncHandler</span>(<span class="kw">async</span> (req, res) => {
+
+  <span class="kw">const</span> user = <span class="kw">await</span> userService.<span class="fn">findById</span>(req.params.id);
+
+  <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="nm">404</span>).<span class="fn">json</span>({ error: <span class="st">'User not found'</span> });
+
+  res.<span class="fn">json</span>(user);
+
+}));
+
+
+
+<span class="cm">// 4-param error handler — MUST be last middleware</span>
+
+app.<span class="fn">use</span>((err, req, res, next) => {
+
+  req.log.<span class="fn">error</span>({ err }, <span class="st">'Unhandled error'</span>);
+
+  res.<span class="fn">status</span>(err.status || <span class="nm">500</span>).<span class="fn">json</span>({ error: <span class="st">'Internal Server Error'</span> });
+
+});
+
+
+
+<span class="cm">// asyncHandler wrapper — catches async errors and calls next(err)</span>
+
+<span class="kw">const</span> <span class="fn">asyncHandler</span> = fn => (req, res, next) => Promise.<span class="fn">resolve</span>(<span class="fn">fn</span>(req, res, next)).<span class="fn">catch</span>(next);</code></pre></div>
+
+
+
+<h3>Express Middleware Chain</h3>
+
+<div class="diagram">Request → <span class="hl">helmet()</span> → <span class="hl2">pino()</span> → <span class="hl3">json()</span> → <span class="hl2">router</span> → <span class="hl3">handler</span>
+
+                                                      ↓ (if error thrown)
+
+                                              <span class="hl4">Error Handler (4 params)</span></div>
+
+
+
+<div class="callout"><div class="ct">Interview Tip</div>Express detects error-handling middleware by counting parameters — the function <strong>must</strong> have exactly 4 params <code>(err, req, res, next)</code>. Missing one means Express treats it as a regular middleware and errors pass right through.</div>
+
+
+
+<div class="qbox" id="q3">
+
+<h4>Q: Why must Express error-handling middleware have exactly 4 parameters?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q3','b')">A) It's just a naming convention with no functional impact</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q3','b')">B) Express identifies error handlers by parameter count — 4 params <code>(err, req, res, next)</code> signals error-handling mode</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q3','b')">C) The 4th param <code>next</code> is needed to pass errors to subsequent handlers</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q3','b')">D) Three-param middleware can't access the error object</div>
+
+</div>
+
+<div class="qfb ok">✓ Correct! Express uses <code>Function.length</code> (parameter count) to distinguish error handlers. A 3-param signature makes Express skip it as a regular middleware even if named <code>err</code>.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 4 ===== -->
+
+<div class="section" id="s4">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">Event Loop Deep Dive</h2>
+
+<p class="intro">The event loop is the heart of Node.js. Understanding its six phases lets you reason about execution order, avoid starvation, and write code that never blocks the thread.</p>
+
+
+
+<h3>The Six Phases</h3>
+
+<div class="diagram"><span class="hl">┌──────────────────────────────────┐</span>
+
+<span class="hl">│           Event Loop             │</span>
+
+<span class="hl">└───────────────┬──────────────────┘</span>
+
+                │
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">1. timers</span>             │  setTimeout / setInterval callbacks
+
+    └───────────┬────────────┘
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">2. pending I/O</span>        │  deferred I/O callbacks
+
+    └───────────┬────────────┘
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">3. idle / prepare</span>    │  internal use only
+
+    └───────────┬────────────┘
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">4. poll</span>               │  fetch new I/O events (blocks here if empty)
+
+    └───────────┬────────────┘
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">5. check</span>              │  setImmediate callbacks
+
+    └───────────┬────────────┘
+
+    ┌───────────▼────────────┐
+
+    │  <span class="hl2">6. close callbacks</span>    │  socket.on('close') etc.
+
+    └────────────────────────┘
+
+
+
+<span class="hl3">Between each phase:</span> nextTick queue drains, then Promise microtask queue</div>
+
+
+
+<h3>Execution Order Example</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code>console.<span class="fn">log</span>(<span class="st">'1 — sync'</span>);
+
+
+
+<span class="fn">setTimeout</span>(() => console.<span class="fn">log</span>(<span class="st">'5 — timer'</span>), <span class="nm">0</span>);
+
+
+
+Promise.<span class="fn">resolve</span>().<span class="fn">then</span>(() => console.<span class="fn">log</span>(<span class="st">'3 — microtask'</span>));
+
+
+
+process.<span class="fn">nextTick</span>(() => console.<span class="fn">log</span>(<span class="st">'2 — nextTick'</span>));
+
+
+
+<span class="fn">setImmediate</span>(() => console.<span class="fn">log</span>(<span class="st">'4 — setImmediate (check phase)'</span>));
+
+
+
+<span class="cm">// Output: 1  2  3  4  5</span></code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Key Priority Order</div><strong>Sync → nextTick → Microtasks (Promises) → Timers → setImmediate → I/O → Close</strong>. <code>process.nextTick</code> fires before Promise microtasks — a classic interview gotcha.</div>
+
+
+
+<div class="qbox" id="q4">
+
+<h4>Q: You call <code>Promise.resolve().then(A)</code> and <code>process.nextTick(B)</code>. Which runs first?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q4','c')">A) A — Promise microtasks have higher priority</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q4','c')">B) They run concurrently</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q4','c')">C) B — <code>process.nextTick</code> queue drains before the Promise microtask queue</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q4','c')">D) Timer phase runs first</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! <code>process.nextTick</code> has higher priority than Promise microtasks — a detail that trips up many candidates.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 5 ===== -->
+
+<div class="section" id="s5">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">libuv &amp; Thread Pool</h2>
+
+<p class="intro">libuv is the C library that powers Node.js async I/O. Understanding its thread pool helps you diagnose latency spikes and tune concurrency for file, crypto, and DNS operations.</p>
+
+
+
+<h3>libuv Thread Pool Architecture</h3>
+
+<div class="diagram"><span class="hl">JS Main Thread</span>  (event loop)
+
+       │
+
+       │  delegates work that can't use kernel async
+
+       ▼
+
+<span class="hl2">libuv Thread Pool</span>  (default: 4 threads, max: 1024)
+
+  ┌──────────┬──────────┬──────────┬──────────┐
+
+  │Thread 1  │Thread 2  │Thread 3  │Thread 4  │
+
+  └────┬─────┴────┬─────┴────┬─────┴────┬─────┘
+
+       │          │          │          │
+
+  <span class="hl3">fs.read    crypto    dns.lookup    zlib</span>
+
+
+
+<span class="hl2">Kernel-native async (no thread pool):</span>
+
+  <span class="hl3">TCP/UDP sockets, HTTP, timers, signals</span></div>
+
+
+
+<h3>Tuning the Thread Pool</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Must be set BEFORE Node.js starts</span>
+
+UV_THREADPOOL_SIZE=16 node server.js
+
+
+
+<span class="cm"># Or as the very first line of code</span>
+
+process.env.UV_THREADPOOL_SIZE = <span class="st">'16'</span>;  <span class="cm">// must be synchronous, at top of entry file</span></code></pre></div>
+
+
+
+<div class="callout warn"><div class="ct">Pool Saturation</div>If all 4 threads are busy (e.g., 4 concurrent <code>bcrypt.hash()</code> calls), the 5th queues and adds latency to every subsequent request. Increase <code>UV_THREADPOOL_SIZE</code> to match your concurrency profile, or move CPU work to <code>worker_threads</code>.</div>
+
+
+
+<div class="qbox" id="q5">
+
+<h4>Q: What is the default libuv thread pool size?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q5','b')">A) 1 thread</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q5','b')">B) 4 threads</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q5','b')">C) Matches the number of CPU cores</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q5','b')">D) 128 threads</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Default is 4 threads, configurable via <code>UV_THREADPOOL_SIZE</code> up to 1024.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 6 ===== -->
+
+<div class="section" id="s6">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">Streams &amp; Buffers</h2>
+
+<p class="intro">Streams let you process data piece-by-piece without loading everything into memory — essential for file downloads, log pipelines, and proxying at scale.</p>
+
+
+
+<h3>Stream Types</h3>
+
+<table><thead><tr><th>Type</th><th>Example</th><th>Key Events/Methods</th></tr></thead><tbody>
+
+<tr><td>Readable</td><td><code>fs.createReadStream</code></td><td><code>data</code>, <code>end</code>, <code>pipe()</code></td></tr>
+
+<tr><td>Writable</td><td><code>res</code>, <code>fs.createWriteStream</code></td><td><code>write()</code>, <code>end()</code>, <code>drain</code></td></tr>
+
+<tr><td>Duplex</td><td>TCP socket</td><td>Both readable &amp; writable</td></tr>
+
+<tr><td>Transform</td><td><code>zlib.createGzip()</code></td><td>Modifies data in-flight</td></tr>
+
+</tbody></table>
+
+
+
+<h3>Stream Pipeline (production pattern)</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">const</span> { pipeline } = require(<span class="st">'stream/promises'</span>);
+
+<span class="kw">const</span> fs = require(<span class="st">'fs'</span>);
+
+<span class="kw">const</span> zlib = require(<span class="st">'zlib'</span>);
+
+
+
+<span class="cm">// Stream + gzip compress without loading into memory</span>
+
+app.<span class="fn">get</span>(<span class="st">'/download'</span>, <span class="kw">async</span> (req, res) => {
+
+  res.<span class="fn">setHeader</span>(<span class="st">'Content-Encoding'</span>, <span class="st">'gzip'</span>);
+
+  <span class="kw">await</span> <span class="fn">pipeline</span>(
+
+    fs.<span class="fn">createReadStream</span>(<span class="st">'./data.csv'</span>),
+
+    zlib.<span class="fn">createGzip</span>(),
+
+    res
+
+  );
+
+  <span class="cm">// pipeline() handles back-pressure AND propagates errors</span>
+
+});</code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">pipe() vs pipeline()</div><code>pipe()</code> does NOT propagate errors between streams — a read error won't close the write stream, leaking resources. Always use <code>stream.pipeline()</code> (or its promise wrapper) in production.</div>
+
+
+
+<div class="qbox" id="q6">
+
+<h4>Q: Why is <code>stream.pipeline()</code> preferred over <code>.pipe()</code> in production?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q6','c')">A) <code>pipeline()</code> is faster due to native C++ bindings</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q6','c')">B) <code>pipe()</code> requires more memory</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q6','c')">C) <code>pipeline()</code> properly propagates errors and destroys all streams on failure; <code>pipe()</code> silently leaks streams on error</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q6','c')">D) No functional difference</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! <code>stream.pipeline()</code> is the production-safe choice — error propagation and cleanup are handled automatically.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 7 ===== -->
+
+<div class="section" id="s7">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">Error Handling Patterns</h2>
+
+<p class="intro">Unhandled errors crash processes in production. Senior engineers design an airtight error taxonomy and propagation strategy before writing the first route.</p>
+
+
+
+<h3>Error Taxonomy</h3>
+
+<table><thead><tr><th>Type</th><th>Example</th><th>Correct Response</th></tr></thead><tbody>
+
+<tr><td>Operational</td><td>DB timeout, invalid input</td><td>Log &amp; return error response — recoverable</td></tr>
+
+<tr><td>Programmer</td><td><code>TypeError: null.x</code></td><td>Crash &amp; restart — indicates a bug</td></tr>
+
+<tr><td>Unhandled rejection</td><td>Missing <code>await</code> + <code>.catch()</code></td><td>Global handler → log → exit(1)</td></tr>
+
+</tbody></table>
+
+
+
+<h3>Production Error Setup</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">class</span> <span class="fn">AppError</span> <span class="kw">extends</span> Error {
+
+  <span class="fn">constructor</span>(message, statusCode = <span class="nm">500</span>) {
+
+    <span class="kw">super</span>(message);
+
+    <span class="kw">this</span>.statusCode = statusCode;
+
+    <span class="kw">this</span>.isOperational = <span class="kw">true</span>;
+
+  }
+
+}
+
+
+
+<span class="cm">// Wrap async route handlers</span>
+
+<span class="kw">const</span> <span class="fn">wrap</span> = fn => (req, res, next) => Promise.<span class="fn">resolve</span>(<span class="fn">fn</span>(req, res, next)).<span class="fn">catch</span>(next);
+
+
+
+router.<span class="fn">get</span>(<span class="st">'/user/:id'</span>, <span class="fn">wrap</span>(<span class="kw">async</span> (req, res) => {
+
+  <span class="kw">const</span> user = <span class="kw">await</span> db.<span class="fn">findById</span>(req.params.id);
+
+  <span class="kw">if</span> (!user) <span class="kw">throw new</span> <span class="fn">AppError</span>(<span class="st">'Not found'</span>, <span class="nm">404</span>);
+
+  res.<span class="fn">json</span>(user);
+
+}));
+
+
+
+<span class="cm">// Global safety net</span>
+
+process.<span class="fn">on</span>(<span class="st">'unhandledRejection'</span>, (err) => { logger.<span class="fn">fatal</span>(err); process.<span class="fn">exit</span>(<span class="nm">1</span>); });
+
+process.<span class="fn">on</span>(<span class="st">'uncaughtException'</span>,  (err) => { logger.<span class="fn">fatal</span>(err); process.<span class="fn">exit</span>(<span class="nm">1</span>); });</code></pre></div>
+
+
+
+<div class="callout danger"><div class="ct">Never Swallow Errors</div>An empty <code>catch(() => {})</code> silently masks bugs. Always: log the error, decide if it's recoverable, and either respond with a safe message or crash fast.</div>
+
+
+
+<div class="qbox" id="q7">
+
+<h4>Q: An operational error vs a programmer error — how should each be handled?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q7','c')">A) Both should crash the process</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q7','c')">B) Both should be caught and logged silently</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q7','c')">C) Operational errors are recoverable — log and respond. Programmer errors indicate a bug — crash and let the process manager restart</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q7','c')">D) No distinction is needed in modern Node.js</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! This distinction is the foundation of production-grade Node.js error handling. Continuing after a programmer error risks data corruption.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 8 ===== -->
+
+<div class="section" id="s8">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">Worker Threads &amp; Clustering</h2>
+
+<p class="intro">Two complementary tools for scaling CPU utilization: <code>worker_threads</code> for in-process parallelism, and <code>cluster</code> / PM2 to leverage all CPU cores for HTTP throughput.</p>
+
+
+
+<h3>Worker Threads</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// main.js — offload CPU work without blocking the event loop</span>
+
+<span class="kw">const</span> { Worker } = require(<span class="st">'worker_threads'</span>);
+
+
+
+<span class="kw">function</span> <span class="fn">runWorker</span>(workerFile, data) {
+
+  <span class="kw">return new</span> Promise((resolve, reject) => {
+
+    <span class="kw">const</span> w = <span class="kw">new</span> <span class="fn">Worker</span>(workerFile, { workerData: data });
+
+    w.<span class="fn">on</span>(<span class="st">'message'</span>, resolve);
+
+    w.<span class="fn">on</span>(<span class="st">'error'</span>,   reject);
+
+    w.<span class="fn">on</span>(<span class="st">'exit'</span>, code => { <span class="kw">if</span>(code !== <span class="nm">0</span>) <span class="fn">reject</span>(<span class="kw">new</span> Error(<span class="st">`exit ${code}`</span>)); });
+
+  });
+
+}
+
+
+
+<span class="cm">// worker.js</span>
+
+<span class="kw">const</span> { workerData, parentPort } = require(<span class="st">'worker_threads'</span>);
+
+parentPort.<span class="fn">postMessage</span>(<span class="fn">heavyCompute</span>(workerData));</code></pre></div>
+
+
+
+<h3>Cluster Mode with PM2</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># ecosystem.config.js</span>
+
+module.exports = {
+
+  apps: [{
+
+    name: <span class="st">'api'</span>,
+
+    script: <span class="st">'./dist/server.js'</span>,
+
+    instances: <span class="st">'max'</span>,   <span class="cm">// one per CPU core</span>
+
+    exec_mode: <span class="st">'cluster'</span>,
+
+    max_memory_restart: <span class="st">'512M'</span>
+
+  }]
+
+};
+
+
+
+<span class="cm"># Start / reload without downtime</span>
+
+pm2 start ecosystem.config.js
+
+pm2 reload api  <span class="cm"># zero-downtime reload</span></code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Workers vs Cluster</div><strong>Worker Threads</strong> share the same process memory and are ideal for CPU-intensive work inside a single request (e.g., image processing). <strong>Cluster</strong> creates independent OS processes with separate memory — it distributes TCP connections and achieves true horizontal scaling on multi-core machines.</div>
+
+
+
+<div class="qbox" id="q8">
+
+<h4>Q: When should you choose <code>worker_threads</code> over <code>cluster</code>?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q8','c')">A) When you need multiple HTTP ports</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q8','c')">B) They are equivalent — pick either</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q8','c')">C) Use workers to offload a CPU-intensive task within a single request without blocking the event loop; use cluster to replicate the whole server across CPU cores</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q8','c')">D) <code>cluster</code> is deprecated</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! The two solve orthogonal problems. In practice, many production apps use both: cluster for horizontal scaling and worker threads for occasional heavy computation.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 9 ===== -->
+
+<div class="section" id="s9">
+
+<span class="badge badge-runtime">Runtime</span>
+
+<h2 class="t">Memory Leaks &amp; Diagnostics</h2>
+
+<p class="intro">Memory leaks in long-running Node.js servers cause steadily growing RSS, slower GC, and eventual OOM crashes. Knowing how to detect and fix them is a senior-level skill.</p>
+
+
+
+<h3>Common Leak Sources</h3>
+
+<table><thead><tr><th>Source</th><th>Example</th><th>Fix</th></tr></thead><tbody>
+
+<tr><td>Global accumulation</td><td>Pushing to a module-level array forever</td><td>Bound the collection; use a cache with TTL</td></tr>
+
+<tr><td>Event listener leak</td><td><code>emitter.on()</code> in a loop without <code>off()</code></td><td>Always call <code>removeListener</code> or use <code>once()</code></td></tr>
+
+<tr><td>Closure capturing large objects</td><td>Long-lived callback holds a reference to a request</td><td>Nullify after use; restructure scope</td></tr>
+
+<tr><td>Uncleaned timers</td><td><code>setInterval</code> never cleared</td><td>Always store the handle and call <code>clearInterval</code></td></tr>
+
+</tbody></table>
+
+
+
+<h3>Diagnosing with Clinic.js &amp; Heap Snapshots</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Clinic.js — visual event loop &amp; memory profiling</span>
+
+npx clinic doctor -- node server.js
+
+npx clinic heapsampler -- node server.js
+
+
+
+<span class="cm"># Built-in heap snapshot (Node 18+)</span>
+
+<span class="kw">const</span> v8 = require(<span class="st">'v8'</span>);
+
+v8.<span class="fn">writeHeapSnapshot</span>();  <span class="cm">// writes heapdump-*.heapsnapshot</span>
+
+<span class="cm"># Open in Chrome DevTools > Memory tab</span>
+
+
+
+<span class="cm"># --inspect flag for live profiling</span>
+
+node --inspect server.js</code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Interview Approach</div>When asked to debug a memory leak: (1) monitor RSS over time with metrics, (2) take two heap snapshots, (3) compare allocations between snapshots, (4) look for growing retained objects. Common culprits: maps, arrays, event emitters.</div>
+
+
+
+<div class="qbox" id="q9">
+
+<h4>Q: What is the most common cause of event listener memory leaks in Node.js?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q9','c')">A) Using <code>async/await</code> inside event handlers</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q9','c')">B) Attaching listeners with <code>once()</code></div>
+
+<div class="qopt" data-val="c" onclick="quiz('q9','c')">C) Calling <code>emitter.on()</code> repeatedly (e.g., on each request) without a corresponding <code>removeListener()</code>, causing listener count to grow unboundedly</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q9','c')">D) Emitters with more than 10 listeners always leak</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Node.js warns when an emitter exceeds 10 listeners (MaxListenersExceededWarning) — this is often a sign of a leak. Use <code>emitter.setMaxListeners()</code> only after confirming the high count is intentional.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 10 ===== -->
+
+<div class="section" id="s10">
+
+<span class="badge badge-prod">Production</span>
+
+<h2 class="t">Graceful Shutdown</h2>
+
+<p class="intro">A graceful shutdown drains in-flight requests, closes DB connections, and flushes log buffers before the process exits — preventing data corruption and dropped responses during deploys.</p>
+
+
+
+<h3>The Shutdown Sequence</h3>
+
+<div class="diagram"><span class="hl">SIGTERM received</span>  (from k8s / PM2 / systemd)
+
+        │
+
+        ▼
+
+<span class="hl2">1. Stop accepting new requests</span>  server.close()
+
+        │
+
+        ▼
+
+<span class="hl2">2. Drain in-flight requests</span>  wait for existing handlers to finish
+
+        │
+
+        ▼
+
+<span class="hl2">3. Close downstream connections</span>  DB pool, Redis, message queue
+
+        │
+
+        ▼
+
+<span class="hl2">4. Flush logs &amp; metrics</span>
+
+        │
+
+        ▼
+
+<span class="hl3">process.exit(0)</span></div>
+
+
+
+<h3>Implementation</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">const</span> server = app.<span class="fn">listen</span>(<span class="nm">3000</span>, <span class="st">'127.0.0.1'</span>);
+
+
+
+<span class="kw">async function</span> <span class="fn">shutdown</span>(signal) {
+
+  logger.<span class="fn">info</span>({ signal }, <span class="st">'Shutdown initiated'</span>);
+
+
+
+  <span class="cm">// 1. Stop accepting new TCP connections</span>
+
+  <span class="kw">await new</span> Promise(r => server.<span class="fn">close</span>(r));
+
+
+
+  <span class="cm">// 2. Close DB &amp; cache connections</span>
+
+  <span class="kw">await</span> db.<span class="fn">end</span>();
+
+  <span class="kw">await</span> redis.<span class="fn">quit</span>();
+
+
+
+  logger.<span class="fn">info</span>(<span class="st">'Shutdown complete'</span>);
+
+  process.<span class="fn">exit</span>(<span class="nm">0</span>);
+
+}
+
+
+
+process.<span class="fn">on</span>(<span class="st">'SIGTERM'</span>, () => <span class="fn">shutdown</span>(<span class="st">'SIGTERM'</span>));
+
+process.<span class="fn">on</span>(<span class="st">'SIGINT'</span>,  () => <span class="fn">shutdown</span>(<span class="st">'SIGINT'</span>));
+
+
+
+<span class="cm">// Kubernetes: set terminationGracePeriodSeconds to allow drain time</span></code></pre></div>
+
+
+
+<div class="callout warn"><div class="ct">Kubernetes &amp; Readiness Probes</div>When a pod receives SIGTERM, the load balancer may still route traffic for a few seconds. Add a short sleep (1-2s) before <code>server.close()</code>, or use a readiness probe that immediately returns 503 on shutdown to prevent new connections from arriving.</div>
+
+
+
+<div class="qbox" id="q10">
+
+<h4>Q: Why should you call <code>server.close()</code> first during a graceful shutdown?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q10','c')">A) It immediately kills all open sockets</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q10','c')">B) It flushes the log buffer</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q10','c')">C) It stops the server from accepting new connections while allowing existing requests to complete — preventing new work from starting while the process winds down</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q10','c')">D) It sends SIGTERM to worker processes</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! <code>server.close(cb)</code> stops new connections and calls <code>cb</code> once all existing connections are closed — the callback is your signal to proceed with teardown.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 11 ===== -->
+
+<div class="section" id="s11">
+
+<span class="badge badge-prod">Production</span>
+
+<h2 class="t">Express Middleware Patterns</h2>
+
+<p class="intro">Advanced middleware patterns — rate limiting, authentication guards, request correlation IDs, and composition strategies — separate junior from senior Express developers.</p>
+
+
+
+<h3>Middleware Patterns</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// 1. Correlation ID — inject into every log line</span>
+
+<span class="kw">const</span> { randomUUID } = require(<span class="st">'crypto'</span>);
+
+app.<span class="fn">use</span>((req, res, next) => {
+
+  req.id = req.headers[<span class="st">'x-request-id'</span>] || <span class="fn">randomUUID</span>();
+
+  res.<span class="fn">setHeader</span>(<span class="st">'x-request-id'</span>, req.id);
+
+  <span class="fn">next</span>();
+
+});
+
+
+
+<span class="cm">// 2. Auth guard middleware factory</span>
+
+<span class="kw">const</span> <span class="fn">requireRole</span> = (...roles) => (req, res, next) => {
+
+  <span class="kw">if</span> (!req.user || !roles.<span class="fn">includes</span>(req.user.role))
+
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="nm">403</span>).<span class="fn">json</span>({ error: <span class="st">'Forbidden'</span> });
+
+  <span class="fn">next</span>();
+
+};
+
+
+
+router.<span class="fn">delete</span>(<span class="st">'/user/:id'</span>, <span class="fn">authenticate</span>, <span class="fn">requireRole</span>(<span class="st">'admin'</span>), <span class="fn">wrap</span>(deleteUser));
+
+
+
+<span class="cm">// 3. Rate limiter with express-rate-limit</span>
+
+<span class="kw">const</span> rateLimit = require(<span class="st">'express-rate-limit'</span>);
+
+<span class="kw">const</span> limiter = <span class="fn">rateLimit</span>({
+
+  windowMs: <span class="nm">15</span> * <span class="nm">60</span> * <span class="nm">1000</span>, max: <span class="nm">100</span>,
+
+  standardHeaders: <span class="kw">true</span>, legacyHeaders: <span class="kw">false</span>,
+
+  <span class="fn">handler</span>(req, res) { res.<span class="fn">status</span>(<span class="nm">429</span>).<span class="fn">json</span>({ error: <span class="st">'Too many requests'</span> }); }
+
+});
+
+app.<span class="fn">use</span>(<span class="st">'/api'</span>, limiter);</code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Middleware Factory Pattern</div>Functions that <em>return</em> middleware (like <code>requireRole('admin')</code>) are extremely powerful — they close over configuration and let you reuse the same logic with different parameters across routes.</div>
+
+
+
+<div class="qbox" id="q11">
+
+<h4>Q: How would you implement a middleware that only runs for specific HTTP methods?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q11','c')">A) Use <code>app.method()</code> API</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q11','c')">B) Check <code>req.path</code> in the middleware</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q11','c')">C) Check <code>req.method</code> inside the middleware and call <code>next()</code> to skip if it doesn't match, or register it only on specific method routes like <code>router.post()</code></div>
+
+<div class="qopt" data-val="d" onclick="quiz('q11','c')">D) Use <code>app.use({ methods: ['POST'] }, mw)</code></div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Either check <code>req.method</code> inside the middleware and skip via <code>next()</code>, or register the middleware only on specific method handlers (e.g., <code>router.post('/path', mw, handler)</code>).</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 12 ===== -->
+
+<div class="section" id="s12">
+
+<span class="badge badge-prod">Production</span>
+
+<h2 class="t">TypeScript with Node.js</h2>
+
+<p class="intro">TypeScript catches entire classes of bugs at compile time. A proper Node.js + TypeScript setup with strict mode and path aliases is expected in senior-level positions.</p>
+
+
+
+<h3>Project Setup</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Minimal production tsconfig.json</span>
+
+{
+
+  <span class="st">"compilerOptions"</span>: {
+
+    <span class="st">"target"</span>: <span class="st">"ES2022"</span>,
+
+    <span class="st">"module"</span>: <span class="st">"NodeNext"</span>,
+
+    <span class="st">"moduleResolution"</span>: <span class="st">"NodeNext"</span>,
+
+    <span class="st">"outDir"</span>: <span class="st">"./dist"</span>,
+
+    <span class="st">"rootDir"</span>: <span class="st">"./src"</span>,
+
+    <span class="st">"strict"</span>: <span class="kw">true</span>,
+
+    <span class="st">"sourceMap"</span>: <span class="kw">true</span>,
+
+    <span class="st">"declaration"</span>: <span class="kw">true</span>
+
+  }
+
+}
+
+
+
+<span class="cm">// Typed Express handler pattern</span>
+
+<span class="kw">import</span> { Request, Response, NextFunction } <span class="kw">from</span> <span class="st">'express'</span>;
+
+
+
+<span class="kw">interface</span> <span class="fn">CreateUserBody</span> { name: string; email: string; }
+
+
+
+<span class="kw">export const</span> <span class="fn">createUser</span> = <span class="kw">async</span> (
+
+  req: Request&lt;{}, {}, <span class="fn">CreateUserBody</span>&gt;,
+
+  res: Response,
+
+  next: NextFunction
+
+): Promise&lt;void&gt; => {
+
+  <span class="kw">const</span> { name, email } = req.body;  <span class="cm">// fully typed</span>
+
+  <span class="kw">const</span> user = <span class="kw">await</span> userService.<span class="fn">create</span>({ name, email });
+
+  res.<span class="fn">status</span>(<span class="nm">201</span>).<span class="fn">json</span>(user);
+
+};</code></pre></div>
+
+
+
+<h3>ts-node-dev for Development</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Fast dev server with hot reload (no build step)</span>
+
+npm i -D ts-node-dev typescript @types/node @types/express
+
+
+
+<span class="cm"># package.json scripts</span>
+
+{
+
+  <span class="st">"scripts"</span>: {
+
+    <span class="st">"dev"</span>:   <span class="st">"ts-node-dev --respawn src/index.ts"</span>,
+
+    <span class="st">"build"</span>: <span class="st">"tsc --project tsconfig.json"</span>,
+
+    <span class="st">"start"</span>: <span class="st">"node dist/index.js"</span>
+
+  }
+
+}</code></pre></div>
+
+
+
+<div class="qbox" id="q12">
+
+<h4>Q: What does <code>"strict": true</code> enable in TypeScript?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q12','b')">A) Only <code>noImplicitAny</code></div>
+
+<div class="qopt" data-val="b" onclick="quiz('q12','b')">B) A family of checks: <code>noImplicitAny</code>, <code>strictNullChecks</code>, <code>strictFunctionTypes</code>, <code>strictBindCallApply</code>, and more — all enabled at once</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q12','b')">C) Only runtime type checking</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q12','b')">D) Disallows the use of <code>any</code> entirely</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! <code>"strict": true</code> is a shortcut for enabling the full family of strictness checks. Always enable it in new projects — it prevents the most common TypeScript footguns.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 13 ===== -->
+
+<div class="section" id="s13">
+
+<span class="badge badge-prod">Production</span>
+
+<h2 class="t">Testing: Jest &amp; Supertest</h2>
+
+<p class="intro">A strong test pyramid — unit, integration, and contract tests — is the mark of a production-ready Node.js codebase. Supertest lets you test Express routes without starting a real server.</p>
+
+
+
+<h3>Test Pyramid</h3>
+
+<div class="diagram">        <span class="hl">E2E / Contract</span>   (few — slow, expensive)
+
+           /\
+
+          /  \
+
+    <span class="hl2">Integration</span>     (moderate — test routes &amp; DB)
+
+        /        \
+
+      /            \
+
+  <span class="hl3">Unit Tests</span>        (many — fast, isolated)</div>
+
+
+
+<h3>Integration Test with Supertest</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// user.routes.test.ts</span>
+
+<span class="kw">import</span> request <span class="kw">from</span> <span class="st">'supertest'</span>;
+
+<span class="kw">import</span> { app } <span class="kw">from</span> <span class="st">'../src/app'</span>;
+
+
+
+describe(<span class="st">'GET /api/users/:id'</span>, () => {
+
+  <span class="fn">it</span>(<span class="st">'returns 200 for existing user'</span>, <span class="kw">async</span> () => {
+
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">request</span>(app).<span class="fn">get</span>(<span class="st">'/api/users/1'</span>)
+
+      .<span class="fn">set</span>(<span class="st">'Authorization'</span>, <span class="st">`Bearer ${testToken}`</span>);
+
+    expect(res.status).<span class="fn">toBe</span>(<span class="nm">200</span>);
+
+    expect(res.body).<span class="fn">toMatchObject</span>({ id: <span class="st">'1'</span>, name: expect.<span class="fn">any</span>(String) });
+
+  });
+
+
+
+  <span class="fn">it</span>(<span class="st">'returns 404 for missing user'</span>, <span class="kw">async</span> () => {
+
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">request</span>(app).<span class="fn">get</span>(<span class="st">'/api/users/9999'</span>);
+
+    expect(res.status).<span class="fn">toBe</span>(<span class="nm">404</span>);
+
+  });
+
+});</code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Export app separately from listen()</div>Export the Express <code>app</code> object from a file that does NOT call <code>app.listen()</code>. A separate <code>server.ts</code> calls listen. This lets Supertest bind the app on an ephemeral port without side effects during tests.</div>
+
+
+
+<div class="qbox" id="q13">
+
+<h4>Q: Why should the Express <code>app</code> be exported from a file that doesn't call <code>app.listen()</code>?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q13','c')">A) <code>listen()</code> causes memory leaks in Jest</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q13','c')">B) Supertest cannot use an app that has already bound a port</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q13','c')">C) Separating app creation from server startup lets Supertest bind the app on a random port without conflicting with a real server, and makes the file importable without side effects</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q13','c')">D) Jest mocks <code>app.listen()</code> automatically</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! This is a fundamental Node.js testability pattern. <code>app.ts</code> configures the Express instance; <code>server.ts</code> calls <code>app.listen()</code>. Tests import only <code>app.ts</code>.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 14 ===== -->
+
+<div class="section" id="s14">
+
+<span class="badge badge-prod">Production</span>
+
+<h2 class="t">Mocking in Node.js</h2>
+
+<p class="intro">Effective mocking isolates the unit under test, removes network/DB dependencies, and makes tests deterministic. Jest, <code>jest.mock()</code>, and manual mocks are the standard toolkit.</p>
+
+
+
+<h3>Module Mocking with Jest</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// Mock an entire module</span>
+
+jest.<span class="fn">mock</span>(<span class="st">'../services/emailService'</span>, () => ({
+
+  <span class="fn">sendWelcomeEmail</span>: jest.<span class="fn">fn</span>().<span class="fn">mockResolvedValue</span>({ success: <span class="kw">true</span> })
+
+}));
+
+
+
+<span class="kw">import</span> { <span class="fn">sendWelcomeEmail</span> } <span class="kw">from</span> <span class="st">'../services/emailService'</span>;
+
+
+
+test(<span class="st">'creates user and sends welcome email'</span>, <span class="kw">async</span> () => {
+
+  <span class="kw">await</span> userService.<span class="fn">register</span>({ email: <span class="st">'test@example.com'</span> });
+
+
+
+  expect(sendWelcomeEmail).<span class="fn">toHaveBeenCalledWith</span>({
+
+    to: <span class="st">'test@example.com'</span>,
+
+    template: <span class="st">'welcome'</span>
+
+  });
+
+});</code></pre></div>
+
+
+
+<h3>Mocking with Dependency Injection</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// Prefer DI for testability over jest.mock()</span>
+
+<span class="kw">class</span> <span class="fn">UserService</span> {
+
+  <span class="fn">constructor</span>(<span class="kw">private</span> emailSvc: EmailService) {}
+
+  <span class="kw">async</span> <span class="fn">register</span>(data: UserData) {
+
+    <span class="kw">const</span> user = <span class="kw">await</span> <span class="kw">this</span>.db.<span class="fn">create</span>(data);
+
+    <span class="kw">await</span> <span class="kw">this</span>.emailSvc.<span class="fn">sendWelcomeEmail</span>(user.email);
+
+    <span class="kw">return</span> user;
+
+  }
+
+}
+
+
+
+<span class="cm">// In test:</span>
+
+<span class="kw">const</span> mockEmail = { sendWelcomeEmail: jest.<span class="fn">fn</span>() };
+
+<span class="kw">const</span> svc = <span class="kw">new</span> <span class="fn">UserService</span>(mockEmail <span class="kw">as any</span>);</code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">jest.mock() vs DI</div><code>jest.mock()</code> is convenient but couples tests to module paths. Dependency Injection is more architecturally correct — inject interfaces, mock the interface in tests. For brownfield code, <code>jest.mock()</code> is pragmatic.</div>
+
+
+
+<div class="qbox" id="q14">
+
+<h4>Q: What is the key advantage of dependency injection over <code>jest.mock()</code> for testability?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q14','b')">A) DI runs faster</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q14','b')">B) DI decouples the module under test from specific module paths — you pass mock implementations directly without needing Jest's module interception, making tests more portable and architecturally sound</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q14','b')">C) <code>jest.mock()</code> doesn't work with TypeScript</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q14','b')">D) DI automatically generates mocks</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! DI makes dependencies explicit and swappable. It's framework-agnostic and works in any test runner, not just Jest.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 15 ===== -->
+
+<div class="section" id="s15">
+
+<span class="badge badge-obs">Observability</span>
+
+<h2 class="t">Structured Logging with Pino</h2>
+
+<p class="intro">Pino is the fastest production-grade logger for Node.js. Structured JSON logs are machine-parseable by ELK, Splunk, and CloudWatch — essential for debugging production incidents.</p>
+
+
+
+<h3>Pino Setup</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> pino <span class="kw">from</span> <span class="st">'pino'</span>;
+
+
+
+<span class="kw">export const</span> logger = <span class="fn">pino</span>({
+
+  level: process.env.LOG_LEVEL || <span class="st">'info'</span>,
+
+  <span class="cm">// In production: pipe to pino-pretty for human-readable output</span>
+
+  <span class="cm">// In k8s/ECS: JSON output goes to stdout, collected by log agent</span>
+
+  redact: [<span class="st">'req.headers.authorization'</span>, <span class="st">'*.password'</span>, <span class="st">'*.token'</span>],
+
+  base: { service: <span class="st">'api'</span>, version: process.env.APP_VERSION }
+
+});
+
+
+
+<span class="cm">// Child logger with request context</span>
+
+<span class="kw">const</span> reqLogger = logger.<span class="fn">child</span>({ requestId: req.id, userId: req.user?.id });
+
+reqLogger.<span class="fn">info</span>({ event: <span class="st">'user.login'</span> }, <span class="st">'User authenticated'</span>);
+
+
+
+<span class="cm">// Output JSON:</span>
+
+<span class="cm">// {"level":30,"time":1700000000,"service":"api","requestId":"abc","event":"user.login","msg":"User authenticated"}</span></code></pre></div>
+
+
+
+<h3>Log Levels by Severity</h3>
+
+<table><thead><tr><th>Level</th><th>Use Case</th></tr></thead><tbody>
+
+<tr><td><code>trace</code></td><td>Verbose debug (disabled in prod)</td></tr>
+
+<tr><td><code>debug</code></td><td>Development tracing</td></tr>
+
+<tr><td><code>info</code></td><td>Normal business events</td></tr>
+
+<tr><td><code>warn</code></td><td>Unexpected but recoverable</td></tr>
+
+<tr><td><code>error</code></td><td>Errors requiring attention</td></tr>
+
+<tr><td><code>fatal</code></td><td>Process about to crash</td></tr>
+
+</tbody></table>
+
+
+
+<div class="callout danger"><div class="ct">Never Log Sensitive Data</div>Use Pino's <code>redact</code> option to automatically mask <code>authorization</code>, <code>password</code>, <code>token</code>, and any PII fields. Log the <em>event</em> and <em>user ID</em>, never the credentials themselves.</div>
+
+
+
+<div class="qbox" id="q15">
+
+<h4>Q: Why are structured (JSON) logs preferred over plain-text logs in production?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q15','c')">A) JSON logs are smaller</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q15','c')">B) Plain text can't include timestamps</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q15','c')">C) Structured logs are machine-parseable — log aggregation tools (ELK, Splunk, CloudWatch Insights) can filter, query, and alert on specific fields without brittle regex parsing</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q15','c')">D) JSON is the only format Kubernetes supports</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! JSON logs enable field-level queries like <code>level:error AND service:api AND userId:123</code> in your log aggregator without any parsing configuration.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 16 ===== -->
+
+<div class="section" id="s16">
+
+<span class="badge badge-obs">Observability</span>
+
+<h2 class="t">Security: Helmet, CORS &amp; Validation</h2>
+
+<p class="intro">Security is not optional. Every production Node.js API must harden HTTP headers, configure CORS correctly, and validate all inputs at the boundary.</p>
+
+
+
+<h3>Helmet &amp; CORS</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> helmet <span class="kw">from</span> <span class="st">'helmet'</span>;
+
+<span class="kw">import</span> cors <span class="kw">from</span> <span class="st">'cors'</span>;
+
+
+
+<span class="cm">// Helmet sets: X-Frame-Options, X-XSS-Protection, HSTS, CSP headers etc.</span>
+
+app.<span class="fn">use</span>(<span class="fn">helmet</span>());
+
+
+
+<span class="cm">// CORS — never use origin: '*' in production with credentials</span>
+
+<span class="kw">const</span> allowedOrigins = (process.env.CORS_ORIGINS || <span class="st">''</span>).<span class="fn">split</span>(<span class="st">','</span>);
+
+app.<span class="fn">use</span>(<span class="fn">cors</span>({
+
+  origin(origin, cb) {
+
+    <span class="kw">if</span> (!origin || allowedOrigins.<span class="fn">includes</span>(origin)) <span class="fn">cb</span>(<span class="kw">null</span>, <span class="kw">true</span>);
+
+    <span class="kw">else</span> <span class="fn">cb</span>(<span class="kw">new</span> Error(<span class="st">'Not allowed by CORS'</span>));
+
+  },
+
+  credentials: <span class="kw">true</span>
+
+}));</code></pre></div>
+
+
+
+<h3>Input Validation with Zod</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> { z } <span class="kw">from</span> <span class="st">'zod'</span>;
+
+
+
+<span class="kw">const</span> CreateUserSchema = z.<span class="fn">object</span>({
+
+  name:  z.<span class="fn">string</span>().<span class="fn">min</span>(<span class="nm">1</span>).<span class="fn">max</span>(<span class="nm">100</span>),
+
+  email: z.<span class="fn">string</span>().<span class="fn">email</span>(),
+
+  age:   z.<span class="fn">number</span>().<span class="fn">int</span>().<span class="fn">min</span>(<span class="nm">18</span>).<span class="fn">max</span>(<span class="nm">120</span>)
+
+});
+
+
+
+router.<span class="fn">post</span>(<span class="st">'/users'</span>, <span class="fn">wrap</span>(<span class="kw">async</span> (req, res) => {
+
+  <span class="kw">const</span> body = CreateUserSchema.<span class="fn">parse</span>(req.body); <span class="cm">// throws ZodError if invalid</span>
+
+  <span class="kw">const</span> user = <span class="kw">await</span> userService.<span class="fn">create</span>(body);
+
+  res.<span class="fn">status</span>(<span class="nm">201</span>).<span class="fn">json</span>(user);
+
+}));</code></pre></div>
+
+
+
+<div class="callout warn"><div class="ct">CORS Misconception</div>CORS is a browser security feature — it does NOT protect your API from server-to-server calls or Postman. Always implement authentication + rate limiting regardless of CORS settings.</div>
+
+
+
+<div class="qbox" id="q16">
+
+<h4>Q: Why is setting CORS <code>origin: '*'</code> dangerous when <code>credentials: true</code>?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q16','c')">A) It causes a server crash</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q16','c')">B) Wildcard origin disables HTTPS</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q16','c')">C) Browsers block <code>credentials: true</code> with a wildcard origin — and if allowed, any website could make authenticated requests on behalf of your users (CSRF risk)</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q16','c')">D) It has no practical impact</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! The browser spec explicitly disallows <code>credentials: true</code> with <code>origin: '*'</code>. Always specify an explicit allowlist of origins for credentialed requests.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 17 ===== -->
+
+<div class="section" id="s17">
+
+<span class="badge badge-obs">Observability</span>
+
+<h2 class="t">Caching with Redis</h2>
+
+<p class="intro">Redis is the standard caching layer for Node.js APIs. Mastering cache-aside, cache invalidation, and TTL strategies is essential for high-traffic services.</p>
+
+
+
+<h3>Cache-Aside Pattern</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> { createClient } <span class="kw">from</span> <span class="st">'redis'</span>;
+
+<span class="kw">const</span> redis = <span class="fn">createClient</span>({ url: process.env.REDIS_URL });
+
+<span class="kw">await</span> redis.<span class="fn">connect</span>();
+
+
+
+<span class="kw">async function</span> <span class="fn">getUser</span>(id: string) {
+
+  <span class="kw">const</span> cacheKey = <span class="st">`user:${id}`</span>;
+
+
+
+  <span class="cm">// 1. Check cache</span>
+
+  <span class="kw">const</span> cached = <span class="kw">await</span> redis.<span class="fn">get</span>(cacheKey);
+
+  <span class="kw">if</span> (cached) <span class="kw">return</span> JSON.<span class="fn">parse</span>(cached);
+
+
+
+  <span class="cm">// 2. Miss — fetch from DB</span>
+
+  <span class="kw">const</span> user = <span class="kw">await</span> db.<span class="fn">findById</span>(id);
+
+  <span class="kw">if</span> (!user) <span class="kw">return null</span>;
+
+
+
+  <span class="cm">// 3. Populate cache with TTL (5 minutes)</span>
+
+  <span class="kw">await</span> redis.<span class="fn">setEx</span>(cacheKey, <span class="nm">300</span>, JSON.<span class="fn">stringify</span>(user));
+
+  <span class="kw">return</span> user;
+
+}
+
+
+
+<span class="cm">// Invalidate on update</span>
+
+<span class="kw">async function</span> <span class="fn">updateUser</span>(id: string, data: Partial&lt;User&gt;) {
+
+  <span class="kw">const</span> user = <span class="kw">await</span> db.<span class="fn">update</span>(id, data);
+
+  <span class="kw">await</span> redis.<span class="fn">del</span>(<span class="st">`user:${id}`</span>);  <span class="cm">// invalidate cache</span>
+
+  <span class="kw">return</span> user;
+
+}</code></pre></div>
+
+
+
+<div class="callout warn"><div class="ct">Cache Stampede</div>When a popular key expires, many requests hit the DB simultaneously. Mitigate with: (1) <code>SETNX</code> mutex locking — only one request rebuilds the cache; (2) probabilistic early expiration; (3) background refresh before TTL expires.</div>
+
+
+
+<div class="qbox" id="q17">
+
+<h4>Q: What is a cache stampede and how do you prevent it?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q17','c')">A) When Redis runs out of memory</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q17','c')">B) When a Redis cluster fails over</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q17','c')">C) When a popular cached key expires and many concurrent requests all miss the cache and hit the DB simultaneously — prevented by mutex locking (SETNX), background refresh, or probabilistic expiration</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q17','c')">D) When the cache is too large</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! The mutex approach: set a lock key before DB fetch, other requesters wait or serve stale data. Use <code>SET key value NX EX 10</code> as an atomic lock in Redis.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 18 ===== -->
+
+<div class="section" id="s18">
+
+<span class="badge badge-obs">Observability</span>
+
+<h2 class="t">Database Patterns &amp; N+1</h2>
+
+<p class="intro">The N+1 query problem silently kills performance. Understanding eager loading, DataLoader batching, and connection pooling separates senior from junior backend developers.</p>
+
+
+
+<h3>The N+1 Problem</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// ❌ N+1: 1 query for users + N queries for each user's posts</span>
+
+<span class="kw">const</span> users = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">'SELECT * FROM users'</span>);  <span class="cm">// 1 query</span>
+
+<span class="kw">for</span> (<span class="kw">const</span> user <span class="kw">of</span> users) {
+
+  user.posts = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">'SELECT * FROM posts WHERE user_id = $1'</span>, [user.id]); <span class="cm">// N queries!</span>
+
+}
+
+
+
+<span class="cm">// ✅ Fix 1: JOIN (single query)</span>
+
+<span class="kw">const</span> result = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">`
+
+  SELECT u.*, json_agg(p.*) AS posts
+
+  FROM users u
+
+  LEFT JOIN posts p ON p.user_id = u.id
+
+  GROUP BY u.id
+
+`</span>);
+
+
+
+<span class="cm">// ✅ Fix 2: Batch query (DataLoader pattern)</span>
+
+<span class="kw">const</span> userIds = users.<span class="fn">map</span>(u => u.id);
+
+<span class="kw">const</span> posts = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">'SELECT * FROM posts WHERE user_id = ANY($1)'</span>, [userIds]);
+
+<span class="cm">// Then group posts by user_id in memory — 2 queries total</span></code></pre></div>
+
+
+
+<h3>Connection Pooling with pg</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> { Pool } <span class="kw">from</span> <span class="st">'pg'</span>;
+
+<span class="kw">const</span> pool = <span class="kw">new</span> <span class="fn">Pool</span>({
+
+  connectionString: process.env.DATABASE_URL,
+
+  max: <span class="nm">20</span>,          <span class="cm">// max connections in pool</span>
+
+  idleTimeoutMillis: <span class="nm">30000</span>,
+
+  connectionTimeoutMillis: <span class="nm">2000</span>
+
+});
+
+<span class="cm">// Always release connections — use pool.query() or client from pool.connect()</span></code></pre></div>
+
+
+
+<div class="qbox" id="q18">
+
+<h4>Q: What causes the N+1 problem and what is the most efficient solution?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q18','c')">A) Using async/await in database calls</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q18','c')">B) Using an ORM instead of raw SQL</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q18','c')">C) Fetching a list, then making one query per item for related data. Fix: use a JOIN or a single batch query to fetch all related data at once, then join in memory</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q18','c')">D) Having more than 100 rows in a result set</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! N+1 turns O(1) DB work into O(N). Use JOINs, batch queries, or DataLoader to reduce N queries to 1 or 2.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 19 ===== -->
+
+<div class="section" id="s19">
+
+<span class="badge badge-obs">Observability</span>
+
+<h2 class="t">OpenTelemetry &amp; Tracing</h2>
+
+<p class="intro">OpenTelemetry (OTel) is the CNCF standard for distributed traces, metrics, and logs. Instrumenting your Node.js service enables end-to-end visibility across microservices.</p>
+
+
+
+<h3>Auto-Instrumentation Setup</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// tracing.ts — must be the FIRST import (before express/pg/redis)</span>
+
+<span class="kw">import</span> { NodeSDK } <span class="kw">from</span> <span class="st">'@opentelemetry/sdk-node'</span>;
+
+<span class="kw">import</span> { OTLPTraceExporter } <span class="kw">from</span> <span class="st">'@opentelemetry/exporter-trace-otlp-http'</span>;
+
+<span class="kw">import</span> { getNodeAutoInstrumentations } <span class="kw">from</span> <span class="st">'@opentelemetry/auto-instrumentations-node'</span>;
+
+
+
+<span class="kw">const</span> sdk = <span class="kw">new</span> <span class="fn">NodeSDK</span>({
+
+  traceExporter: <span class="kw">new</span> <span class="fn">OTLPTraceExporter</span>({ url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT }),
+
+  instrumentations: [<span class="fn">getNodeAutoInstrumentations</span>()]
+
+});
+
+
+
+sdk.<span class="fn">start</span>();
+
+process.<span class="fn">on</span>(<span class="st">'SIGTERM'</span>, () => sdk.<span class="fn">shutdown</span>());
+
+
+
+<span class="cm">// server.ts — import tracing first!</span>
+
+<span class="kw">import</span> <span class="st">'./tracing'</span>;
+
+<span class="kw">import</span> app <span class="kw">from</span> <span class="st">'./app'</span>;</code></pre></div>
+
+
+
+<h3>Manual Span Creation</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> { trace } <span class="kw">from</span> <span class="st">'@opentelemetry/api'</span>;
+
+<span class="kw">const</span> tracer = trace.<span class="fn">getTracer</span>(<span class="st">'user-service'</span>);
+
+
+
+<span class="kw">async function</span> <span class="fn">processOrder</span>(orderId: string) {
+
+  <span class="kw">const</span> span = tracer.<span class="fn">startSpan</span>(<span class="st">'processOrder'</span>);
+
+  <span class="kw">try</span> {
+
+    span.<span class="fn">setAttributes</span>({ <span class="st">'order.id'</span>: orderId, <span class="st">'service.version'</span>: <span class="st">'1.2.0'</span> });
+
+    <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">doWork</span>(orderId);
+
+    <span class="kw">return</span> result;
+
+  } <span class="kw">catch</span> (err) {
+
+    span.<span class="fn">recordException</span>(err);
+
+    <span class="kw">throw</span> err;
+
+  } <span class="kw">finally</span> {
+
+    span.<span class="fn">end</span>();
+
+  }
+
+}</code></pre></div>
+
+
+
+<div class="qbox" id="q19">
+
+<h4>Q: Why must the OTel tracing setup be imported before all other modules?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q19','c')">A) It's a style convention only</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q19','c')">B) Node.js requires SDK initialization in alphabetical order</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q19','c')">C) Auto-instrumentation works by monkey-patching modules (http, pg, redis) at load time — if those modules load before the SDK, they won't be patched and spans won't be emitted</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q19','c')">D) The OTLP exporter requires an active HTTP connection before Express starts</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! OTel auto-instrumentation intercepts module loading via require hooks. Import tracing first, then your application code.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 20 ===== -->
+
+<div class="section" id="s20">
+
+<span class="badge badge-arch">Architecture</span>
+
+<h2 class="t">API Design Best Practices</h2>
+
+<p class="intro">Great API design is language-agnostic, but Node.js / Express teams face specific versioning, pagination, and error contract challenges that interviewers probe at the architect level.</p>
+
+
+
+<h3>REST API Checklist</h3>
+
+<table><thead><tr><th>Concern</th><th>Recommendation</th></tr></thead><tbody>
+
+<tr><td>Versioning</td><td>URL prefix <code>/api/v1/</code> or Accept header versioning</td></tr>
+
+<tr><td>Pagination</td><td>Cursor-based for large datasets; offset for small admin UIs</td></tr>
+
+<tr><td>Error format</td><td>Consistent <code>{ error, code, message, details? }</code></td></tr>
+
+<tr><td>Idempotency</td><td>Accept <code>Idempotency-Key</code> header on POST/PATCH</td></tr>
+
+<tr><td>Rate limits</td><td>Return <code>Retry-After</code> header with 429 responses</td></tr>
+
+</tbody></table>
+
+
+
+<h3>Cursor-based Pagination</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// GET /api/v1/users?cursor=xxx&amp;limit=20</span>
+
+router.<span class="fn">get</span>(<span class="st">'/users'</span>, <span class="fn">wrap</span>(<span class="kw">async</span> (req, res) => {
+
+  <span class="kw">const</span> limit = Math.<span class="fn">min</span>(Number(req.query.limit) || <span class="nm">20</span>, <span class="nm">100</span>);
+
+  <span class="kw">const</span> cursor = req.query.cursor <span class="kw">as</span> string;
+
+
+
+  <span class="kw">const</span> users = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">`
+
+    SELECT * FROM users
+
+    WHERE id > $1
+
+    ORDER BY id ASC LIMIT $2
+
+  `</span>, [cursor || <span class="nm">0</span>, limit + <span class="nm">1</span>]);  <span class="cm">// fetch one extra to detect hasNext</span>
+
+
+
+  <span class="kw">const</span> hasNext = users.length > limit;
+
+  <span class="kw">if</span> (hasNext) users.<span class="fn">pop</span>();
+
+
+
+  res.<span class="fn">json</span>({
+
+    data: users,
+
+    pagination: {
+
+      hasNext,
+
+      nextCursor: hasNext ? users[users.length - <span class="nm">1</span>].id : <span class="kw">null</span>
+
+    }
+
+  });
+
+}));</code></pre></div>
+
+
+
+<div class="qbox" id="q20">
+
+<h4>Q: Why is cursor-based pagination preferred over offset-based for large datasets?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q20','c')">A) Cursor pagination is easier to implement</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q20','c')">B) Offset pagination requires a Redis cache</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q20','c')">C) Offset pagination performs a full table scan up to the offset (O(n)); cursor pagination uses a WHERE clause on an indexed column making each page O(log n). Cursors also avoid duplicates when rows are inserted between pages.</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q20','c')">D) Cursor pagination supports random access to any page</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! <code>OFFSET 10000</code> tells the DB to scan and discard 10,000 rows — it's O(n). A WHERE clause on an indexed column is O(log n). Cursor pagination also handles live data insertion correctly.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 21 ===== -->
+
+<div class="section" id="s21">
+
+<span class="badge badge-arch">Architecture</span>
+
+<h2 class="t">Config &amp; Environment Management</h2>
+
+<p class="intro">Twelve-Factor App methodology mandates strict separation of config from code. Typed, validated configuration prevents an entire class of production incidents.</p>
+
+
+
+<h3>Typed Config with Zod</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// config.ts — validates all env vars at startup, fails fast if wrong</span>
+
+<span class="kw">import</span> { z } <span class="kw">from</span> <span class="st">'zod'</span>;
+
+
+
+<span class="kw">const</span> ConfigSchema = z.<span class="fn">object</span>({
+
+  NODE_ENV:     z.<span class="fn">enum</span>([<span class="st">'development'</span>, <span class="st">'test'</span>, <span class="st">'production'</span>]),
+
+  PORT:         z.<span class="fn">string</span>().<span class="fn">transform</span>(Number).<span class="fn">default</span>(<span class="st">'3000'</span>),
+
+  DATABASE_URL: z.<span class="fn">string</span>().<span class="fn">url</span>(),
+
+  REDIS_URL:    z.<span class="fn">string</span>().<span class="fn">url</span>(),
+
+  JWT_SECRET:   z.<span class="fn">string</span>().<span class="fn">min</span>(<span class="nm">32</span>),
+
+  LOG_LEVEL:    z.<span class="fn">enum</span>([<span class="st">'trace'</span>,<span class="st">'debug'</span>,<span class="st">'info'</span>,<span class="st">'warn'</span>,<span class="st">'error'</span>]).<span class="fn">default</span>(<span class="st">'info'</span>)
+
+});
+
+
+
+<span class="kw">export const</span> config = ConfigSchema.<span class="fn">parse</span>(process.env);
+
+<span class="cm">// ZodError at startup = explicit message about which env var is missing/invalid</span></code></pre></div>
+
+
+
+<div class="callout info"><div class="ct">Secret Management</div>Never commit <code>.env</code> files to version control. In Kubernetes: use Secrets mounted as env vars. In AWS: use Secrets Manager or Parameter Store and read at startup. Never hardcode secrets in code.</div>
+
+
+
+<div class="qbox" id="q21">
+
+<h4>Q: What is the benefit of validating environment variables at application startup?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q21','b')">A) It speeds up the startup time</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q21','b')">B) Missing or invalid config causes a clear error at startup rather than a confusing crash or silent misconfiguration in production — failing fast is always better than failing late</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q21','b')">C) Node.js requires this by default</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q21','b')">D) It encrypts the environment variables</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Fail-fast config validation surfaces deployment errors immediately (before traffic is served) rather than after the first request that needs the missing config value.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 22 ===== -->
+
+<div class="section" id="s22">
+
+<span class="badge badge-arch">Architecture</span>
+
+<h2 class="t">CI/CD &amp; Deployment Patterns</h2>
+
+<p class="intro">A robust CI/CD pipeline — lint, test, build, container scan, deploy — is table-stakes for senior Node.js engineers. Zero-downtime deployments are non-negotiable in production.</p>
+
+
+
+<h3>GitHub Actions Pipeline</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># .github/workflows/ci.yml</span>
+
+name: CI
+
+on: [push, pull_request]
+
+
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+
+        with: { node-version: '20', cache: 'npm' }
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm test -- --coverage
+
+      - run: npm run build
+
+
+
+  docker:
+
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Build &amp; push image
+
+        run: |
+
+          docker build -t registry.example.com/api:${{ github.sha }} .
+
+          docker push registry.example.com/api:${{ github.sha }}</code></pre></div>
+
+
+
+<h3>Zero-Downtime Kubernetes Rolling Update</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># deployment.yaml</span>
+
+strategy:
+
+  type: RollingUpdate
+
+  rollingUpdate:
+
+    maxSurge: 1        <span class="cm"># one extra pod during update</span>
+
+    maxUnavailable: 0  <span class="cm"># never take a pod down before new one is ready</span>
+
+readinessProbe:
+
+  httpGet: { path: /api/health, port: 3000 }
+
+  initialDelaySeconds: 5
+
+  periodSeconds: 5
+
+livenessProbe:
+
+  httpGet: { path: /api/health, port: 3000 }
+
+  initialDelaySeconds: 15
+
+  periodSeconds: 10</code></pre></div>
+
+
+
+<div class="qbox" id="q22">
+
+<h4>Q: What is the difference between a Kubernetes readiness probe and a liveness probe?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q22','c')">A) They are identical — only naming convention differs</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q22','c')">B) Liveness checks DB connectivity; readiness checks CPU</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q22','c')">C) Readiness: controls traffic routing — pod not ready = no traffic sent. Liveness: detects a hung process and restarts the container. Failing readiness removes from load balancer; failing liveness kills and restarts the pod.</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q22','c')">D) Readiness applies at cluster level; liveness at pod level</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Separate the concerns: readiness probe can check DB/Redis connectivity (is the app ready to serve?). Liveness probe should only check if the process is alive and not hung.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 23 ===== -->
+
+<div class="section" id="s23">
+
+<span class="badge badge-arch">Architecture</span>
+
+<h2 class="t">Performance Optimization</h2>
+
+<p class="intro">Node.js performance optimization spans the event loop, GC tuning, HTTP keep-alive, and payload compression — all of which have measurable impact on p99 latency at scale.</p>
+
+
+
+<h3>Performance Checklist</h3>
+
+<table><thead><tr><th>Area</th><th>Optimization</th></tr></thead><tbody>
+
+<tr><td>Event Loop</td><td>Keep CPU tasks &lt;10ms; offload to worker threads</td></tr>
+
+<tr><td>Serialization</td><td>Use fast-json-stringify for hot JSON paths</td></tr>
+
+<tr><td>HTTP</td><td>Enable <code>keep-alive</code> on outgoing HTTP clients</td></tr>
+
+<tr><td>Compression</td><td>Use <code>compression</code> middleware or CDN-level gzip/br</td></tr>
+
+<tr><td>GC</td><td>Set <code>--max-old-space-size</code> to container memory limit</td></tr>
+
+<tr><td>Connection pool</td><td>Size pool to CPU cores — 2–4</td></tr>
+
+</tbody></table>
+
+
+
+<h3>HTTP Agent Keep-Alive</h3>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> http <span class="kw">from</span> <span class="st">'http'</span>;
+
+<span class="kw">import</span> axios <span class="kw">from</span> <span class="st">'axios'</span>;
+
+
+
+<span class="cm">// ❌ Default: new TCP connection per request</span>
+
+<span class="cm">// ✅ Keep-alive: reuse connections, saves TCP + TLS handshake (~100ms/req)</span>
+
+<span class="kw">const</span> httpAgent = <span class="kw">new</span> http.<span class="fn">Agent</span>({ keepAlive: <span class="kw">true</span>, maxSockets: <span class="nm">50</span> });
+
+<span class="kw">const</span> client = axios.<span class="fn">create</span>({ httpAgent });
+
+
+
+<span class="cm">// autocannon — load test from CLI</span>
+
+<span class="cm">// npx autocannon -c 100 -d 30 http://localhost:3000/api/health</span></code></pre></div>
+
+
+
+<div class="qbox" id="q23">
+
+<h4>Q: What V8/Node.js flag should you always set in containerized environments?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q23','c')">A) <code>--harmony</code></div>
+
+<div class="qopt" data-val="b" onclick="quiz('q23','c')">B) <code>--expose-gc</code></div>
+
+<div class="qopt" data-val="c" onclick="quiz('q23','c')">C) <code>--max-old-space-size=&lt;MB&gt;</code> — set to the container's memory limit so V8's GC knows when to trigger collection instead of waiting for the OS OOM killer</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q23','c')">D) <code>--no-gc</code></div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! V8 defaults to a heap limit based on the system's total RAM. In a container with a memory limit, V8 may not detect the constraint and over-allocate, triggering the OOM killer rather than GC.</div>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="next()">Next &#8594;</button></div>
+
+</div>
+
+
+
+<!-- ===== SECTION 24 ===== -->
+
+<div class="section" id="s24">
+
+<span class="badge badge-arch">Architecture</span>
+
+<h2 class="t">Anti-patterns &amp; Wrap-up</h2>
+
+<p class="intro">Recognizing and articulating anti-patterns is what separates architects from coders. Interviewers often ask "what would you do differently?" — be ready with specific examples.</p>
+
+
+
+<h3>Top Node.js Anti-patterns</h3>
+
+<table><thead><tr><th>Anti-pattern</th><th>Problem</th><th>Fix</th></tr></thead><tbody>
+
+<tr><td>Blocking the event loop</td><td>Synchronous CPU in main thread halts all requests</td><td>Worker threads / setImmediate chunking</td></tr>
+
+<tr><td>Callback hell</td><td>Deeply nested callbacks — hard to read/debug</td><td>async/await + try/catch</td></tr>
+
+<tr><td>Missing error handling</td><td>Unhandled rejections crash the process</td><td>Global handlers + per-route asyncWrap</td></tr>
+
+<tr><td>Secrets in env files committed to git</td><td>Credential exposure</td><td>Use vault/secrets manager; .gitignore .env</td></tr>
+
+<tr><td>No connection pool limits</td><td>DB connection exhaustion under load</td><td>Set max pool size; monitor with metrics</td></tr>
+
+<tr><td>require() in hot paths</td><td>Module cache miss adds latency</td><td>Always require/import at top of file</td></tr>
+
+</tbody></table>
+
+
+
+<div class="callout info"><div class="ct">&#x1F3AF; Final Interview Tips</div>
+
+<ul>
+
+<li>Lead with tradeoffs — "I'd choose X over Y because..."</li>
+
+<li>Mention observability in every architecture answer (metrics, tracing, logs)</li>
+
+<li>Bring up security proactively (input validation, CORS, helmet)</li>
+
+<li>Reference the 12-factor app methodology for config/deployment questions</li>
+
+</ul></div>
+
+
+
+<div class="qbox" id="q24">
+
+<h4>Q: You see <code>require('fs')</code> inside a route handler that receives millions of requests/day. What's wrong?</h4>
+
+<div class="qopts">
+
+<div class="qopt" data-val="a" onclick="quiz('q24','b')">A) <code>fs</code> is not available in route handlers</div>
+
+<div class="qopt" data-val="b" onclick="quiz('q24','b')">B) While Node caches modules after the first require(), placing require() inside functions adds unnecessary property lookups and complicates static analysis. Top-level imports are zero-cost at call time and signal dependencies clearly.</div>
+
+<div class="qopt" data-val="c" onclick="quiz('q24','b')">C) It causes a memory leak</div>
+
+<div class="qopt" data-val="d" onclick="quiz('q24','b')">D) Nothing — Node.js module caching makes it equivalent</div>
+
+</div>
+
+<div class="qfb ok">&#x2713; Correct! Always hoist requires/imports to the top of the file. It's better for readability, static analysis tools, and avoids any edge-case cache misses. It's also the standard convention.</div>
+
+</div>
+
+
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0">
+
+<div class="callout" style="border-color:#56d364;background:#f0fdf4"><div class="ct" style="color:#166534">&#x1F389; Tutorial Complete!</div>
+
+You've covered all 25 sections from Node.js architecture to production deployment. Review <code>NodeJS/interview_qa.md</code> to practise articulating answers verbally.</div>
+
+<h3>Skills you can now demonstrate</h3>
+
+<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px">
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">Event Loop Phases</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">libuv Thread Pool</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">Streams &amp; Back-pressure</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">Worker Threads vs Cluster</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">Graceful Shutdown</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">OpenTelemetry</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">N+1 &amp; DataLoader</span>
+
+<span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">CI/CD &amp; k8s Probes</span>
+
+</div>
+
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">&#8592; Prev</button><button class="btn btn-p" onclick="goTo(0)">&#8635; Restart</button></div>
+
+</div>
+
+
+
+</main>
+
+</div>
+
+<script>
+
+const TOTAL=25;
+
+let cur=0,done=new Set();
+
+function goTo(i){
+
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+
+  document.getElementById('s'+i).classList.add('active');
+
+  document.getElementById('n'+i).classList.add('active');
+
+  done.add(cur);
+
+  document.getElementById('c'+cur).textContent='✓';
+
+  document.getElementById('n'+cur).classList.add('done');
+
+  cur=i;
+
+  updatePB();
+
+  window.scrollTo(0,0);
+
+}
+
+function updatePB(){
+
+  const p=Math.round(done.size/TOTAL*100);
+
+  document.getElementById('pb').style.width=p+'%';
+
+  document.getElementById('pbl').textContent=done.size+' of '+TOTAL+' completed';
+
+}
+
+function prev(){if(cur>0)goTo(cur-1);}
+
+function next(){if(cur<TOTAL-1)goTo(cur+1);}
+
+document.querySelectorAll('.cp').forEach(b=>{
+
+  b.addEventListener('click',()=>{
+
+    const pre=b.nextElementSibling;
+
+    const code=pre?pre.textContent:'';
+
+    navigator.clipboard.writeText(code).then(()=>{b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);});
+
+  });
+
+});
+
+function quiz(id,correct){
+
+  const box=document.getElementById(id);
+
+  box.querySelectorAll('.qopt').forEach(o=>{
+
+    o.classList.add('disabled');
+
+    if(o.dataset.val===correct)o.classList.add('correct');
+
+    else o.classList.add('wrong');
+
+  });
+
+  const fb=box.querySelector('.qfb');
+
+  if(fb)fb.classList.add('show');
+
+}
+
+</script>
+
+</body>
+
+</html>
+

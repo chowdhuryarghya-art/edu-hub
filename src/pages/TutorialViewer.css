@@ -1,0 +1,155 @@
+.tutorial-viewer-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+.tutorial-viewer-wrapper.fullscreen .viewer-navbar {
+  display: none;
+}
+
+/* Navbar */
+.viewer-navbar {
+  height: 52px;
+  background-color: #161b22;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.home-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.home-btn:hover {
+  background-color: #30363d;
+  color: #ffffff;
+}
+
+.track-title-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.track-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.track-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f0f6fc;
+}
+
+/* Track Switcher */
+.track-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0;
+}
+
+.track-pill {
+  padding: 4px 12px;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #8b949e;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.track-pill:hover {
+  background-color: #30363d;
+  color: #c9d1d9;
+}
+
+.track-pill.active {
+  font-weight: 700;
+}
+
+/* Nav Right */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.control-action-btn:hover {
+  background-color: #30363d;
+  color: #ffffff;
+}
+
+.control-action-btn.primary {
+  background-color: #238636;
+  border-color: #2ea043;
+  color: #ffffff;
+}
+
+.control-action-btn.primary:hover {
+  background-color: #2ea043;
+}
+
+/* Iframe */
+.viewer-frame-container {
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 52px);
+  position: relative;
+  background-color: #ffffff;
+}
+
+.tutorial-viewer-wrapper.fullscreen .viewer-frame-container {
+  height: 100vh;
+}
+
+.tutorial-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}

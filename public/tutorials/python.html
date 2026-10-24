@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python – Senior/Architect Interview Prep</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f7f8fa;color:#1f2328;font-size:15px;line-height:1.7}
+#app{display:flex;min-height:100vh}
+#sidebar{width:280px;min-width:280px;background:#1e2330;color:#c9d1d9;position:sticky;top:0;height:100vh;overflow-y:auto;padding:0 0 40px}
+#main{flex:1;max-width:900px;padding:40px 48px 100px;overflow-x:hidden}
+#sidebar-header{padding:20px 20px 14px;border-bottom:1px solid #30363d}
+#sidebar-header h1{font-size:14px;font-weight:700;color:#e6edf3}
+#sidebar-header p{font-size:11px;color:#8b949e;margin-top:2px}
+.pb-wrap{margin:8px 20px 0;background:#30363d;border-radius:4px;height:5px}
+.pb-fill{height:5px;background:#3b82d4;border-radius:4px;transition:width .4s ease;width:0%}
+.pb-label{font-size:11px;color:#8b949e;padding:3px 20px 0}
+.nav-section{padding:12px 20px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8b949e}
+.nav-item{display:flex;align-items:center;gap:7px;padding:6px 20px;cursor:pointer;font-size:12.5px;color:#8b949e;border-left:3px solid transparent;transition:background .12s,color .12s}
+.nav-item:hover{background:#2d333b;color:#e6edf3}
+.nav-item.active{background:#2d333b;color:#79c0ff;border-left-color:#3b82d4}
+.nav-item.done .ck{color:#3fb950}
+.nav-item .ck{font-size:11px;min-width:13px}
+.nav-item .num{font-size:10px;background:#30363d;border-radius:10px;padding:1px 5px;min-width:20px;text-align:center}
+.nav-item.active .num{background:#1f6feb;color:#fff}
+.section{display:none;animation:fadeIn .2s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-amber{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}
+h2.t{font-size:25px;font-weight:800;margin-bottom:5px}
+.intro{color:#57606a;margin-bottom:26px;font-size:15px}
+h3{font-size:16px;font-weight:700;margin:26px 0 7px;color:#1f2328}
+h4{font-size:14px;font-weight:700;margin:16px 0 5px;color:#444d56}
+p{margin-bottom:11px}ul,ol{padding-left:22px;margin-bottom:11px}li{margin-bottom:4px}
+strong{color:#1f2328}
+.cw{position:relative;margin:12px 0}
+pre{background:#161b22;color:#e6edf3;border-radius:8px;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.6;border:1px solid #30363d}
+code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+pre code{background:none;padding:0}
+p code,li code{background:#f0f2f5;color:#d63384;padding:1px 5px;border-radius:4px;font-size:12.5px;font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+.cp{position:absolute;top:7px;right:9px;background:#30363d;color:#8b949e;border:none;border-radius:5px;padding:2px 9px;font-size:11px;cursor:pointer}
+.cp:hover{background:#444d56;color:#e6edf3}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}.nm{color:#79c0ff}.dc{color:#ffa657}.bl{color:#56d364}.op{color:#ff7b72}
+.callout{border-left:4px solid #3b82d4;background:#eff6ff;padding:11px 15px;border-radius:0 6px 6px 0;margin:14px 0;font-size:14px}
+.callout.warn{border-color:#f59e0b;background:#fffbeb}
+.callout.danger{border-color:#ef4444;background:#fef2f2}
+.callout.success{border-color:#10b981;background:#ecfdf5}
+.ct{font-weight:700;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#1d4ed8}
+.callout.warn .ct{color:#92400e}.callout.danger .ct{color:#991b1b}.callout.success .ct{color:#065f46}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th{background:#f0f2f5;text-align:left;padding:8px 13px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;border:1px solid #e5e7eb}
+td{padding:8px 13px;border:1px solid #e5e7eb;vertical-align:top}
+tr:nth-child(even) td{background:#fafafa}
+.qbox{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px 22px;margin:22px 0}
+.qbox h4{margin-top:0;font-size:14.5px}
+.qopts{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.qopt{padding:9px 13px;border:2px solid #e5e7eb;border-radius:7px;cursor:pointer;font-size:13.5px;transition:border-color .12s,background .12s}
+.qopt:hover{border-color:#3b82d4;background:#eff6ff}
+.qopt.correct{border-color:#10b981;background:#ecfdf5}
+.qopt.wrong{border-color:#ef4444;background:#fef2f2}
+.qopt.disabled{pointer-events:none}
+.qfb{margin-top:10px;font-size:13.5px;padding:9px 13px;border-radius:7px;display:none}
+.qfb.show{display:block}
+.qfb.ok{background:#ecfdf5;color:#065f46}
+.qfb.bad{background:#fef2f2;color:#991b1b}
+.nav-btns{display:flex;gap:10px;margin-top:38px;padding-top:22px;border-top:1px solid #e5e7eb}
+.btn{padding:8px 20px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:background .12s}
+.btn-p{background:#1d4ed8;color:#fff}.btn-p:hover{background:#1e40af}
+.btn-s{background:#f0f2f5;color:#444d56;border:1px solid #e5e7eb}.btn-s:hover{background:#e5e7eb}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{background:#f0f2f5;color:#57606a;border:1px solid #e5e7eb;border-radius:20px;padding:3px 11px;font-size:12px;font-weight:600}
+.diagram{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 18px;margin:14px 0;font-family:"Cascadia Code",monospace;font-size:12px;color:#8b949e;line-height:1.8;overflow-x:auto;white-space:pre}
+.diagram .hl{color:#79c0ff}.diagram .hl2{color:#56d364}.diagram .hl3{color:#ffa657}
+.ti{display:inline-block;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:5px;vertical-align:middle}
+hr.div{border:none;border-top:1px solid #e5e7eb;margin:28px 0}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
+@media(max-width:768px){#sidebar{display:none}#main{padding:22px 16px 60px}}
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+<div id="sidebar-header">
+  <h1>🐍 Python — Senior/Architect</h1>
+  <p>Complete Interview Preparation</p>
+  <div class="pb-wrap"><div class="pb-fill" id="pb"></div></div>
+  <div class="pb-label" id="pbl">0 of 28 completed</div>
+</div>
+<div class="nav-section">Track 1 · Foundations</div>
+<div class="nav-item active" onclick="goTo(0)" id="n0"><span class="ck" id="c0">○</span><span class="num">1</span>Welcome &amp; Setup</div>
+<div class="nav-item" onclick="goTo(1)" id="n1"><span class="ck" id="c1">○</span><span class="num">2</span>Variables &amp; Types</div>
+<div class="nav-item" onclick="goTo(2)" id="n2"><span class="ck" id="c2">○</span><span class="num">3</span>Control Flow</div>
+<div class="nav-item" onclick="goTo(3)" id="n3"><span class="ck" id="c3">○</span><span class="num">4</span>Functions Deep Dive</div>
+<div class="nav-item" onclick="goTo(4)" id="n4"><span class="ck" id="c4">○</span><span class="num">5</span>Collections &amp; Data Structures</div>
+<div class="nav-item" onclick="goTo(5)" id="n5"><span class="ck" id="c5">○</span><span class="num">6</span>Error Handling &amp; Logging</div>
+<div class="nav-item" onclick="goTo(6)" id="n6"><span class="ck" id="c6">○</span><span class="num">7</span>Modules &amp; Packages</div>
+<div class="nav-section">Track 2 · OOP</div>
+<div class="nav-item" onclick="goTo(7)" id="n7"><span class="ck" id="c7">○</span><span class="num">8</span>Classes &amp; OOP</div>
+<div class="nav-item" onclick="goTo(8)" id="n8"><span class="ck" id="c8">○</span><span class="num">9</span>Decorators &amp; Method Types</div>
+<div class="nav-item" onclick="goTo(9)" id="n9"><span class="ck" id="c9">○</span><span class="num">10</span>Descriptors &amp; Properties</div>
+<div class="nav-item" onclick="goTo(10)" id="n10"><span class="ck" id="c10">○</span><span class="num">11</span>MRO &amp; Metaclasses</div>
+<div class="nav-item" onclick="goTo(11)" id="n11"><span class="ck" id="c11">○</span><span class="num">12</span>Design Patterns</div>
+<div class="nav-section">Track 3 · Advanced Python</div>
+<div class="nav-item" onclick="goTo(12)" id="n12"><span class="ck" id="c12">○</span><span class="num">13</span>Generators &amp; Iterators</div>
+<div class="nav-item" onclick="goTo(13)" id="n13"><span class="ck" id="c13">○</span><span class="num">14</span>Context Managers</div>
+<div class="nav-item" onclick="goTo(14)" id="n14"><span class="ck" id="c14">○</span><span class="num">15</span>Threading &amp; Multiprocessing</div>
+<div class="nav-item" onclick="goTo(15)" id="n15"><span class="ck" id="c15">○</span><span class="num">16</span>Asyncio &amp; Async Patterns</div>
+<div class="nav-item" onclick="goTo(16)" id="n16"><span class="ck" id="c16">○</span><span class="num">17</span>Memory Management &amp; GIL</div>
+<div class="nav-item" onclick="goTo(17)" id="n17"><span class="ck" id="c17">○</span><span class="num">18</span>Dataclasses &amp; Pydantic</div>
+<div class="nav-section">Track 4 · Testing &amp; Quality</div>
+<div class="nav-item" onclick="goTo(18)" id="n18"><span class="ck" id="c18">○</span><span class="num">19</span>Testing with pytest</div>
+<div class="nav-item" onclick="goTo(19)" id="n19"><span class="ck" id="c19">○</span><span class="num">20</span>Mocking &amp; Test Doubles</div>
+<div class="nav-item" onclick="goTo(20)" id="n20"><span class="ck" id="c20">○</span><span class="num">21</span>Code Quality &amp; Tooling</div>
+<div class="nav-section">Track 5 · Production</div>
+<div class="nav-item" onclick="goTo(21)" id="n21"><span class="ck" id="c21">○</span><span class="num">22</span>Performance Profiling</div>
+<div class="nav-item" onclick="goTo(22)" id="n22"><span class="ck" id="c22">○</span><span class="num">23</span>Security Best Practices</div>
+<div class="nav-item" onclick="goTo(23)" id="n23"><span class="ck" id="c23">○</span><span class="num">24</span>Database Patterns &amp; SQLAlchemy</div>
+<div class="nav-item" onclick="goTo(24)" id="n24"><span class="ck" id="c24">○</span><span class="num">25</span>API Development (FastAPI)</div>
+<div class="nav-item" onclick="goTo(25)" id="n25"><span class="ck" id="c25">○</span><span class="num">26</span>Observability: Logs, Metrics, Traces</div>
+<div class="nav-section">Track 6 · Architecture</div>
+<div class="nav-item" onclick="goTo(26)" id="n26"><span class="ck" id="c26">○</span><span class="num">27</span>Architecture Patterns at Scale</div>
+<div class="nav-item" onclick="goTo(27)" id="n27"><span class="ck" id="c27">○</span><span class="num">28</span>Anti-patterns &amp; Wrap-up</div>
+</nav>
+<main id="main">
+
+<!-- ===== SECTION 0 ===== -->
+<div class="section active" id="s0">
+<span class="badge badge-blue">Welcome</span>
+<h2 class="t">Welcome &amp; Setup</h2>
+<p class="intro">Get your Python environment production-ready and understand what interviewers expect from senior candidates.</p>
+
+<h3>Python Version Landscape</h3>
+<p>Senior interviews focus on <strong>Python 3.10+</strong>. Know the headline features per version:</p>
+<table><thead><tr><th>Version</th><th>Key Feature</th></tr></thead><tbody>
+<tr><td>3.10</td><td><code>match</code>/<code>case</code> structural pattern matching, better error messages</td></tr>
+<tr><td>3.11</td><td>~25% speed boost, <code>tomllib</code>, <code>asyncio.timeout()</code>, fine-grained error locations</td></tr>
+<tr><td>3.12</td><td>Type parameter syntax (<code>type X = …</code>), improved f-strings, <code>@override</code></td></tr>
+<tr><td>3.13</td><td>Free-threaded mode (no-GIL experimental), JIT compiler preview</td></tr>
+</tbody></table>
+
+<h3>Environment Setup</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Install pyenv (manage multiple Python versions)</span>
+curl https://pyenv.run | bash
+pyenv install 3.12.3
+pyenv global 3.12.3
+
+<span class="cm"># Virtual environments</span>
+python -m venv .venv
+source .venv/bin/activate      <span class="cm"># Linux/macOS</span>
+.venv\Scripts\Activate.ps1     <span class="cm"># Windows PowerShell</span>
+
+<span class="cm"># Modern dependency management with Poetry</span>
+pip install poetry
+poetry new my-project
+poetry add fastapi uvicorn
+poetry add --group dev pytest ruff mypy</code></pre></div>
+
+<h3>Project Structure (Production)</h3>
+<div class="diagram"><span class="hl">my-service/</span>
+├── <span class="hl2">src/my_service/</span>      # importable package
+│   ├── __init__.py
+│   ├── main.py
+│   ├── models/
+│   ├── services/
+│   └── repositories/
+├── <span class="hl3">tests/</span>
+│   ├── conftest.py
+│   ├── unit/
+│   └── integration/
+├── pyproject.toml
+├── Dockerfile
+└── .env.example</div>
+
+<div class="callout"><div class="ct">Interview Tip</div>Interviewers expect you to know <strong>why</strong> you choose venv vs Poetry vs pipenv. Poetry wins for complex projects (lock files, build system, publish). venv wins for simplicity. Never use system Python for projects.</div>
+
+<div class="qbox" id="q0">
+<h4>Q: The walrus operator <code>:=</code> was introduced in Python…</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q0','b')">A) Python 3.7</div>
+<div class="qopt" data-val="b" onclick="quiz('q0','b')">B) Python 3.8</div>
+<div class="qopt" data-val="c" onclick="quiz('q0','b')">C) Python 3.9</div>
+<div class="qopt" data-val="d" onclick="quiz('q0','b')">D) Python 3.10</div>
+</div>
+<div class="qfb ok">✓ Correct! PEP 572 introduced the assignment expression (walrus) operator <code>:=</code> in Python 3.8.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 1 ===== -->
+<div class="section" id="s1">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Variables &amp; Types</h2>
+<p class="intro">Python's dynamic type system combined with modern type hints gives you the best of both worlds — flexibility and IDE-level safety.</p>
+
+<h3>Type System Basics</h3>
+<p>Python is <strong>dynamically typed</strong> (types resolved at runtime) and <strong>strongly typed</strong> (no implicit coercion between unrelated types). Use <code>type(x)</code> and <code>isinstance(x, T)</code> for runtime checks.</p>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Type hints (PEP 484 / 526 / 604)</span>
+<span class="kw">from</span> __future__ <span class="kw">import</span> annotations  <span class="cm"># PEP 563: postponed evaluation</span>
+<span class="kw">from</span> typing <span class="kw">import</span> Union, Optional
+
+<span class="cm"># Modern union syntax (Python 3.10+)</span>
+<span class="kw">def</span> <span class="fn">process</span>(value: <span class="nm">int</span> | <span class="nm">str</span> | <span class="bl">None</span>) -&gt; <span class="nm">str</span>:
+    <span class="kw">return</span> <span class="nm">str</span>(value)
+
+<span class="cm"># Walrus operator — assign and test in one expression</span>
+data = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]
+<span class="kw">if</span> (n := <span class="nm">len</span>(data)) &gt; <span class="nm">3</span>:
+    <span class="nm">print</span>(<span class="st">f"List has </span><span class="nm">{n}</span><span class="st"> elements"</span>)
+
+<span class="cm"># is vs == — identity vs equality</span>
+a = [<span class="nm">1</span>, <span class="nm">2</span>]; b = [<span class="nm">1</span>, <span class="nm">2</span>]
+<span class="nm">print</span>(a == b)   <span class="cm"># True  — same value</span>
+<span class="nm">print</span>(a <span class="kw">is</span> b)   <span class="cm"># False — different objects</span>
+<span class="nm">print</span>(<span class="nm">id</span>(a), <span class="nm">id</span>(b))
+
+<span class="cm"># String interning — small strings/ints are cached</span>
+x = <span class="st">"hello"</span>; y = <span class="st">"hello"</span>
+<span class="nm">print</span>(x <span class="kw">is</span> y)   <span class="cm"># True (interned)</span></code></pre></div>
+
+<h3>Mutability</h3>
+<table><thead><tr><th>Mutable</th><th>Immutable</th></tr></thead><tbody>
+<tr><td>list, dict, set, bytearray</td><td>int, float, str, tuple, frozenset, bytes</td></tr>
+</tbody></table>
+<div class="callout warn"><div class="ct">Gotcha</div>Tuples containing mutable objects are <em>not</em> truly immutable — the tuple itself can't be reassigned, but its mutable contents can be modified.</div>
+
+<div class="qbox" id="q1">
+<h4>Q: Which statement about f-strings is true?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q1','c')">A) f-strings are slower than <code>.format()</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q1','c')">B) f-strings cannot call functions</div>
+<div class="qopt" data-val="c" onclick="quiz('q1','c')">C) f-strings are faster than <code>.format()</code> and <code>%</code> formatting</div>
+<div class="qopt" data-val="d" onclick="quiz('q1','c')">D) f-strings were introduced in Python 3.9</div>
+</div>
+<div class="qfb ok">✓ Correct! f-strings (PEP 498, Python 3.6) are the fastest string formatting method as they are evaluated at parse time.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 2 ===== -->
+<div class="section" id="s2">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Control Flow</h2>
+<p class="intro">Python 3.10's structural pattern matching is a game-changer for complex dispatch logic — expect interview questions on it.</p>
+
+<h3>match / case (Python 3.10+)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">match</span> command:
+    <span class="kw">case</span> {<span class="st">"action"</span>: <span class="st">"quit"</span>}:
+        quit_game()
+    <span class="kw">case</span> {<span class="st">"action"</span>: action, <span class="st">"target"</span>: target}:
+        handle(action, target)
+    <span class="kw">case</span> [x, y]:           <span class="cm"># sequence pattern</span>
+        move(x, y)
+    <span class="kw">case</span> Point(x=<span class="nm">0</span>, y=<span class="nm">0</span>):  <span class="cm"># class pattern</span>
+        origin()
+    <span class="kw">case</span> _:               <span class="cm"># wildcard</span>
+        unknown()</code></pre></div>
+
+<h3>Comprehensions</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># List comprehension with condition</span>
+evens = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="bl">range</span>(<span class="nm">20</span>) <span class="kw">if</span> x % <span class="nm">2</span> == <span class="nm">0</span>]
+
+<span class="cm"># Dict comprehension</span>
+inv = {v: k <span class="kw">for</span> k, v <span class="kw">in</span> original.items()}
+
+<span class="cm"># Generator expression — lazy, memory-efficient</span>
+total = <span class="bl">sum</span>(x*x <span class="kw">for</span> x <span class="kw">in</span> <span class="bl">range</span>(<span class="nm">1_000_000</span>))
+
+<span class="cm"># Nested comprehension</span>
+flat = [item <span class="kw">for</span> sub <span class="kw">in</span> matrix <span class="kw">for</span> item <span class="kw">in</span> sub]
+
+<span class="cm"># for/else — else runs if loop NOT broken</span>
+<span class="kw">for</span> item <span class="kw">in</span> collection:
+    <span class="kw">if</span> condition(item):
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    not_found()</code></pre></div>
+
+<div class="callout"><div class="ct">Senior Insight</div>Prefer generator expressions over list comprehensions when you only need to iterate once — they use O(1) memory instead of O(n).</div>
+
+<div class="qbox" id="q2">
+<h4>Q: Structural pattern matching (<code>match</code>/<code>case</code>) was introduced in Python…</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q2','a')">A) Python 3.10</div>
+<div class="qopt" data-val="b" onclick="quiz('q2','a')">B) Python 3.9</div>
+<div class="qopt" data-val="c" onclick="quiz('q2','a')">C) Python 3.11</div>
+<div class="qopt" data-val="d" onclick="quiz('q2','a')">D) Python 3.8</div>
+</div>
+<div class="qfb ok">✓ Correct! PEP 634 introduced structural pattern matching in Python 3.10.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 3 ===== -->
+<div class="section" id="s3">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Functions Deep Dive</h2>
+<p class="intro">Python functions are first-class objects — master closures, argument patterns, and functional tools to write clean, reusable code.</p>
+
+<h3>Argument Patterns</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Positional-only (/) and keyword-only (*) parameters</span>
+<span class="kw">def</span> <span class="fn">create_user</span>(name, age, /, *, role=<span class="st">"user"</span>, active=<span class="bl">True</span>):
+    <span class="cm"># name, age: positional-only (can't use create_user(name="Alice"))</span>
+    <span class="cm"># role, active: keyword-only (must use create_user("Alice", 30, role="admin"))</span>
+    <span class="kw">return</span> {<span class="st">"name"</span>: name, <span class="st">"age"</span>: age, <span class="st">"role"</span>: role}
+
+<span class="cm"># *args and **kwargs</span>
+<span class="kw">def</span> <span class="fn">log</span>(*args, **kwargs):
+    <span class="nm">print</span>(<span class="st">" "</span>.join(<span class="nm">str</span>(a) <span class="kw">for</span> a <span class="kw">in</span> args), kwargs)</code></pre></div>
+
+<h3>Closures &amp; LEGB Rule</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># LEGB: Local → Enclosing → Global → Built-in</span>
+<span class="kw">def</span> <span class="fn">make_counter</span>(start=<span class="nm">0</span>):
+    count = start          <span class="cm"># Enclosing scope</span>
+    <span class="kw">def</span> <span class="fn">increment</span>(step=<span class="nm">1</span>):
+        <span class="kw">nonlocal</span> count    <span class="cm"># modify enclosing variable</span>
+        count += step
+        <span class="kw">return</span> count
+    <span class="kw">return</span> increment
+
+counter = make_counter(<span class="nm">10</span>)
+<span class="nm">print</span>(counter())   <span class="cm"># 11</span>
+<span class="nm">print</span>(counter(<span class="nm">5</span>)) <span class="cm"># 16</span></code></pre></div>
+
+<h3>functools Toolkit</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> functools <span class="kw">import</span> lru_cache, partial, wraps
+
+<span class="cm"># LRU cache — memoization</span>
+<span class="dc">@lru_cache</span>(maxsize=<span class="nm">128</span>)
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">if</span> n &lt; <span class="nm">2</span>: <span class="kw">return</span> n
+    <span class="kw">return</span> fib(n-<span class="nm">1</span>) + fib(n-<span class="nm">2</span>)
+
+<span class="cm"># partial — freeze some arguments</span>
+power_of_2 = partial(<span class="nm">pow</span>, <span class="nm">2</span>)
+<span class="nm">print</span>(power_of_2(<span class="nm">10</span>))  <span class="cm"># 1024</span>
+
+<span class="cm"># wraps — preserve metadata in decorators</span>
+<span class="kw">def</span> <span class="fn">my_decorator</span>(func):
+    <span class="dc">@wraps</span>(func)
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+        <span class="nm">print</span>(<span class="st">"before"</span>)
+        result = func(*args, **kwargs)
+        <span class="nm">print</span>(<span class="st">"after"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper</code></pre></div>
+
+<div class="qbox" id="q3">
+<h4>Q: What does LEGB stand for in Python's scoping rules?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q3','b')">A) Local, External, Global, Base</div>
+<div class="qopt" data-val="b" onclick="quiz('q3','b')">B) Local, Enclosing, Global, Built-in</div>
+<div class="qopt" data-val="c" onclick="quiz('q3','b')">C) Lexical, Enclosing, Global, Built-in</div>
+<div class="qopt" data-val="d" onclick="quiz('q3','b')">D) Local, Execution, Global, Built-in</div>
+</div>
+<div class="qfb ok">✓ Correct! LEGB = Local → Enclosing → Global → Built-in — Python searches scopes in this order.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 4 ===== -->
+<div class="section" id="s4">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Collections &amp; Data Structures</h2>
+<p class="intro">Knowing which collection to use — and its time complexity — separates senior developers from juniors in whiteboard interviews.</p>
+
+<h3>Built-in Collections</h3>
+<table><thead><tr><th>Type</th><th>Ordered</th><th>Mutable</th><th>Unique</th><th>Use Case</th></tr></thead><tbody>
+<tr><td>list</td><td>✓</td><td>✓</td><td>✗</td><td>Sequence, stack, queue</td></tr>
+<tr><td>tuple</td><td>✓</td><td>✗</td><td>✗</td><td>Immutable record, dict key</td></tr>
+<tr><td>dict</td><td>✓ (3.7+)</td><td>✓</td><td>keys only</td><td>Hash map, caching</td></tr>
+<tr><td>set</td><td>✗</td><td>✓</td><td>✓</td><td>Dedup, membership O(1)</td></tr>
+<tr><td>frozenset</td><td>✗</td><td>✗</td><td>✓</td><td>Hashable set (dict key)</td></tr>
+</tbody></table>
+
+<h3>collections Module</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> collections <span class="kw">import</span> deque, Counter, defaultdict, OrderedDict, namedtuple
+
+<span class="cm"># deque — O(1) appendleft/popleft (list is O(n)!)</span>
+q = deque(maxlen=<span class="nm">5</span>)
+q.append(<span class="nm">1</span>); q.appendleft(<span class="nm">0</span>)
+
+<span class="cm"># Counter — frequency map</span>
+c = Counter(<span class="st">"mississippi"</span>)
+<span class="nm">print</span>(c.most_common(<span class="nm">3</span>))  <span class="cm"># [('s', 4), ('i', 4), ('p', 2)]</span>
+
+<span class="cm"># defaultdict — no KeyError on missing keys</span>
+graph = defaultdict(<span class="nm">list</span>)
+graph[<span class="st">"a"</span>].append(<span class="st">"b"</span>)
+
+<span class="cm"># namedtuple — lightweight immutable record</span>
+Point = namedtuple(<span class="st">"Point"</span>, [<span class="st">"x"</span>, <span class="st">"y"</span>])
+p = Point(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="nm">print</span>(p.x, p.y)  <span class="cm"># 3 4</span></code></pre></div>
+
+<h3>Time Complexity Cheatsheet</h3>
+<table><thead><tr><th>Operation</th><th>list</th><th>dict/set</th><th>deque</th></tr></thead><tbody>
+<tr><td>append/add</td><td>O(1)*</td><td>O(1)*</td><td>O(1)</td></tr>
+<tr><td>insert(0, x)</td><td>O(n)</td><td>—</td><td>O(1)</td></tr>
+<tr><td>lookup [k]</td><td>O(1)</td><td>O(1)*</td><td>O(n)</td></tr>
+<tr><td>in operator</td><td>O(n)</td><td>O(1)*</td><td>O(n)</td></tr>
+<tr><td>delete</td><td>O(n)</td><td>O(1)*</td><td>O(1) ends</td></tr>
+</tbody></table>
+
+<div class="qbox" id="q4">
+<h4>Q: What is the time complexity of <code>appendleft()</code> on a <code>collections.deque</code>?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q4','c')">A) O(n)</div>
+<div class="qopt" data-val="b" onclick="quiz('q4','c')">B) O(log n)</div>
+<div class="qopt" data-val="c" onclick="quiz('q4','c')">C) O(1)</div>
+<div class="qopt" data-val="d" onclick="quiz('q4','c')">D) O(n log n)</div>
+</div>
+<div class="qfb ok">✓ Correct! deque is implemented as a doubly-linked list of fixed-size blocks, giving O(1) for both ends.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 5 ===== -->
+<div class="section" id="s5">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Error Handling &amp; Logging</h2>
+<p class="intro">Proper error handling and structured logging are non-negotiable in production systems — senior engineers know the full exception hierarchy.</p>
+
+<h3>Exception Hierarchy</h3>
+<div class="diagram">BaseException
+ ├── SystemExit
+ ├── KeyboardInterrupt
+ ├── GeneratorExit
+ └── <span class="hl">Exception</span>
+      ├── <span class="hl2">ValueError, TypeError, KeyError, IndexError</span>
+      ├── OSError (IOError, FileNotFoundError…)
+      ├── RuntimeError (RecursionError…)
+      └── <span class="hl3">Custom exceptions (inherit from Exception)</span></div>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Full try/except/else/finally pattern</span>
+<span class="kw">try</span>:
+    result = risky_operation()
+<span class="kw">except</span> (ValueError, TypeError) <span class="kw">as</span> e:
+    logger.error(<span class="st">"Validation failed"</span>, extra={<span class="st">"error"</span>: <span class="nm">str</span>(e)})
+    <span class="kw">raise</span>
+<span class="kw">except</span> Exception <span class="kw">as</span> e:
+    <span class="kw">raise</span> RuntimeError(<span class="st">"Unexpected error"</span>) <span class="kw">from</span> e  <span class="cm"># chaining</span>
+<span class="kw">else</span>:
+    process(result)   <span class="cm"># runs only if no exception</span>
+<span class="kw">finally</span>:
+    cleanup()         <span class="cm"># always runs</span>
+
+<span class="cm"># Custom exceptions with context</span>
+<span class="kw">class</span> <span class="fn">UserNotFoundError</span>(Exception):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, user_id: <span class="nm">int</span>):
+        <span class="nm">self</span>.user_id = user_id
+        <span class="nm">super</span>().__init__(<span class="st">f"User </span><span class="nm">{user_id}</span><span class="st"> not found"</span>)</code></pre></div>
+
+<h3>Structured Logging</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> logging
+<span class="kw">import</span> json
+
+<span class="cm"># Configure JSON structured logging</span>
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="st">'{"time":"%(asctime)s","level":"%(levelname)s","msg":"%(message)s"}'</span>
+)
+logger = logging.getLogger(__name__)
+
+<span class="cm"># Always use extra dict — never embed secrets in messages</span>
+logger.info(<span class="st">"Request processed"</span>, extra={
+    <span class="st">"user_id"</span>: user_id,
+    <span class="st">"duration_ms"</span>: duration,
+    <span class="st">"endpoint"</span>: <span class="st">"/api/v1/users"</span>
+})</code></pre></div>
+
+<div class="callout danger"><div class="ct">Security</div>Never log passwords, tokens, PII, or credit card numbers. Use <code>extra={}</code> with structured fields, not f-strings that embed sensitive data.</div>
+
+<div class="qbox" id="q5">
+<h4>Q: What is the default logging level in Python's <code>logging</code> module?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q5','a')">A) WARNING</div>
+<div class="qopt" data-val="b" onclick="quiz('q5','a')">B) INFO</div>
+<div class="qopt" data-val="c" onclick="quiz('q5','a')">C) DEBUG</div>
+<div class="qopt" data-val="d" onclick="quiz('q5','a')">D) ERROR</div>
+</div>
+<div class="qfb ok">✓ Correct! The default level is WARNING — messages below WARNING (DEBUG, INFO) are not shown unless explicitly configured.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 6 ===== -->
+<div class="section" id="s6">
+<span class="badge badge-blue">Foundations</span>
+<h2 class="t">Modules &amp; Packages</h2>
+<p class="intro">Understanding Python's import system is essential for building large applications and avoiding circular import nightmares.</p>
+
+<h3>Import System</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Absolute import (preferred)</span>
+<span class="kw">from</span> mypackage.services.auth <span class="kw">import</span> AuthService
+
+<span class="cm"># Relative import (within same package)</span>
+<span class="kw">from</span> . <span class="kw">import</span> utils
+<span class="kw">from</span> ..models <span class="kw">import</span> User
+
+<span class="cm"># __all__ — controls public API for "from module import *"</span>
+__all__ = [<span class="st">"PublicClass"</span>, <span class="st">"public_function"</span>]
+
+<span class="cm"># Lazy import with importlib</span>
+<span class="kw">import</span> importlib
+heavy_module = importlib.import_module(<span class="st">"heavy_lib"</span>)
+
+<span class="cm"># Guard against running as script</span>
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    main()</code></pre></div>
+
+<h3>Fixing Circular Imports</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Pattern 1: Move import inside the function</span>
+<span class="kw">def</span> <span class="fn">get_service</span>():
+    <span class="kw">from</span> .services <span class="kw">import</span> MyService  <span class="cm"># deferred import</span>
+    <span class="kw">return</span> MyService()
+
+<span class="cm"># Pattern 2: TYPE_CHECKING guard (only for type hints)</span>
+<span class="kw">from</span> typing <span class="kw">import</span> TYPE_CHECKING
+<span class="kw">if</span> TYPE_CHECKING:
+    <span class="kw">from</span> .models <span class="kw">import</span> User  <span class="cm"># not imported at runtime</span></code></pre></div>
+
+<div class="callout warn"><div class="ct">Architecture Tip</div>Circular imports are usually a sign of poor module boundaries. Refactor shared types into a separate <code>types.py</code> or <code>interfaces.py</code> module.</div>
+
+<div class="qbox" id="q6">
+<h4>Q: What does <code>__all__</code> control in a Python module?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q6','d')">A) Which classes can be subclassed</div>
+<div class="qopt" data-val="b" onclick="quiz('q6','d')">B) The order in which functions are executed</div>
+<div class="qopt" data-val="c" onclick="quiz('q6','d')">C) Which names are type-checked by mypy</div>
+<div class="qopt" data-val="d" onclick="quiz('q6','d')">D) What <code>from module import *</code> exports</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>__all__</code> is a list of public names exported when <code>from module import *</code> is used.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 7 ===== -->
+<div class="section" id="s7">
+<span class="badge badge-purple">OOP</span>
+<h2 class="t">Classes &amp; OOP</h2>
+<p class="intro">Deep OOP knowledge — dunder methods, slots, ABC, and the difference between dataclass/namedtuple/TypedDict — is a hallmark of senior Python developers.</p>
+
+<h3>Dunder Methods (Magic Methods)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">class</span> <span class="fn">Money</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, amount: <span class="nm">float</span>, currency: <span class="nm">str</span> = <span class="st">"USD"</span>):
+        <span class="nm">self</span>.amount = amount
+        <span class="nm">self</span>.currency = currency
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="nm">self</span>):  <span class="cm"># for developers (repr(obj))</span>
+        <span class="kw">return</span> <span class="st">f"Money({self.amount!r}, {self.currency!r})"</span>
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="nm">self</span>):   <span class="cm"># for users (str(obj))</span>
+        <span class="kw">return</span> <span class="st">f"{self.currency} {self.amount:.2f}"</span>
+
+    <span class="kw">def</span> <span class="fn">__eq__</span>(<span class="nm">self</span>, other):
+        <span class="kw">if not</span> isinstance(other, Money): <span class="kw">return</span> NotImplemented
+        <span class="kw">return</span> <span class="nm">self</span>.amount == other.amount <span class="kw">and</span> <span class="nm">self</span>.currency == other.currency
+
+    <span class="kw">def</span> <span class="fn">__hash__</span>(<span class="nm">self</span>):  <span class="cm"># required if __eq__ is defined</span>
+        <span class="kw">return</span> <span class="nm">hash</span>((<span class="nm">self</span>.amount, <span class="nm">self</span>.currency))
+
+    <span class="kw">def</span> <span class="fn">__add__</span>(<span class="nm">self</span>, other):
+        <span class="kw">if</span> <span class="nm">self</span>.currency != other.currency:
+            <span class="kw">raise</span> ValueError(<span class="st">"Cannot add different currencies"</span>)
+        <span class="kw">return</span> Money(<span class="nm">self</span>.amount + other.amount, <span class="nm">self</span>.currency)
+
+    <span class="kw">__slots__</span> = [<span class="st">"amount"</span>, <span class="st">"currency"</span>]  <span class="cm"># saves ~50% memory vs __dict__</span></code></pre></div>
+
+<h3>Abstract Base Classes</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="fn">Repository</span>(ABC):
+    <span class="dc">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">get</span>(<span class="nm">self</span>, id: <span class="nm">int</span>): ...
+    <span class="dc">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">save</span>(<span class="nm">self</span>, entity): ...
+
+<span class="kw">class</span> <span class="fn">UserRepository</span>(Repository):
+    <span class="kw">def</span> <span class="fn">get</span>(<span class="nm">self</span>, id): <span class="kw">return</span> db.query(User, id)
+    <span class="kw">def</span> <span class="fn">save</span>(<span class="nm">self</span>, entity): db.add(entity)</code></pre></div>
+
+<div class="callout"><div class="ct">Interview Tip</div>If you define <code>__eq__</code>, Python sets <code>__hash__</code> to None (making the object unhashable). You MUST explicitly define <code>__hash__</code> if you want the object in sets/dicts.</div>
+
+<div class="qbox" id="q7">
+<h4>Q: What is the primary benefit of using <code>__slots__</code> in a Python class?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q7','b')">A) It makes the class thread-safe</div>
+<div class="qopt" data-val="b" onclick="quiz('q7','b')">B) It reduces memory usage by avoiding per-instance <code>__dict__</code></div>
+<div class="qopt" data-val="c" onclick="quiz('q7','b')">C) It speeds up method calls</div>
+<div class="qopt" data-val="d" onclick="quiz('q7','b')">D) It prevents subclassing</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>__slots__</code> replaces the per-instance dictionary with a fixed-size array, saving 40–50% memory for data-heavy objects.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 8 ===== -->
+<div class="section" id="s8">
+<span class="badge badge-purple">OOP</span>
+<h2 class="t">Decorators &amp; Method Types</h2>
+<p class="intro">Decorators are one of Python's most powerful patterns — understanding how to write parameterized and class-based decorators is essential.</p>
+
+<h3>Decorator Anatomy</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> time
+<span class="kw">from</span> functools <span class="kw">import</span> wraps
+
+<span class="cm"># Parameterized decorator factory</span>
+<span class="kw">def</span> <span class="fn">retry</span>(times=<span class="nm">3</span>, exceptions=(Exception,)):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="dc">@wraps</span>(func)
+        <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+            <span class="kw">for</span> attempt <span class="kw">in</span> <span class="bl">range</span>(times):
+                <span class="kw">try</span>:
+                    <span class="kw">return</span> func(*args, **kwargs)
+                <span class="kw">except</span> exceptions <span class="kw">as</span> e:
+                    <span class="kw">if</span> attempt == times - <span class="nm">1</span>: <span class="kw">raise</span>
+                    time.sleep(<span class="nm">2</span> ** attempt)
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator
+
+<span class="dc">@retry</span>(times=<span class="nm">5</span>, exceptions=(IOError,))
+<span class="kw">def</span> <span class="fn">fetch_data</span>(url): ...</code></pre></div>
+
+<h3>@classmethod vs @staticmethod vs @property</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">class</span> <span class="fn">User</span>:
+    _registry = {}
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, name, email):
+        <span class="nm">self</span>.name = name; <span class="nm">self</span>.email = email
+
+    <span class="dc">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">from_dict</span>(cls, data: <span class="nm">dict</span>) -&gt; <span class="st">"User"</span>:
+        <span class="cm"># Alternative constructor — cls enables subclassing</span>
+        <span class="kw">return</span> cls(data[<span class="st">"name"</span>], data[<span class="st">"email"</span>])
+
+    <span class="dc">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">validate_email</span>(email: <span class="nm">str</span>) -&gt; <span class="nm">bool</span>:
+        <span class="cm"># No self/cls — pure utility function namespaced to class</span>
+        <span class="kw">return</span> <span class="st">"@"</span> <span class="kw">in</span> email
+
+    <span class="dc">@property</span>
+    <span class="kw">def</span> <span class="fn">display_name</span>(<span class="nm">self</span>) -&gt; <span class="nm">str</span>:
+        <span class="kw">return</span> <span class="nm">self</span>.name.title()
+
+    <span class="dc">@display_name.setter</span>
+    <span class="kw">def</span> <span class="fn">display_name</span>(<span class="nm">self</span>, value):
+        <span class="nm">self</span>.name = value.lower()</code></pre></div>
+
+<div class="qbox" id="q8">
+<h4>Q: Why should you use <code>@functools.wraps</code> in a decorator?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q8','c')">A) It makes the decorator run faster</div>
+<div class="qopt" data-val="b" onclick="quiz('q8','c')">B) It prevents the decorator from being applied twice</div>
+<div class="qopt" data-val="c" onclick="quiz('q8','c')">C) It preserves the wrapped function's <code>__name__</code>, <code>__doc__</code>, and metadata</div>
+<div class="qopt" data-val="d" onclick="quiz('q8','c')">D) It automatically handles exceptions</div>
+</div>
+<div class="qfb ok">✓ Correct! Without <code>@wraps</code>, the wrapper replaces the original function's metadata — breaking introspection, docs, and debugging.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 9 ===== -->
+<div class="section" id="s9">
+<span class="badge badge-purple">OOP</span>
+<h2 class="t">Descriptors &amp; Properties</h2>
+<p class="intro">Descriptors are the mechanism behind <code>property</code>, <code>classmethod</code>, <code>staticmethod</code>, and ORM fields — mastering them shows deep Python expertise.</p>
+
+<h3>Descriptor Protocol</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Data descriptor — defines __set__ (takes priority over instance __dict__)</span>
+<span class="kw">class</span> <span class="fn">Validated</span>:
+    <span class="kw">def</span> <span class="fn">__set_name__</span>(<span class="nm">self</span>, owner, name):
+        <span class="nm">self</span>.name = <span class="st">f"_{name}"</span>
+
+    <span class="kw">def</span> <span class="fn">__get__</span>(<span class="nm">self</span>, obj, objtype=<span class="bl">None</span>):
+        <span class="kw">if</span> obj <span class="kw">is None</span>: <span class="kw">return self</span>  <span class="cm"># class access</span>
+        <span class="kw">return</span> <span class="nm">getattr</span>(obj, <span class="nm">self</span>.name, <span class="bl">None</span>)
+
+    <span class="kw">def</span> <span class="fn">__set__</span>(<span class="nm">self</span>, obj, value):
+        <span class="kw">if not</span> isinstance(value, (<span class="nm">int</span>, <span class="nm">float</span>)) <span class="kw">or</span> value &lt; <span class="nm">0</span>:
+            <span class="kw">raise</span> ValueError(<span class="st">f"{self.name} must be non-negative number"</span>)
+        <span class="nm">setattr</span>(obj, <span class="nm">self</span>.name, value)
+
+<span class="kw">class</span> <span class="fn">Product</span>:
+    price = Validated()
+    quantity = Validated()
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, price, quantity):
+        <span class="nm">self</span>.price = price          <span class="cm"># triggers Validated.__set__</span>
+        <span class="nm">self</span>.quantity = quantity</code></pre></div>
+
+<h3>Non-data vs Data Descriptors</h3>
+<table><thead><tr><th>Type</th><th>Defines</th><th>Priority</th></tr></thead><tbody>
+<tr><td>Non-data descriptor</td><td><code>__get__</code> only</td><td>Instance <code>__dict__</code> wins</td></tr>
+<tr><td>Data descriptor</td><td><code>__get__</code> + <code>__set__</code> (or <code>__delete__</code>)</td><td>Descriptor wins over instance</td></tr>
+</tbody></table>
+
+<div class="callout"><div class="ct">Real-world Use</div>SQLAlchemy's <code>Column()</code>, Django's <code>models.Field</code>, and Pydantic's field validation all use the descriptor protocol under the hood.</div>
+
+<div class="qbox" id="q9">
+<h4>Q: What makes a descriptor a "data descriptor"?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q9','a')">A) It defines <code>__set__</code> or <code>__delete__</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q9','a')">B) It stores data in the instance dictionary</div>
+<div class="qopt" data-val="c" onclick="quiz('q9','a')">C) It only defines <code>__get__</code></div>
+<div class="qopt" data-val="d" onclick="quiz('q9','a')">D) It inherits from a base Descriptor class</div>
+</div>
+<div class="qfb ok">✓ Correct! A data descriptor defines <code>__set__</code> and/or <code>__delete__</code> — it takes priority over the instance's <code>__dict__</code>.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 10 ===== -->
+<div class="section" id="s10">
+<span class="badge badge-purple">OOP</span>
+<h2 class="t">MRO &amp; Metaclasses</h2>
+<p class="intro">C3 linearization and metaclasses are advanced topics that frequently appear in senior/architect interviews — especially in framework and ORM design contexts.</p>
+
+<h3>Method Resolution Order (C3 Linearization)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">class</span> <span class="fn">A</span>: <span class="kw">def</span> <span class="fn">method</span>(<span class="nm">self</span>): <span class="kw">return</span> <span class="st">"A"</span>
+<span class="kw">class</span> <span class="fn">B</span>(A): <span class="kw">def</span> <span class="fn">method</span>(<span class="nm">self</span>): <span class="kw">return</span> <span class="st">"B"</span> + <span class="nm">super</span>().method()
+<span class="kw">class</span> <span class="fn">C</span>(A): <span class="kw">def</span> <span class="fn">method</span>(<span class="nm">self</span>): <span class="kw">return</span> <span class="st">"C"</span> + <span class="nm">super</span>().method()
+<span class="kw">class</span> <span class="fn">D</span>(B, C): <span class="kw">pass</span>
+
+<span class="nm">print</span>(D.__mro__)  
+<span class="cm"># (D, B, C, A, object) — C3 ensures consistent ordering</span>
+<span class="nm">print</span>(D().method())  <span class="cm"># "BCA" — super() follows MRO</span></code></pre></div>
+
+<h3>Metaclasses</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Metaclass — the "class of a class"</span>
+<span class="kw">class</span> <span class="fn">RegistryMeta</span>(<span class="nm">type</span>):
+    _registry = {}
+
+    <span class="kw">def</span> <span class="fn">__new__</span>(mcs, name, bases, namespace):
+        cls = <span class="nm">super</span>().__new__(mcs, name, bases, namespace)
+        <span class="kw">if</span> bases:  <span class="cm"># skip base class itself</span>
+            mcs._registry[name] = cls
+        <span class="kw">return</span> cls
+
+<span class="kw">class</span> <span class="fn">Plugin</span>(metaclass=RegistryMeta): <span class="kw">pass</span>
+<span class="kw">class</span> <span class="fn">AuthPlugin</span>(Plugin): <span class="kw">pass</span>
+<span class="kw">class</span> <span class="fn">CachePlugin</span>(Plugin): <span class="kw">pass</span>
+
+<span class="nm">print</span>(RegistryMeta._registry)
+<span class="cm"># {"AuthPlugin": &lt;class AuthPlugin&gt;, "CachePlugin": &lt;class CachePlugin&gt;}</span>
+
+<span class="cm"># Modern alternative: __init_subclass__ (Python 3.6+)</span>
+<span class="kw">class</span> <span class="fn">Plugin2</span>:
+    _registry = {}
+    <span class="kw">def</span> <span class="fn">__init_subclass__</span>(cls, **kwargs):
+        <span class="nm">super</span>().__init_subclass__(**kwargs)
+        Plugin2._registry[cls.__name__] = cls</code></pre></div>
+
+<div class="qbox" id="q10">
+<h4>Q: What algorithm does Python use to compute MRO?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q10','b')">A) Depth-first search</div>
+<div class="qopt" data-val="b" onclick="quiz('q10','b')">B) C3 linearization</div>
+<div class="qopt" data-val="c" onclick="quiz('q10','b')">C) Breadth-first search</div>
+<div class="qopt" data-val="d" onclick="quiz('q10','b')">D) Topological sort</div>
+</div>
+<div class="qfb ok">✓ Correct! Python uses C3 linearization (described in the paper "A Monotonic Superclass Linearization for Dylan") to compute MRO.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 11 ===== -->
+<div class="section" id="s11">
+<span class="badge badge-purple">OOP</span>
+<h2 class="t">Design Patterns</h2>
+<p class="intro">Design patterns in Python often look different from textbook Java examples — leverage Python's duck typing, first-class functions, and Protocol for cleaner implementations.</p>
+
+<h3>Creational Patterns</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Singleton — using metaclass</span>
+<span class="kw">class</span> <span class="fn">SingletonMeta</span>(<span class="nm">type</span>):
+    _instances = {}
+    <span class="kw">def</span> <span class="fn">__call__</span>(cls, *args, **kwargs):
+        <span class="kw">if</span> cls <span class="kw">not in</span> cls._instances:
+            cls._instances[cls] = <span class="nm">super</span>().__call__(*args, **kwargs)
+        <span class="kw">return</span> cls._instances[cls]
+
+<span class="cm"># Factory — using registry dict</span>
+<span class="kw">class</span> <span class="fn">ShapeFactory</span>:
+    _shapes = {}
+
+    <span class="dc">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">register</span>(cls, name):
+        <span class="kw">def</span> <span class="fn">decorator</span>(shape_cls):
+            cls._shapes[name] = shape_cls
+            <span class="kw">return</span> shape_cls
+        <span class="kw">return</span> decorator
+
+    <span class="dc">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">create</span>(cls, name, *args):
+        <span class="kw">return</span> cls._shapes[name](*args)
+
+<span class="dc">@ShapeFactory.register</span>(<span class="st">"circle"</span>)
+<span class="kw">class</span> <span class="fn">Circle</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, radius): <span class="nm">self</span>.radius = radius</code></pre></div>
+
+<h3>Protocol — Structural Subtyping (Python 3.8+)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> typing <span class="kw">import</span> Protocol, runtime_checkable
+
+<span class="dc">@runtime_checkable</span>
+<span class="kw">class</span> <span class="fn">Drawable</span>(Protocol):
+    <span class="kw">def</span> <span class="fn">draw</span>(<span class="nm">self</span>) -&gt; <span class="bl">None</span>: ...
+
+<span class="cm"># No inheritance needed — duck typing with type safety</span>
+<span class="kw">class</span> <span class="fn">Circle</span>:
+    <span class="kw">def</span> <span class="fn">draw</span>(<span class="nm">self</span>): <span class="nm">print</span>(<span class="st">"O"</span>)
+
+<span class="kw">def</span> <span class="fn">render</span>(shape: Drawable): shape.draw()
+render(Circle())  <span class="cm"># works — Circle satisfies Drawable Protocol</span></code></pre></div>
+
+<div class="qbox" id="q11">
+<h4>Q: What does the Singleton pattern guarantee?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q11','c')">A) The class can only be subclassed once</div>
+<div class="qopt" data-val="b" onclick="quiz('q11','c')">B) The class is thread-safe</div>
+<div class="qopt" data-val="c" onclick="quiz('q11','c')">C) Only one instance of the class exists in the program</div>
+<div class="qopt" data-val="d" onclick="quiz('q11','c')">D) The class cannot be garbage collected</div>
+</div>
+<div class="qfb ok">✓ Correct! Singleton ensures only one instance exists. Note: in Python, module-level objects are natural singletons — explicit Singleton classes are rarely needed.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 12 ===== -->
+<div class="section" id="s12">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Generators &amp; Iterators</h2>
+<p class="intro">Generators are memory-efficient powerhouses — understanding <code>yield from</code> and the full generator protocol is expected at senior level.</p>
+
+<h3>Iterator Protocol</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Custom iterator</span>
+<span class="kw">class</span> <span class="fn">Countdown</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, start): <span class="nm">self</span>.current = start
+    <span class="kw">def</span> <span class="fn">__iter__</span>(<span class="nm">self</span>): <span class="kw">return self</span>
+    <span class="kw">def</span> <span class="fn">__next__</span>(<span class="nm">self</span>):
+        <span class="kw">if</span> <span class="nm">self</span>.current &lt;= <span class="nm">0</span>: <span class="kw">raise</span> StopIteration
+        <span class="nm">self</span>.current -= <span class="nm">1</span>
+        <span class="kw">return</span> <span class="nm">self</span>.current + <span class="nm">1</span>
+
+<span class="cm"># Generator function — simpler</span>
+<span class="kw">def</span> <span class="fn">countdown</span>(start):
+    <span class="kw">while</span> start &gt; <span class="nm">0</span>:
+        <span class="kw">yield</span> start
+        start -= <span class="nm">1</span>
+
+<span class="cm"># yield from — delegate to sub-generator</span>
+<span class="kw">def</span> <span class="fn">chain</span>(*iterables):
+    <span class="kw">for</span> it <span class="kw">in</span> iterables:
+        <span class="kw">yield from</span> it
+
+list(chain([<span class="nm">1</span>,<span class="nm">2</span>], [<span class="nm">3</span>,<span class="nm">4</span>]))  <span class="cm"># [1, 2, 3, 4]</span></code></pre></div>
+
+<h3>Generator send() — Coroutine-style</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">def</span> <span class="fn">accumulator</span>():
+    total = <span class="nm">0</span>
+    <span class="kw">while True</span>:
+        value = <span class="kw">yield</span> total   <span class="cm"># yield sends total, receives next value</span>
+        <span class="kw">if</span> value <span class="kw">is None</span>: <span class="kw">break</span>
+        total += value
+
+acc = accumulator()
+<span class="nm">next</span>(acc)          <span class="cm"># prime the generator → 0</span>
+acc.send(<span class="nm">10</span>)       <span class="cm"># → 10</span>
+acc.send(<span class="nm">20</span>)       <span class="cm"># → 30</span></code></pre></div>
+
+<h3>itertools Essentials</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> itertools <span class="kw">import</span> islice, chain, groupby, product, combinations
+
+<span class="cm"># islice — take first N from infinite generator</span>
+<span class="kw">def</span> <span class="fn">naturals</span>():
+    n = <span class="nm">1</span>
+    <span class="kw">while True</span>: <span class="kw">yield</span> n; n += <span class="nm">1</span>
+
+first10 = list(islice(naturals(), <span class="nm">10</span>))</code></pre></div>
+
+<div class="qbox" id="q12">
+<h4>Q: What does <code>yield from</code> do in a generator?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q12','a')">A) Delegates to a sub-generator, transparently forwarding send/throw/close</div>
+<div class="qopt" data-val="b" onclick="quiz('q12','a')">B) Returns a value from the generator immediately</div>
+<div class="qopt" data-val="c" onclick="quiz('q12','a')">C) Creates a new generator from a list</div>
+<div class="qopt" data-val="d" onclick="quiz('q12','a')">D) Pauses the generator until resumed</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>yield from</code> fully delegates to a sub-generator, including two-way communication via <code>send()</code> and <code>throw()</code>.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 13 ===== -->
+<div class="section" id="s13">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Context Managers</h2>
+<p class="intro">Context managers go far beyond file handling — they're the right tool for any resource that needs guaranteed cleanup.</p>
+
+<h3>__enter__ / __exit__ Protocol</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> time
+
+<span class="kw">class</span> <span class="fn">Timer</span>:
+    <span class="kw">def</span> <span class="fn">__enter__</span>(<span class="nm">self</span>):
+        <span class="nm">self</span>.start = time.perf_counter()
+        <span class="kw">return self</span>         <span class="cm"># value bound to 'as' variable</span>
+
+    <span class="kw">def</span> <span class="fn">__exit__</span>(<span class="nm">self</span>, exc_type, exc_val, exc_tb):
+        self.elapsed = time.perf_counter() - <span class="nm">self</span>.start
+        <span class="nm">print</span>(<span class="st">f"Elapsed: {self.elapsed:.3f}s"</span>)
+        <span class="kw">return False</span>  <span class="cm"># False = don't suppress exceptions</span>
+
+<span class="kw">with</span> Timer() <span class="kw">as</span> t:
+    expensive_operation()
+<span class="nm">print</span>(t.elapsed)</code></pre></div>
+
+<h3>@contextmanager — Generator-based</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager, asynccontextmanager, suppress
+
+<span class="dc">@contextmanager</span>
+<span class="kw">def</span> <span class="fn">managed_transaction</span>(session):
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> session          <span class="cm"># everything before yield = __enter__</span>
+        session.commit()
+    <span class="kw">except</span> Exception:
+        session.rollback()
+        <span class="kw">raise</span>
+    <span class="kw">finally</span>:
+        session.close()        <span class="cm"># everything after yield = __exit__</span>
+
+<span class="cm"># suppress — silently ignore specific exceptions</span>
+<span class="kw">with</span> suppress(FileNotFoundError):
+    os.remove(<span class="st">"temp.txt"</span>)
+
+<span class="cm"># Multiple context managers</span>
+<span class="kw">with</span> open(<span class="st">"a.txt"</span>) <span class="kw">as</span> a, open(<span class="st">"b.txt"</span>) <span class="kw">as</span> b:
+    data = a.read() + b.read()</code></pre></div>
+
+<div class="qbox" id="q13">
+<h4>Q: What arguments does <code>__exit__</code> receive?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q13','b')">A) <code>self, exception, traceback</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q13','b')">B) <code>self, exc_type, exc_val, exc_tb</code></div>
+<div class="qopt" data-val="c" onclick="quiz('q13','b')">C) <code>self, error_code, message</code></div>
+<div class="qopt" data-val="d" onclick="quiz('q13','b')">D) <code>self, context, result</code></div>
+</div>
+<div class="qfb ok">✓ Correct! <code>__exit__(self, exc_type, exc_val, exc_tb)</code> — all three are None if no exception occurred. Return True to suppress the exception.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 14 ===== -->
+<div class="section" id="s14">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Threading &amp; Multiprocessing</h2>
+<p class="intro">The GIL makes Python threading suitable only for I/O-bound work — for CPU-bound parallelism, use multiprocessing or asyncio.</p>
+
+<h3>Threading for I/O-Bound Work</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, as_completed
+<span class="kw">import</span> threading
+
+<span class="cm"># Thread pool for concurrent HTTP calls</span>
+<span class="kw">def</span> <span class="fn">fetch</span>(url): <span class="kw">return</span> requests.get(url).text
+
+urls = [<span class="st">"https://example.com"</span>] * <span class="nm">10</span>
+<span class="kw">with</span> ThreadPoolExecutor(max_workers=<span class="nm">5</span>) <span class="kw">as</span> pool:
+    futures = {pool.submit(fetch, url): url <span class="kw">for</span> url <span class="kw">in</span> urls}
+    <span class="kw">for</span> future <span class="kw">in</span> as_completed(futures):
+        <span class="nm">print</span>(future.result()[:100])
+
+<span class="cm"># Thread-safe shared state</span>
+lock = threading.Lock()
+counter = <span class="nm">0</span>
+
+<span class="kw">def</span> <span class="fn">increment</span>():
+    <span class="kw">global</span> counter
+    <span class="kw">with</span> lock:
+        counter += <span class="nm">1</span></code></pre></div>
+
+<h3>Multiprocessing for CPU-Bound Work</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> concurrent.futures <span class="kw">import</span> ProcessPoolExecutor
+<span class="kw">from</span> multiprocessing <span class="kw">import</span> Pool, shared_memory
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">cpu_heavy</span>(n):
+    <span class="kw">return</span> sum(i*i <span class="kw">for</span> i <span class="kw">in</span> <span class="bl">range</span>(n))
+
+<span class="kw">with</span> ProcessPoolExecutor(max_workers=<span class="nm">4</span>) <span class="kw">as</span> pool:
+    results = list(pool.map(cpu_heavy, [<span class="nm">10_000</span>] * <span class="nm">8</span>))</code></pre></div>
+
+<div class="callout warn"><div class="ct">GIL Warning</div>The GIL means only ONE thread executes Python bytecode at a time. Threading helps I/O-bound code (waiting on network/disk) but NOT CPU-bound code. Use <code>multiprocessing</code> or <code>asyncio</code> for true parallelism.</div>
+
+<div class="qbox" id="q14">
+<h4>Q: Why does the GIL prevent true parallel threading for CPU-bound tasks?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q14','c')">A) Threads can't share memory in Python</div>
+<div class="qopt" data-val="b" onclick="quiz('q14','c')">B) Python threads are not real OS threads</div>
+<div class="qopt" data-val="c" onclick="quiz('q14','c')">C) Only one thread can execute Python bytecode at a time</div>
+<div class="qopt" data-val="d" onclick="quiz('q14','c')">D) The OS scheduler limits Python to one CPU</div>
+</div>
+<div class="qfb ok">✓ Correct! The Global Interpreter Lock (GIL) ensures only one thread holds the interpreter at a time, serializing CPU-bound Python execution.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 15 ===== -->
+<div class="section" id="s15">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Asyncio &amp; Async Patterns</h2>
+<p class="intro">Asyncio is Python's answer to high-concurrency I/O — understanding the event loop, structured concurrency, and pitfalls is essential for backend roles.</p>
+
+<h3>Core Asyncio Patterns</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> asyncio
+<span class="kw">import</span> httpx
+
+<span class="cm"># Concurrent requests with gather</span>
+<span class="kw">async def</span> <span class="fn">fetch</span>(client, url):
+    resp = <span class="kw">await</span> client.get(url)
+    <span class="kw">return</span> resp.json()
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    urls = [<span class="st">"https://api.example.com/users"</span>, <span class="st">"https://api.example.com/orders"</span>]
+    <span class="kw">async with</span> httpx.AsyncClient() <span class="kw">as</span> client:
+        results = <span class="kw">await</span> asyncio.gather(*[fetch(client, u) <span class="kw">for</span> u <span class="kw">in</span> urls])
+    <span class="kw">return</span> results
+
+<span class="cm"># asyncio.timeout (Python 3.11+)</span>
+<span class="kw">async def</span> <span class="fn">with_timeout</span>():
+    <span class="kw">async with</span> asyncio.timeout(<span class="nm">5.0</span>):
+        <span class="kw">await</span> slow_operation()</code></pre></div>
+
+<h3>Task Management</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># create_task — fire and forget with proper lifecycle</span>
+<span class="kw">async def</span> <span class="fn">producer_consumer</span>():
+    queue = asyncio.Queue(maxsize=<span class="nm">10</span>)
+
+    <span class="kw">async def</span> <span class="fn">producer</span>():
+        <span class="kw">for</span> i <span class="kw">in</span> <span class="bl">range</span>(<span class="nm">20</span>):
+            <span class="kw">await</span> queue.put(i)
+        <span class="kw">await</span> queue.put(<span class="bl">None</span>)  <span class="cm"># sentinel</span>
+
+    <span class="kw">async def</span> <span class="fn">consumer</span>():
+        <span class="kw">while True</span>:
+            item = <span class="kw">await</span> queue.get()
+            <span class="kw">if</span> item <span class="kw">is None</span>: <span class="kw">break</span>
+            <span class="kw">await</span> process(item)
+            queue.task_done()
+
+    <span class="kw">await</span> asyncio.gather(producer(), consumer())</code></pre></div>
+
+<div class="callout danger"><div class="ct">Common Pitfall</div>Never call blocking code (like <code>time.sleep()</code>, synchronous DB calls, or CPU-heavy loops) inside an async function — it blocks the entire event loop. Use <code>asyncio.sleep()</code> and <code>loop.run_in_executor()</code> instead.</div>
+
+<div class="qbox" id="q15">
+<h4>Q: What does <code>asyncio.gather()</code> do?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q15','b')">A) Runs coroutines sequentially one after another</div>
+<div class="qopt" data-val="b" onclick="quiz('q15','b')">B) Runs multiple coroutines concurrently and waits for all to complete</div>
+<div class="qopt" data-val="c" onclick="quiz('q15','b')">C) Creates a new event loop for each coroutine</div>
+<div class="qopt" data-val="d" onclick="quiz('q15','b')">D) Cancels all coroutines if one raises an exception</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>asyncio.gather()</code> runs all coroutines concurrently in the same event loop and returns their results as a list.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 16 ===== -->
+<div class="section" id="s16">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Memory Management &amp; GIL</h2>
+<p class="intro">Production engineers must understand Python's memory model — reference counting, cyclic GC, and how to diagnose memory leaks.</p>
+
+<h3>Reference Counting</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> sys, gc, weakref
+
+<span class="cm"># Reference counting</span>
+a = []
+<span class="nm">print</span>(sys.getrefcount(a))  <span class="cm"># 2 (a + getrefcount's argument)</span>
+b = a
+<span class="nm">print</span>(sys.getrefcount(a))  <span class="cm"># 3</span>
+<span class="kw">del</span> b
+<span class="nm">print</span>(sys.getrefcount(a))  <span class="cm"># 2</span>
+
+<span class="cm"># Cyclic reference — NOT freed by refcount alone</span>
+<span class="kw">class</span> <span class="fn">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>): <span class="nm">self</span>.ref = <span class="bl">None</span>
+
+n1, n2 = Node(), Node()
+n1.ref = n2; n2.ref = n1   <span class="cm"># cycle — gc module handles this</span>
+<span class="kw">del</span> n1, n2
+gc.collect()               <span class="cm"># explicitly run cyclic GC</span>
+
+<span class="cm"># weakref — reference without incrementing refcount</span>
+<span class="kw">class</span> <span class="fn">Cache</span>:
+    def __init__(self): self._store = weakref.WeakValueDictionary()</code></pre></div>
+
+<h3>Memory Profiling</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> tracemalloc
+
+tracemalloc.start()
+<span class="cm"># ... run code ...</span>
+snapshot = tracemalloc.take_snapshot()
+top_stats = snapshot.statistics(<span class="st">"lineno"</span>)
+<span class="kw">for</span> stat <span class="kw">in</span> top_stats[:<span class="nm">10</span>]:
+    <span class="nm">print</span>(stat)
+
+<span class="cm"># sys.getsizeof — immediate object size (not recursive)</span>
+<span class="nm">print</span>(sys.getsizeof([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>]))    <span class="cm"># 88 bytes</span>
+<span class="nm">print</span>(sys.getsizeof(<span class="st">"hello"</span>))    <span class="cm"># 54 bytes</span></code></pre></div>
+
+<div class="qbox" id="q16">
+<h4>Q: What is Python's primary garbage collection mechanism?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q16','a')">A) Reference counting</div>
+<div class="qopt" data-val="b" onclick="quiz('q16','a')">B) Mark-and-sweep</div>
+<div class="qopt" data-val="c" onclick="quiz('q16','a')">C) Generational collection</div>
+<div class="qopt" data-val="d" onclick="quiz('q16','a')">D) Stop-the-world compaction</div>
+</div>
+<div class="qfb ok">✓ Correct! Python primarily uses reference counting. The <code>gc</code> module adds cyclic garbage collection as a secondary mechanism for reference cycles.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 17 ===== -->
+<div class="section" id="s17">
+<span class="badge badge-green">Advanced</span>
+<h2 class="t">Dataclasses &amp; Pydantic</h2>
+<p class="intro">Dataclasses for internal data, Pydantic v2 for external data validation — knowing when to use each is a key senior-level decision.</p>
+
+<h3>@dataclass</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field, KW_ONLY
+
+<span class="dc">@dataclass</span>(frozen=<span class="bl">True</span>, slots=<span class="bl">True</span>)  <span class="cm"># immutable + memory efficient</span>
+<span class="kw">class</span> <span class="fn">Point</span>:
+    x: <span class="nm">float</span>
+    y: <span class="nm">float</span>
+    label: <span class="nm">str</span> = <span class="st">"origin"</span>
+    tags: <span class="nm">list</span> = field(default_factory=<span class="nm">list</span>)  <span class="cm"># mutable default!</span>
+
+    <span class="kw">def</span> <span class="fn">__post_init__</span>(<span class="nm">self</span>):
+        <span class="kw">if</span> <span class="nm">self</span>.x &lt; <span class="nm">0</span> <span class="kw">or</span> <span class="nm">self</span>.y &lt; <span class="nm">0</span>:
+            <span class="kw">raise</span> ValueError(<span class="st">"Coordinates must be non-negative"</span>)</code></pre></div>
+
+<h3>Pydantic v2</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, field_validator, model_validator, Field
+<span class="kw">from</span> pydantic_settings <span class="kw">import</span> BaseSettings
+
+<span class="kw">class</span> <span class="fn">UserCreate</span>(BaseModel):
+    model_config = {<span class="st">"str_strip_whitespace"</span>: <span class="bl">True</span>}
+
+    name: <span class="nm">str</span> = Field(min_length=<span class="nm">1</span>, max_length=<span class="nm">50</span>)
+    email: <span class="nm">str</span>
+    age: <span class="nm">int</span> = Field(ge=<span class="nm">0</span>, le=<span class="nm">150</span>)
+
+    <span class="dc">@field_validator</span>(<span class="st">"email"</span>)
+    <span class="dc">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">validate_email</span>(cls, v):
+        <span class="kw">if</span> <span class="st">"@"</span> <span class="kw">not in</span> v:
+            <span class="kw">raise</span> ValueError(<span class="st">"Invalid email"</span>)
+        <span class="kw">return</span> v.lower()
+
+<span class="cm"># Settings management</span>
+<span class="kw">class</span> <span class="fn">Settings</span>(BaseSettings):
+    db_url: <span class="nm">str</span>
+    api_key: <span class="nm">str</span>
+    debug: <span class="nm">bool</span> = <span class="bl">False</span>
+    model_config = {<span class="st">"env_file"</span>: <span class="st">".env"</span>}
+
+settings = Settings()  <span class="cm"># reads from environment / .env file</span></code></pre></div>
+
+<div class="qbox" id="q17">
+<h4>Q: In Pydantic v2, which decorator is used for field-level validation?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q17','c')">A) <code>@validator</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q17','c')">B) <code>@validates</code></div>
+<div class="qopt" data-val="c" onclick="quiz('q17','c')">C) <code>@field_validator</code></div>
+<div class="qopt" data-val="d" onclick="quiz('q17','c')">D) <code>@field_check</code></div>
+</div>
+<div class="qfb ok">✓ Correct! Pydantic v2 replaced <code>@validator</code> with <code>@field_validator</code> (must also be decorated with <code>@classmethod</code>).</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 18 ===== -->
+<div class="section" id="s18">
+<span class="badge badge-amber">Testing</span>
+<h2 class="t">Testing with pytest</h2>
+<p class="intro">pytest is the industry standard — mastering fixtures, parametrize, and coverage reporting is expected for any senior Python role.</p>
+
+<h3>Core pytest Patterns</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># conftest.py — shared fixtures</span>
+<span class="kw">import</span> pytest
+<span class="kw">from</span> myapp <span class="kw">import</span> create_app, db
+
+<span class="dc">@pytest.fixture</span>(scope=<span class="st">"session"</span>)   <span class="cm"># created once per test session</span>
+<span class="kw">def</span> <span class="fn">app</span>():
+    app = create_app({<span class="st">"TESTING"</span>: <span class="bl">True</span>, <span class="st">"DB_URL"</span>: <span class="st">"sqlite:///:memory:"</span>})
+    <span class="kw">yield</span> app
+
+<span class="dc">@pytest.fixture</span>(scope=<span class="st">"function"</span>)  <span class="cm"># reset per test</span>
+<span class="kw">def</span> <span class="fn">db_session</span>(app):
+    <span class="kw">with</span> app.app_context():
+        db.create_all()
+        <span class="kw">yield</span> db.session
+        db.session.rollback()
+        db.drop_all()
+
+<span class="cm"># Parametrize — run same test with multiple inputs</span>
+<span class="dc">@pytest.mark.parametrize</span>(<span class="st">"email,valid"</span>, [
+    (<span class="st">"user@example.com"</span>, <span class="bl">True</span>),
+    (<span class="st">"not-an-email"</span>, <span class="bl">False</span>),
+    (<span class="st">""</span>, <span class="bl">False</span>),
+])
+<span class="kw">def</span> <span class="fn">test_validate_email</span>(email, valid):
+    <span class="kw">assert</span> validate_email(email) == valid</code></pre></div>
+
+<h3>Built-in Fixtures</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">def</span> <span class="fn">test_writes_file</span>(tmp_path):
+    <span class="cm"># tmp_path — pytest provides a temporary directory</span>
+    config = tmp_path / <span class="st">"config.json"</span>
+    config.write_text(<span class="st">'{"key": "value"}'</span>)
+    result = load_config(config)
+    <span class="kw">assert</span> result[<span class="st">"key"</span>] == <span class="st">"value"</span>
+
+<span class="kw">def</span> <span class="fn">test_env_var</span>(monkeypatch):
+    monkeypatch.setenv(<span class="st">"API_KEY"</span>, <span class="st">"test-key-123"</span>)
+    <span class="kw">assert</span> get_api_key() == <span class="st">"test-key-123"</span>
+
+<span class="kw">def</span> <span class="fn">test_stdout</span>(capsys):
+    greet(<span class="st">"World"</span>)
+    captured = capsys.readouterr()
+    <span class="kw">assert</span> <span class="st">"Hello, World"</span> <span class="kw">in</span> captured.out</code></pre></div>
+
+<h3>Coverage</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># pytest.ini or pyproject.toml</span>
+[tool.pytest.ini_options]
+addopts = <span class="st">"--cov=src --cov-report=html --cov-report=term-missing --cov-fail-under=80"</span>
+
+<span class="cm"># Run</span>
+pytest --cov=src --cov-report=term-missing</code></pre></div>
+
+<div class="qbox" id="q18">
+<h4>Q: A pytest fixture with <code>scope="session"</code> is created…</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q18','b')">A) Once per test function</div>
+<div class="qopt" data-val="b" onclick="quiz('q18','b')">B) Once per entire test session</div>
+<div class="qopt" data-val="c" onclick="quiz('q18','b')">C) Once per test module</div>
+<div class="qopt" data-val="d" onclick="quiz('q18','b')">D) Once per test class</div>
+</div>
+<div class="qfb ok">✓ Correct! Session-scoped fixtures are created once and shared across ALL tests in the session — ideal for expensive setup like DB connections.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 19 ===== -->
+<div class="section" id="s19">
+<span class="badge badge-amber">Testing</span>
+<h2 class="t">Mocking &amp; Test Doubles</h2>
+<p class="intro">Knowing the difference between mocks, stubs, spies, and fakes — and when to use each — is a key senior testing skill.</p>
+
+<h3>unittest.mock</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> unittest.mock <span class="kw">import</span> Mock, MagicMock, AsyncMock, patch, call
+
+<span class="cm"># Mock — configure return values and side effects</span>
+mock_service = Mock()
+mock_service.get_user.return_value = {<span class="st">"id"</span>: <span class="nm">1</span>, <span class="st">"name"</span>: <span class="st">"Alice"</span>}
+mock_service.get_user.side_effect = UserNotFoundError  <span class="cm"># raise on call</span>
+
+<span class="cm"># MagicMock — supports dunder methods (__len__, __iter__, etc.)</span>
+magic = MagicMock()
+magic.__len__.return_value = <span class="nm">5</span>
+<span class="nm">print</span>(<span class="nm">len</span>(magic))  <span class="cm"># 5</span>
+
+<span class="cm"># AsyncMock — for async functions</span>
+async_mock = AsyncMock(return_value=<span class="st">"result"</span>)
+<span class="kw">await</span> async_mock()  <span class="cm"># returns "result"</span>
+
+<span class="cm"># patch — temporarily replace an object</span>
+<span class="kw">with</span> patch(<span class="st">"myapp.services.requests.get"</span>) <span class="kw">as</span> mock_get:
+    mock_get.return_value.json.return_value = {<span class="st">"data"</span>: []}
+    result = fetch_users()
+    mock_get.assert_called_once_with(<span class="st">"https://api.example.com/users"</span>)</code></pre></div>
+
+<h3>pytest-mock (mocker fixture)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">def</span> <span class="fn">test_send_email</span>(mocker):
+    mock_smtp = mocker.patch(<span class="st">"myapp.email.smtplib.SMTP"</span>)
+    mock_instance = mock_smtp.return_value.__enter__.return_value
+
+    send_welcome_email(<span class="st">"user@example.com"</span>)
+
+    mock_instance.sendmail.assert_called_once()
+    args = mock_instance.sendmail.call_args
+    <span class="kw">assert</span> <span class="st">"user@example.com"</span> <span class="kw">in</span> args[<span class="nm">0</span>]</code></pre></div>
+
+<div class="callout"><div class="ct">Test Double Taxonomy</div>
+<strong>Stub</strong>: Returns canned data, no verification.<br>
+<strong>Mock</strong>: Verifies interactions (was it called? with what args?).<br>
+<strong>Spy</strong>: Real object that records calls.<br>
+<strong>Fake</strong>: Working implementation (e.g., in-memory DB).<br>
+<strong>Dummy</strong>: Placeholder passed but never used.
+</div>
+
+<div class="qbox" id="q19">
+<h4>Q: What does <code>MagicMock</code> support that a regular <code>Mock</code> does not?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q19','a')">A) Magic/dunder methods like <code>__len__</code>, <code>__iter__</code>, <code>__str__</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q19','a')">B) Async coroutines</div>
+<div class="qopt" data-val="c" onclick="quiz('q19','a')">C) Automatic side effects</div>
+<div class="qopt" data-val="d" onclick="quiz('q19','a')">D) Thread-safe call counting</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>MagicMock</code> pre-configures all magic methods, letting you do things like <code>len(mock)</code> or iterate over it.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 20 ===== -->
+<div class="section" id="s20">
+<span class="badge badge-amber">Quality</span>
+<h2 class="t">Code Quality &amp; Tooling</h2>
+<p class="intro">Modern Python projects use a consistent, automated quality stack — knowing these tools shows you operate at a professional engineering level.</p>
+
+<h3>The Modern Python Toolchain</h3>
+<table><thead><tr><th>Tool</th><th>Purpose</th><th>Config</th></tr></thead><tbody>
+<tr><td><code>ruff</code></td><td>Lightning-fast linter + formatter (replaces flake8 + black + isort)</td><td><code>pyproject.toml</code></td></tr>
+<tr><td><code>mypy</code> / <code>pyright</code></td><td>Static type checking</td><td><code>pyproject.toml</code></td></tr>
+<tr><td><code>bandit</code></td><td>Security SAST scanning</td><td><code>.bandit</code></td></tr>
+<tr><td><code>pre-commit</code></td><td>Git hooks — run checks before commit</td><td><code>.pre-commit-config.yaml</code></td></tr>
+<tr><td><code>pytest-cov</code></td><td>Test coverage</td><td><code>pyproject.toml</code></td></tr>
+</tbody></table>
+
+<h3>pyproject.toml Configuration</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code>[tool.ruff]
+line-length = <span class="nm">88</span>
+select = [<span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"I"</span>, <span class="st">"N"</span>, <span class="st">"S"</span>, <span class="st">"B"</span>]  <span class="cm"># E=pycodestyle, S=bandit, B=bugbear</span>
+ignore = [<span class="st">"S101"</span>]  <span class="cm"># allow assert in tests</span>
+
+[tool.mypy]
+strict = <span class="bl">true</span>
+ignore_missing_imports = <span class="bl">true</span>
+
+[tool.pytest.ini_options]
+addopts = <span class="st">"--cov=src --cov-fail-under=80"</span>
+testpaths = [<span class="st">"tests"</span>]</code></pre></div>
+
+<h3>pre-commit Configuration</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># .pre-commit-config.yaml</span>
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy</code></pre></div>
+
+<div class="qbox" id="q20">
+<h4>Q: Which tool can both <em>lint</em> and <em>format</em> Python code?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q20','c')">A) mypy</div>
+<div class="qopt" data-val="b" onclick="quiz('q20','c')">B) bandit</div>
+<div class="qopt" data-val="c" onclick="quiz('q20','c')">C) ruff</div>
+<div class="qopt" data-val="d" onclick="quiz('q20','c')">D) isort</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>ruff</code> (written in Rust) handles both linting and formatting — it's 10–100× faster than flake8/black and replaces multiple tools.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 21 ===== -->
+<div class="section" id="s21">
+<span class="badge badge-red">Production</span>
+<h2 class="t">Performance Profiling</h2>
+<p class="intro">Senior engineers profile before optimizing — never guess. Know the right tool for CPU profiling, memory profiling, and micro-benchmarking.</p>
+
+<h3>cProfile — Deterministic CPU Profiling</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> cProfile, pstats
+
+<span class="kw">with</span> cProfile.Profile() <span class="kw">as</span> pr:
+    my_function()
+
+stats = pstats.Stats(pr)
+stats.sort_stats(<span class="st">"cumulative"</span>)
+stats.print_stats(<span class="nm">20</span>)  <span class="cm"># top 20 functions by cumulative time</span>
+
+<span class="cm"># Or from command line</span>
+<span class="cm"># python -m cProfile -s cumulative script.py</span></code></pre></div>
+
+<h3>line_profiler — Line-by-Line</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># pip install line_profiler</span>
+<span class="kw">from</span> line_profiler <span class="kw">import</span> LineProfiler
+
+<span class="kw">def</span> <span class="fn">my_func</span>(data):
+    result = []
+    <span class="kw">for</span> item <span class="kw">in</span> data:
+        result.append(item * <span class="nm">2</span>)
+    <span class="kw">return</span> result
+
+lp = LineProfiler(my_func)
+lp.run(<span class="st">"my_func(list(range(100000)))"</span>)
+lp.print_stats()</code></pre></div>
+
+<h3>timeit — Micro-benchmarks</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> timeit
+
+<span class="cm"># Compare list comprehension vs append loop</span>
+t1 = timeit.timeit(<span class="st">"[x*2 for x in range(1000)]"</span>, number=<span class="nm">10_000</span>)
+t2 = timeit.timeit(<span class="st">"""
+r=[]
+for x in range(1000): r.append(x*2)
+"""</span>, number=<span class="nm">10_000</span>)
+<span class="nm">print</span>(<span class="st">f"Comprehension: {t1:.3f}s | Loop: {t2:.3f}s"</span>)</code></pre></div>
+
+<h3>Optimization Techniques</h3>
+<table><thead><tr><th>Technique</th><th>Speed Gain</th></tr></thead><tbody>
+<tr><td><code>__slots__</code></td><td>Attribute access ~20% faster</td></tr>
+<tr><td>List comprehension vs loop</td><td>~2× faster</td></tr>
+<tr><td><code>lru_cache</code> on pure functions</td><td>Dramatic for repeated calls</td></tr>
+<tr><td>NumPy vectorization</td><td>10–100× for numerical work</td></tr>
+<tr><td>Local variable lookup</td><td>Faster than global — use <code>local = global_fn</code></td></tr>
+</tbody></table>
+
+<div class="qbox" id="q21">
+<h4>Q: Which profiler provides <em>deterministic</em> profiling in Python?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q21','b')">A) line_profiler</div>
+<div class="qopt" data-val="b" onclick="quiz('q21','b')">B) cProfile</div>
+<div class="qopt" data-val="c" onclick="quiz('q21','b')">C) tracemalloc</div>
+<div class="qopt" data-val="d" onclick="quiz('q21','b')">D) timeit</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>cProfile</code> uses deterministic profiling — it hooks every function call/return. Statistical profilers (like py-spy) sample periodically with lower overhead.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 22 ===== -->
+<div class="section" id="s22">
+<span class="badge badge-red">Production</span>
+<h2 class="t">Security Best Practices</h2>
+<p class="intro">Security is a first-class concern — every senior Python developer must know how to handle secrets, hashing, injection prevention, and dependency scanning.</p>
+
+<h3>Secrets &amp; Cryptography</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> secrets, hashlib
+<span class="kw">from</span> cryptography.hazmat.primitives.kdf.pbkdf2 <span class="kw">import</span> PBKDF2HMAC
+<span class="kw">from</span> cryptography.hazmat.primitives <span class="kw">import</span> hashes
+<span class="kw">import</span> base64
+
+<span class="cm"># Secure token generation</span>
+token = secrets.token_urlsafe(<span class="nm">32</span>)   <span class="cm"># 256-bit URL-safe token</span>
+
+<span class="cm"># Secure password hashing with PBKDF2</span>
+<span class="kw">def</span> <span class="fn">hash_password</span>(password: <span class="nm">str</span>) -&gt; <span class="nm">str</span>:
+    salt = secrets.token_bytes(<span class="nm">32</span>)
+    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=<span class="nm">32</span>, salt=salt, iterations=<span class="nm">480_000</span>)
+    key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
+    <span class="kw">return</span> <span class="st">f"{base64.urlsafe_b64encode(salt).decode()}:{key.decode()}"</span>
+
+<span class="cm"># Or use argon2 (preferred for passwords)</span>
+<span class="cm"># from argon2 import PasswordHasher</span>
+<span class="cm"># ph = PasswordHasher(); hash = ph.hash(password)</span></code></pre></div>
+
+<h3>SQL Injection Prevention</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># NEVER do this</span>
+cursor.execute(<span class="st">f"SELECT * FROM users WHERE id = {user_id}"</span>)  <span class="cm"># SQL injection!</span>
+
+<span class="cm"># ALWAYS use parameterized queries</span>
+cursor.execute(<span class="st">"SELECT * FROM users WHERE id = %s"</span>, (user_id,))
+<span class="cm"># SQLAlchemy ORM handles this automatically</span>
+session.query(User).filter(User.id == user_id).first()</code></pre></div>
+
+<h3>Dependency Scanning</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code"><span class="cm"># Scan for known CVEs in dependencies</span>
+pip install pip-audit
+pip-audit
+
+<span class="cm"># SAST scanning for insecure code patterns</span>
+pip install bandit
+bandit -r src/ -ll  <span class="cm"># -ll = medium and higher severity</span></code></pre></div>
+
+<div class="callout danger"><div class="ct">Never Do These</div>
+<ul>
+<li>Never use <code>MD5</code> or <code>SHA1</code> for password hashing</li>
+<li>Never use <code>random</code> for security — use <code>secrets</code></li>
+<li>Never hardcode secrets — use environment variables</li>
+<li>Never <code>pickle</code> untrusted data — use JSON</li>
+</ul>
+</div>
+
+<div class="qbox" id="q22">
+<h4>Q: Which Python module should you use for cryptographically secure random values?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q22','a')">A) <code>secrets</code></div>
+<div class="qopt" data-val="b" onclick="quiz('q22','a')">B) <code>random</code></div>
+<div class="qopt" data-val="c" onclick="quiz('q22','a')">C) <code>os.urandom</code> directly</div>
+<div class="qopt" data-val="d" onclick="quiz('q22','a')">D) <code>hashlib</code></div>
+</div>
+<div class="qfb ok">✓ Correct! The <code>secrets</code> module (Python 3.6+) is designed for security-sensitive uses. <code>random</code> is NOT cryptographically secure.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 23 ===== -->
+<div class="section" id="s23">
+<span class="badge badge-red">Production</span>
+<h2 class="t">Database Patterns &amp; SQLAlchemy</h2>
+<p class="intro">SQLAlchemy 2.x with async support is the standard for Python backends — understanding ORM pitfalls like N+1 and lazy loading is crucial.</p>
+
+<h3>SQLAlchemy 2.x ORM</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> sqlalchemy.orm <span class="kw">import</span> DeclarativeBase, Mapped, mapped_column, relationship, selectinload
+<span class="kw">from</span> sqlalchemy <span class="kw">import</span> String, Integer, ForeignKey, create_engine
+<span class="kw">from</span> sqlalchemy.orm <span class="kw">import</span> Session
+
+<span class="kw">class</span> <span class="fn">Base</span>(DeclarativeBase): <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="fn">User</span>(Base):
+    __tablename__ = <span class="st">"users"</span>
+    id: Mapped[<span class="nm">int</span>] = mapped_column(primary_key=<span class="bl">True</span>)
+    name: Mapped[<span class="nm">str</span>] = mapped_column(String(<span class="nm">50</span>))
+    orders: Mapped[<span class="nm">list</span>[<span class="st">"Order"</span>]] = relationship(back_populates=<span class="st">"user"</span>)
+
+<span class="kw">class</span> <span class="fn">Order</span>(Base):
+    __tablename__ = <span class="st">"orders"</span>
+    id: Mapped[<span class="nm">int</span>] = mapped_column(primary_key=<span class="bl">True</span>)
+    user_id: Mapped[<span class="nm">int</span>] = mapped_column(ForeignKey(<span class="st">"users.id"</span>))
+    user: Mapped[<span class="st">"User"</span>] = relationship(back_populates=<span class="st">"orders"</span>)</code></pre></div>
+
+<h3>Fixing N+1 Queries</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> sqlalchemy <span class="kw">import</span> select
+
+<span class="cm"># BAD — N+1 problem: 1 query for users + N queries for each user's orders</span>
+users = session.scalars(select(User)).all()
+<span class="kw">for</span> user <span class="kw">in</span> users:
+    <span class="nm">print</span>(user.orders)  <span class="cm"># triggers lazy load for each user!</span>
+
+<span class="cm"># GOOD — selectinload: 2 queries total (users + all orders in one query)</span>
+users = session.scalars(
+    select(User).options(selectinload(User.orders))
+).all()
+
+<span class="cm"># joinedload — single JOIN query (good for many-to-one)</span>
+orders = session.scalars(
+    select(Order).options(joinedload(Order.user))
+).all()</code></pre></div>
+
+<div class="callout warn"><div class="ct">Connection Pooling</div>Always configure connection pooling for production: <code>create_engine(url, pool_size=10, max_overflow=20, pool_pre_ping=True)</code>. <code>pool_pre_ping=True</code> validates connections before use — prevents "stale connection" errors.</div>
+
+<div class="qbox" id="q23">
+<h4>Q: What does <code>selectinload</code> do differently from <code>joinedload</code>?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q23','c')">A) It loads all related data in a single JOIN query</div>
+<div class="qopt" data-val="b" onclick="quiz('q23','c')">B) It never loads related data until accessed</div>
+<div class="qopt" data-val="c" onclick="quiz('q23','c')">C) It uses a separate SELECT with WHERE IN instead of a JOIN</div>
+<div class="qopt" data-val="d" onclick="quiz('q23','c')">D) It caches results in memory between sessions</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>selectinload</code> fires a second <code>SELECT ... WHERE IN (...)</code> query — better for one-to-many (avoids row duplication from JOIN).</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 24 ===== -->
+<div class="section" id="s24">
+<span class="badge badge-red">Production</span>
+<h2 class="t">API Development (FastAPI)</h2>
+<p class="intro">FastAPI is the leading Python web framework for APIs — its Pydantic integration, async support, and automatic OpenAPI docs make it the choice for modern services.</p>
+
+<h3>Core FastAPI Patterns</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends, HTTPException, status, BackgroundTasks
+<span class="kw">from</span> fastapi.middleware.cors <span class="kw">import</span> CORSMiddleware
+<span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+
+<span class="kw">class</span> <span class="fn">UserCreate</span>(BaseModel):
+    name: <span class="nm">str</span>
+    email: <span class="nm">str</span>
+
+<span class="kw">class</span> <span class="fn">UserResponse</span>(BaseModel):
+    id: <span class="nm">int</span>
+    name: <span class="nm">str</span>
+    email: <span class="nm">str</span>
+    model_config = {<span class="st">"from_attributes"</span>: <span class="bl">True</span>}
+
+<span class="dc">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+    <span class="cm"># startup: connect DB, warm caches</span>
+    <span class="kw">await</span> database.connect()
+    <span class="kw">yield</span>
+    <span class="cm"># shutdown: clean up</span>
+    <span class="kw">await</span> database.disconnect()
+
+app = FastAPI(lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=[<span class="st">"https://myapp.com"</span>])</code></pre></div>
+
+<h3>Dependency Injection</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code"><span class="kw">from</span> sqlalchemy.ext.asyncio <span class="kw">import</span> AsyncSession
+
+<span class="kw">async def</span> <span class="fn">get_db</span>() -&gt; AsyncSession:
+    <span class="kw">async with</span> SessionLocal() <span class="kw">as</span> session:
+        <span class="kw">yield</span> session
+
+<span class="kw">async def</span> <span class="fn">get_current_user</span>(
+    token: <span class="nm">str</span> = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db)
+) -&gt; User:
+    user = <span class="kw">await</span> verify_token(token, db)
+    <span class="kw">if not</span> user:
+        <span class="kw">raise</span> HTTPException(status_code=<span class="nm">401</span>, detail=<span class="st">"Unauthorized"</span>)
+    <span class="kw">return</span> user
+
+<span class="dc">@app.post</span>(<span class="st">"/users"</span>, response_model=UserResponse, status_code=<span class="nm">201</span>)
+<span class="kw">async def</span> <span class="fn">create_user</span>(
+    body: UserCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    tasks: BackgroundTasks = None
+):
+    user = <span class="kw">await</span> UserService.create(db, body)
+    tasks.add_task(send_welcome_email, user.email)
+    <span class="kw">return</span> user</code></pre></div>
+
+<div class="qbox" id="q24">
+<h4>Q: What is FastAPI's <code>Depends()</code> used for?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q24','b')">A) Declaring required query parameters</div>
+<div class="qopt" data-val="b" onclick="quiz('q24','b')">B) Dependency injection — automatically resolving and injecting dependencies</div>
+<div class="qopt" data-val="c" onclick="quiz('q24','b')">C) Marking a route as deprecated</div>
+<div class="qopt" data-val="d" onclick="quiz('q24','b')">D) Defining response models</div>
+</div>
+<div class="qfb ok">✓ Correct! <code>Depends()</code> is FastAPI's DI system — it resolves functions (DB sessions, auth checks) automatically and supports nested dependencies.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 25 ===== -->
+<div class="section" id="s25">
+<span class="badge badge-red">Production</span>
+<h2 class="t">Observability: Logs, Metrics, Traces</h2>
+<p class="intro">The three pillars of observability — logs, metrics, and traces — are essential for diagnosing production issues. Know how to implement all three in Python.</p>
+
+<h3>Structured Logging with structlog</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> structlog
+
+logger = structlog.get_logger()
+
+<span class="cm"># Context binding — attach fields to all subsequent logs in a request</span>
+log = logger.bind(request_id=<span class="st">"abc-123"</span>, user_id=<span class="nm">42</span>)
+log.info(<span class="st">"processing_started"</span>, items_count=<span class="nm">10</span>)
+log.warning(<span class="st">"slow_query"</span>, duration_ms=<span class="nm">450</span>, query=<span class="st">"users.list"</span>)
+
+<span class="cm"># Output: {"event":"processing_started","request_id":"abc-123","user_id":42,"items_count":10}</span></code></pre></div>
+
+<h3>Prometheus Metrics</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> prometheus_client <span class="kw">import</span> Counter, Histogram, Gauge, start_http_server
+
+request_count = Counter(<span class="st">"http_requests_total"</span>, <span class="st">"Total HTTP requests"</span>, [<span class="st">"method"</span>, <span class="st">"endpoint"</span>, <span class="st">"status"</span>])
+request_duration = Histogram(<span class="st">"http_request_duration_seconds"</span>, <span class="st">"Request duration"</span>, [<span class="st">"endpoint"</span>])
+
+<span class="dc">@app.middleware</span>(<span class="st">"http"</span>)
+<span class="kw">async def</span> <span class="fn">metrics_middleware</span>(request, call_next):
+    <span class="kw">with</span> request_duration.labels(request.url.path).time():
+        response = <span class="kw">await</span> call_next(request)
+    request_count.labels(<span class="st">"GET"</span>, request.url.path, response.status_code).inc()
+    <span class="kw">return</span> response</code></pre></div>
+
+<h3>OpenTelemetry Tracing</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> opentelemetry <span class="kw">import</span> trace
+<span class="kw">from</span> opentelemetry.sdk.trace <span class="kw">import</span> TracerProvider
+<span class="kw">from</span> opentelemetry.instrumentation.fastapi <span class="kw">import</span> FastAPIInstrumentor
+
+provider = TracerProvider()
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer(__name__)
+
+FastAPIInstrumentor.instrument_app(app)  <span class="cm"># auto-instrument all routes</span>
+
+<span class="cm"># Manual span</span>
+<span class="kw">with</span> tracer.start_as_current_span(<span class="st">"process_payment"</span>) <span class="kw">as</span> span:
+    span.set_attribute(<span class="st">"payment.amount"</span>, amount)
+    span.set_attribute(<span class="st">"payment.currency"</span>, currency)
+    result = <span class="kw">await</span> process()</code></pre></div>
+
+<div class="qbox" id="q25">
+<h4>Q: What does OpenTelemetry provide?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q25','a')">A) Vendor-neutral APIs and SDKs for traces, metrics, and logs</div>
+<div class="qopt" data-val="b" onclick="quiz('q25','a')">B) A proprietary monitoring dashboard</div>
+<div class="qopt" data-val="c" onclick="quiz('q25','a')">C) Python-specific logging utilities</div>
+<div class="qopt" data-val="d" onclick="quiz('q25','a')">D) Only distributed tracing — not metrics or logs</div>
+</div>
+<div class="qfb ok">✓ Correct! OpenTelemetry is a CNCF project providing vendor-neutral observability — you instrument once and export to any backend (Jaeger, Zipkin, Datadog, etc.).</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 26 ===== -->
+<div class="section" id="s26">
+<span class="badge badge-purple">Architecture</span>
+<h2 class="t">Architecture Patterns at Scale</h2>
+<p class="intro">Architect-level interviews focus on system design — Clean Architecture, DDD, CQRS, Event Sourcing, and microservices patterns in Python.</p>
+
+<h3>Clean / Hexagonal Architecture</h3>
+<div class="diagram"><span class="hl">Domain Layer</span> (core business logic — no framework deps)
+    ↕
+<span class="hl2">Application Layer</span> (use cases / services)
+    ↕
+<span class="hl3">Infrastructure Layer</span> (DB, HTTP, messaging — implements interfaces)
+    ↕
+<span class="hl">Ports &amp; Adapters</span> (FastAPI = adapter, SQLAlchemy = adapter)</div>
+
+<div class="cw"><button class="cp">Copy</button><pre><code"><span class="cm"># Domain — pure Python, no framework</span>
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+<span class="dc">@dataclass</span>
+<span class="kw">class</span> <span class="fn">Order</span>:
+    id: <span class="nm">str</span>
+    items: <span class="nm">list</span>
+    <span class="kw">def</span> <span class="fn">total</span>(<span class="nm">self</span>): <span class="kw">return</span> sum(i.price <span class="kw">for</span> i <span class="kw">in</span> <span class="nm">self</span>.items)
+
+<span class="cm"># Port (interface)</span>
+<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+<span class="kw">class</span> <span class="fn">OrderRepository</span>(ABC):
+    <span class="dc">@abstractmethod</span>
+    <span class="kw">async def</span> <span class="fn">save</span>(<span class="nm">self</span>, order: Order): ...
+
+<span class="cm"># Adapter (SQLAlchemy implementation)</span>
+<span class="kw">class</span> <span class="fn">SqlOrderRepository</span>(OrderRepository):
+    <span class="kw">async def</span> <span class="fn">save</span>(<span class="nm">self</span>, order: Order):
+        <span class="kw">await</span> self.db.add(OrderModel.from_domain(order))</code></pre></div>
+
+<h3>CQRS Pattern</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Command — mutates state, returns nothing (or minimal ack)</span>
+<span class="dc">@dataclass</span>
+<span class="kw">class</span> <span class="fn">CreateOrderCommand</span>:
+    user_id: <span class="nm">str</span>
+    items: <span class="nm">list</span>
+
+<span class="cm"># Query — reads state, no side effects</span>
+<span class="dc">@dataclass</span>
+<span class="kw">class</span> <span class="fn">GetOrderQuery</span>:
+    order_id: <span class="nm">str</span>
+
+<span class="cm"># Separate read/write models — write uses ORM, read uses raw SQL for performance</span>
+<span class="kw">class</span> <span class="fn">OrderCommandHandler</span>:
+    <span class="kw">async def</span> <span class="fn">handle</span>(<span class="nm">self</span>, cmd: CreateOrderCommand): ...
+
+<span class="kw">class</span> <span class="fn">OrderQueryHandler</span>:
+    <span class="kw">async def</span> <span class="fn">handle</span>(<span class="nm">self</span>, q: GetOrderQuery): ...</code></pre></div>
+
+<div class="qbox" id="q26">
+<h4>Q: Hexagonal Architecture is also known as…</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q26','c')">A) MVC Architecture</div>
+<div class="qopt" data-val="b" onclick="quiz('q26','c')">B) Layered Architecture</div>
+<div class="qopt" data-val="c" onclick="quiz('q26','c')">C) Ports &amp; Adapters Architecture</div>
+<div class="qopt" data-val="d" onclick="quiz('q26','c')">D) Event-Driven Architecture</div>
+</div>
+<div class="qfb ok">✓ Correct! Hexagonal Architecture (coined by Alistair Cockburn) = Ports &amp; Adapters. The domain defines ports (interfaces), and infrastructure provides adapters.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 27 ===== -->
+<div class="section" id="s27">
+<span class="badge badge-purple">Architecture</span>
+<h2 class="t">Anti-patterns &amp; Wrap-up</h2>
+<p class="intro">Knowing what NOT to do is as important as knowing best practices — these anti-patterns are common Python gotchas that interviewers love to probe.</p>
+
+<h3>Top Python Anti-patterns</h3>
+<table><thead><tr><th>Anti-pattern</th><th>Problem</th><th>Fix</th></tr></thead><tbody>
+<tr><td>Mutable default argument</td><td><code>def f(x=[])</code> — shared across calls</td><td><code>def f(x=None): x = x or []</code></td></tr>
+<tr><td>Bare <code>except:</code></td><td>Catches <code>SystemExit</code>, <code>KeyboardInterrupt</code></td><td><code>except Exception as e:</code></td></tr>
+<tr><td>Global state</td><td>Hard to test, thread-unsafe</td><td>Dependency injection</td></tr>
+<tr><td>Late binding closures</td><td><code>lambda: i</code> in loop captures final value</td><td><code>lambda i=i: i</code></td></tr>
+<tr><td>Blocking in async</td><td><code>time.sleep()</code> in coroutine freezes event loop</td><td><code>await asyncio.sleep()</code></td></tr>
+<tr><td>God class</td><td>One class does everything</td><td>Single Responsibility Principle</td></tr>
+<tr><td>Not using <code>with</code></td><td>File/resource leaks</td><td>Always use context managers</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># ANTI-PATTERN: mutable default argument</span>
+<span class="kw">def</span> <span class="fn">bad_append</span>(item, lst=[]):
+    lst.append(item)
+    <span class="kw">return</span> lst
+
+bad_append(<span class="nm">1</span>)  <span class="cm"># [1]</span>
+bad_append(<span class="nm">2</span>)  <span class="cm"># [1, 2] — NOT [2]! lst is shared</span>
+
+<span class="cm"># FIX</span>
+<span class="kw">def</span> <span class="fn">good_append</span>(item, lst=<span class="bl">None</span>):
+    <span class="kw">if</span> lst <span class="kw">is None</span>: lst = []
+    lst.append(item)
+    <span class="kw">return</span> lst
+
+<span class="cm"># ANTI-PATTERN: late binding closure in loop</span>
+funcs = [<span class="kw">lambda</span>: i <span class="kw">for</span> i <span class="kw">in</span> <span class="bl">range</span>(<span class="nm">5</span>)]
+<span class="nm">print</span>([f() <span class="kw">for</span> f <span class="kw">in</span> funcs])  <span class="cm"># [4, 4, 4, 4, 4] — oops!</span>
+
+<span class="cm"># FIX: capture i at definition time</span>
+funcs = [<span class="kw">lambda</span> i=i: i <span class="kw">for</span> i <span class="kw">in</span> <span class="bl">range</span>(<span class="nm">5</span>)]
+<span class="nm">print</span>([f() <span class="kw">for</span> f <span class="kw">in</span> funcs])  <span class="cm"># [0, 1, 2, 3, 4]</span></code></pre></div>
+
+<h3>Interview Preparation Checklist</h3>
+<div class="callout success"><div class="ct">You're Ready When You Can...</div>
+<ul>
+<li>Explain the GIL and when to use threads vs processes vs asyncio</li>
+<li>Implement a descriptor, metaclass, and context manager from scratch</li>
+<li>Write a parameterized decorator with <code>@wraps</code></li>
+<li>Fix an N+1 query problem in SQLAlchemy</li>
+<li>Design a FastAPI service with DI, auth, and proper error handling</li>
+<li>Profile a slow function and propose optimizations</li>
+<li>Explain Clean/Hexagonal Architecture and why it matters</li>
+<li>Write pytest fixtures with appropriate scope levels</li>
+</ul>
+</div>
+
+<div class="qbox" id="q27">
+<h4>Q: What is the mutable default argument anti-pattern's root cause?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q27','b')">A) Python copies default arguments on each call</div>
+<div class="qopt" data-val="b" onclick="quiz('q27','b')">B) Default argument objects are created once at function definition, not per call</div>
+<div class="qopt" data-val="c" onclick="quiz('q27','b')">C) Lists in Python are always global</div>
+<div class="qopt" data-val="d" onclick="quiz('q27','b')">D) The <code>append</code> method modifies its argument in place</div>
+</div>
+<div class="qfb ok">✓ Correct! Default argument values are evaluated once when the function is defined. The same list object is reused across all calls — mutations persist.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+</main>
+</div>
+<script>
+const TOTAL=28;
+let cur=0,done=new Set();
+function goTo(i){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s'+i).classList.add('active');
+  document.getElementById('n'+i).classList.add('active');
+  done.add(cur);
+  document.getElementById('c'+cur).textContent='✓';
+  document.getElementById('n'+cur).classList.add('done');
+  cur=i;
+  updatePB();
+  window.scrollTo(0,0);
+}
+function updatePB(){
+  const p=Math.round(done.size/TOTAL*100);
+  document.getElementById('pb').style.width=p+'%';
+  document.getElementById('pbl').textContent=done.size+' of '+TOTAL+' completed';
+}
+function prev(){if(cur>0)goTo(cur-1);}
+function next(){if(cur<TOTAL-1)goTo(cur+1);}
+document.querySelectorAll('.cp').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const pre=b.nextElementSibling;
+    const code=pre?pre.textContent:'';
+    navigator.clipboard.writeText(code).then(()=>{b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);});
+  });
+});
+function quiz(id,correct){
+  const box=document.getElementById(id);
+  box.querySelectorAll('.qopt').forEach(o=>{
+    o.classList.add('disabled');
+    if(o.dataset.val===correct)o.classList.add('correct');
+    else o.classList.add('wrong');
+  });
+  const fb=box.querySelector('.qfb');
+  if(fb)fb.classList.add('show');
+}
+</script>
+</body>
+</html>
