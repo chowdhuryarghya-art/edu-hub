@@ -8,24 +8,47 @@ import ReadinessDashboard from './pages/ReadinessDashboard';
 import SystemDesignCanvas from './pages/SystemDesignCanvas';
 import CodeEditor from './pages/CodeEditor';
 import CommandPalette from './components/CommandPalette';
+import ProUpgradeModal from './components/ProUpgradeModal';
+import PreferenceModal from './components/PreferenceModal';
+import { UserPreferenceProvider } from './context/UserPreferenceContext';
 import './App.css';
 
 export default function App() {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isProOpen, setIsProOpen] = useState(false);
 
   return (
-    <div className="app-shell">
-      <CommandPalette isOpen={isCommandOpen} onClose={setIsCommandOpen} />
-      
-      <Routes>
-        <Route path="/" element={<Home onOpenCommand={() => setIsCommandOpen(true)} />} />
-        <Route path="/track/:trackId" element={<TutorialViewer />} />
-        <Route path="/system-design-canvas" element={<SystemDesignCanvas />} />
-        <Route path="/interview-arena" element={<InterviewArena />} />
-        <Route path="/cheatsheets" element={<CheatSheetBuilder />} />
-        <Route path="/readiness" element={<ReadinessDashboard />} />
-        <Route path="/code-editor" element={<CodeEditor />} />
-      </Routes>
-    </div>
+    <UserPreferenceProvider>
+      <div className="app-shell">
+        <CommandPalette 
+          isOpen={isCommandOpen} 
+          onClose={setIsCommandOpen} 
+          onOpenPro={() => setIsProOpen(true)}
+        />
+        <ProUpgradeModal 
+          isOpen={isProOpen} 
+          onClose={() => setIsProOpen(false)} 
+        />
+        <PreferenceModal />
+        
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <Home 
+                onOpenCommand={() => setIsCommandOpen(true)} 
+                onOpenPro={() => setIsProOpen(true)}
+              />
+            } 
+          />
+          <Route path="/track/:trackId" element={<TutorialViewer />} />
+          <Route path="/system-design-canvas" element={<SystemDesignCanvas onOpenPro={() => setIsProOpen(true)} />} />
+          <Route path="/interview-arena" element={<InterviewArena onOpenPro={() => setIsProOpen(true)} />} />
+          <Route path="/cheatsheets" element={<CheatSheetBuilder onOpenPro={() => setIsProOpen(true)} />} />
+          <Route path="/readiness" element={<ReadinessDashboard onOpenPro={() => setIsProOpen(true)} />} />
+          <Route path="/code-editor" element={<CodeEditor onOpenPro={() => setIsProOpen(true)} />} />
+        </Routes>
+      </div>
+    </UserPreferenceProvider>
   );
 }

@@ -15,11 +15,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 48px;
+  min-height: 48px;
   background-color: #0f172a;
   border-bottom: 1px solid #1e293b;
   padding: 0 16px;
   z-index: 20;
+  overflow-x: auto;
+  gap: 12px;
 }
 
 .drawio-top-left {
@@ -168,13 +170,22 @@
 .drawio-ribbon-bar {
   display: flex;
   align-items: center;
-  height: 44px;
+  min-height: 44px;
   background-color: #131b2e;
   border-bottom: 1px solid #1e293b;
   padding: 0 16px;
   gap: 12px;
   overflow-x: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
   z-index: 15;
+}
+.drawio-ribbon-bar::-webkit-scrollbar {
+  height: 3px;
+}
+.drawio-ribbon-bar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
 }
 
 .ribbon-tool-group {

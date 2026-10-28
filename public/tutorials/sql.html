@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL &amp; Relational Databases – Zero to Advanced Mastery</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 290px; min-width: 290px; background: #162032; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 900px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #28354d; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #e6edf3; }
+  #sidebar-header p { font-size: 11px; color: #8b949e; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #28354d; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #38bdf8; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #8b949e; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8b949e; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #8b949e; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #1e2c44; color: #e6edf3; }
+  .nav-item.active { background: #1e2c44; color: #38bdf8; border-left-color: #38bdf8; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #28354d; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #0284c7; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #0b1120; color: #e2e8f0; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #1e293b; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #f1f5f9; color: #0369a1; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #0284c7; background: #f0f9ff; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #0369a1; }
+  .callout.warn .callout-title { color: #b45309; }
+  .callout.success .callout-title { color: #047857; }
+  table.data-table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th { background: #f1f5f9; text-align: left; padding: 8px 12px; font-size: 12px; text-transform: uppercase; color: #475569; border: 1px solid #e2e8f0; font-weight: 700; }
+  table.data-table td { padding: 8px 12px; border: 1px solid #e2e8f0; }
+  table.data-table tr:nth-child(even) td { background: #f8fafc; }
+  
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #0284c7; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+  
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #0284c7; color: #fff; }
+  .btn-primary:hover { background: #0369a1; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🗄️ SQL &amp; Databases</h1>
+    <p>Theory, Code Examples &amp; Q&amp;A Mastery</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 12 completed</div>
+  </div>
+  <div class="nav-section">Part 1: Fundamentals</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> Relational Architecture</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> DDL Commands &amp; Constraints</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> DML: Insert, Update, Delete</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Filtering, Pattern Matching &amp; NULLs</div>
+  <div class="nav-section">Part 2: Joins &amp; Aggregations</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Multi-Table JOINs (Inner/Outer)</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Self Joins &amp; Cross Joins</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> GROUP BY, HAVING &amp; Aggregates</div>
+  <div class="nav-section">Part 3: Advanced Queries</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Subqueries &amp; Nested Queries</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Common Table Expressions (CTEs)</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> Window Functions (ROW_NUMBER, RANK)</div>
+  <div class="nav-section">Part 4: Database Design</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Normalization (1NF, 2NF, 3NF, BCNF)</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> Indexes, ACID &amp; Transactions</div>
+</nav>
+
+<main id="main">
+  <!-- Module 1 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1</span>
+    <h2 class="section-title">Relational Model &amp; Database Architecture</h2>
+    <p class="section-intro">Understand relations, tuples, attributes, domain constraints, and primary vs foreign keys.</p>
+
+    <h3>1. Theory &amp; Architectural Concepts</h3>
+    <p>A <strong>Relational Database Management System (RDBMS)</strong> organizes information into structured two-dimensional tables called <em>Relations</em>. In formal relational theory (introduced by E.F. Codd):</p>
+    <ul>
+      <li><strong>Relation (Table):</strong> A set of unordered rows sharing the same column definitions.</li>
+      <li><strong>Tuple (Row / Record):</strong> A single entity instance containing concrete attribute values.</li>
+      <li><strong>Attribute (Column / Field):</strong> A named property with an enforced data type and domain constraint.</li>
+      <li><strong>Degree:</strong> The total number of columns in a table.</li>
+      <li><strong>Cardinality:</strong> The total number of rows in a table.</li>
+    </ul>
+
+    <div class="callout success">
+      <div class="callout-title">The Three Fundamental Integrity Rules</div>
+      <ul>
+        <li><strong>Entity Integrity:</strong> Every table must have a Primary Key; primary key columns cannot contain <code>NULL</code> and must be unique.</li>
+        <li><strong>Referential Integrity:</strong> A Foreign Key value in a child table must match an existing Primary Key in the parent table or be explicitly set to <code>NULL</code>.</li>
+        <li><strong>Domain Integrity:</strong> Every column entry must be valid according to its defined type and range constraints (e.g. <code>age INT CHECK (age &gt;= 0)</code>).</li>
+      </ul>
+    </div>
+
+    <h3>2. Implementation Example</h3>
+    <pre><code>-- Relational Schema: Departments (Parent) and Students (Child)
+CREATE TABLE departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    grade DECIMAL(4, 2) CHECK (grade >= 0.0 AND grade <= 100.0),
+    dept_id INT,
+    CONSTRAINT fk_student_dept FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What happens if you try to insert a student with a dept_id that does not exist in departments?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> The RDBMS rejects the query with a <em>Foreign Key / Referential Integrity Violation</em>. This protects the database from having "orphaned records" pointing to non-existent departments.
+        </div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q2: What is the difference between a Candidate Key, Primary Key, and Alternate Key?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> 
+          <ul>
+            <li><strong>Candidate Key:</strong> Any minimal column or combination of columns that uniquely identifies each row.</li>
+            <li><strong>Primary Key:</strong> The specific candidate key chosen by the database architect as the main identifier.</li>
+            <li><strong>Alternate Key:</strong> All remaining candidate keys that were not chosen as the Primary Key (often assigned a <code>UNIQUE</code> constraint).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2</span>
+    <h2 class="section-title">Data Definition Language (DDL) Commands &amp; Constraints</h2>
+    <p class="section-intro">Creating, altering, truncating, and dropping database objects with strict schema constraints.</p>
+
+    <h3>1. Theory &amp; Mechanics</h3>
+    <p>DDL statements manage the structure/schema of database objects rather than the data records themselves. DDL operations are implicitly committed in most relational engines (such as MySQL/Oracle) and cannot be rolled back.</p>
+
+    <table class="data-table">
+      <tr><th>DDL Command</th><th>Operation</th><th>Behavior</th></tr>
+      <tr><td><code>CREATE TABLE</code></td><td>Build new schema</td><td>Allocates table metadata and creates column definitions.</td></tr>
+      <tr><td><code>ALTER TABLE</code></td><td>Modify schema</td><td>Adds, modifies, or drops columns and constraint definitions.</td></tr>
+      <tr><td><code>DROP TABLE</code></td><td>Destroy table</td><td>Deletes both data records and the entire table schema definition permanently.</td></tr>
+      <tr><td><code>TRUNCATE TABLE</code></td><td>Fast purge</td><td>Deletes all rows by deallocating data pages; resets auto-increment counters. Faster than <code>DELETE</code>.</td></tr>
+    </table>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- 1. Create table with complete constraints
+CREATE TABLE courses (
+    course_id VARCHAR(10) PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    credits INT DEFAULT 3 CHECK (credits BETWEEN 1 AND 6),
+    dept_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id) ON DELETE CASCADE
+);
+
+-- 2. Alter existing schema: Add a new column and index
+ALTER TABLE courses ADD COLUMN syllabus_url VARCHAR(255);
+ALTER TABLE courses MODIFY COLUMN course_name VARCHAR(150);</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What is the crucial difference between DROP, TRUNCATE, and DELETE?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong>
+          <ul>
+            <li><code>DELETE</code> (DML): Deletes specific rows row-by-row; can be rolled back inside a transaction; triggers fire; does not reset auto-increment.</li>
+            <li><code>TRUNCATE</code> (DDL): Deallocates all data pages in one operation; resets auto-increment; cannot be rolled back in MySQL; retains table structure.</li>
+            <li><code>DROP</code> (DDL): Completely destroys both data and table structure definition from the data dictionary.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3</span>
+    <h2 class="section-title">Data Manipulation Language (DML): Insert, Update, Delete</h2>
+    <p class="section-intro">CRUD operations, bulk insertion, safe conditional updates, and transactional row mutations.</p>
+
+    <h3>1. Theory &amp; Concepts</h3>
+    <p>DML manages data records stored inside tables. Unlike DDL, DML statements operate inside transactions and can be explicitly committed or rolled back using <code>COMMIT</code> and <code>ROLLBACK</code>.</p>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- 1. Bulk Insertion
+INSERT INTO students (student_id, name, grade, dept_id) VALUES
+    (101, 'Aarav Mehta', 92.5, 1),
+    (102, 'Diya Sen', 88.0, 2),
+    (103, 'Kabir Khan', 74.5, 1);
+
+-- 2. Safe Conditional Update with WHERE clause
+UPDATE students
+SET grade = grade + 2.0
+WHERE dept_id = 1 AND grade <= 90.0;
+
+-- 3. Targeted Deletion
+DELETE FROM students
+WHERE grade < 40.0;</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: Why is executing UPDATE or DELETE without a WHERE clause extremely dangerous?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> An <code>UPDATE</code> or <code>DELETE</code> statement without a <code>WHERE</code> clause will apply to <strong>every single row in the table</strong>, potentially corrupting or erasing all production records. Modern SQL clients (like MySQL Workbench) enable "Safe Update Mode" (<code>sql_safe_updates = 1</code>) to reject such queries by default.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4</span>
+    <h2 class="section-title">Query Filtering, Pattern Matching &amp; NULL Handling</h2>
+    <p class="section-intro">Master WHERE conditions, IN, BETWEEN, LIKE wildcards, and Three-Valued Logic with IS NULL.</p>
+
+    <h3>1. Theory: SQL Three-Valued Logic (3VL)</h3>
+    <p>In SQL, <code>NULL</code> represents missing or unknown information. As a result, comparisons with <code>NULL</code> evaluate to <strong>UNKNOWN</strong> rather than <code>TRUE</code> or <code>FALSE</code>:</p>
+    <ul>
+      <li><code>NULL = NULL</code> evaluates to <strong>UNKNOWN</strong> (not TRUE!).</li>
+      <li>To test for null values, you must always use <code>IS NULL</code> or <code>IS NOT NULL</code>.</li>
+      <li>Use <code>COALESCE(col, fallback)</code> to supply a default value when a column contains <code>NULL</code>.</li>
+    </ul>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Filtering with IN, BETWEEN, and Wildcard Pattern Matching
+SELECT name, grade, city
+FROM students
+WHERE (grade BETWEEN 80.0 AND 95.0)
+  AND city IN ('New York', 'Mumbai', 'Toronto')
+  AND name LIKE 'A%'              -- Names starting with 'A'
+  AND scholarship_amt IS NOT NULL; -- Correct NULL check</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What is the difference between '%' and '_' wildcards in the LIKE operator?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong>
+          <ul>
+            <li><code>%</code> matches <strong>zero or more characters</strong> (e.g. <code>'S%'</code> matches 'Sam', 'Steve', 'S').</li>
+            <li><code>_</code> matches <strong>exactly one single character</strong> (e.g. <code>'B_b'</code> matches 'Bob', 'Bib', but NOT 'Blob').</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5</span>
+    <h2 class="section-title">Multi-Table Relational JOINs (Inner &amp; Outer)</h2>
+    <p class="section-intro">INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN with Venn diagram mechanics.</p>
+
+    <h3>1. Theory: The JOIN Family</h3>
+    <ul>
+      <li><strong>INNER JOIN:</strong> Returns rows when there is a match in <em>both</em> tables.</li>
+      <li><strong>LEFT (OUTER) JOIN:</strong> Returns all rows from the left table, plus matched rows from the right table (unmatched right columns fill with <code>NULL</code>).</li>
+      <li><strong>RIGHT (OUTER) JOIN:</strong> Returns all rows from the right table, plus matched rows from the left table.</li>
+      <li><strong>FULL OUTER JOIN:</strong> Returns rows when there is a match in either table.</li>
+    </ul>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Find all students and their department names (including students with no department)
+SELECT 
+    s.student_id, 
+    s.name AS student_name, 
+    COALESCE(d.dept_name, 'Undeclared') AS department
+FROM students s
+LEFT JOIN departments d ON s.dept_id = d.dept_id
+ORDER BY s.student_id;</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: How do you find records in Table A that have NO corresponding match in Table B using a LEFT JOIN?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> Perform a <code>LEFT JOIN</code> from Table A to Table B on the foreign key, and add a <code>WHERE B.primary_key IS NULL</code> clause (known as an Anti-Join pattern).
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6</span>
+    <h2 class="section-title">Self Joins, Cross Joins &amp; Hierarchical Queries</h2>
+    <p class="section-intro">Joining a table to itself using aliases for employee-manager hierarchies and Cartesian products.</p>
+
+    <h3>1. Theory &amp; Concepts</h3>
+    <p>A <strong>Self Join</strong> is a regular join where a table is joined with itself. It is the classic pattern for querying hierarchical and parent-child tree data structures stored in a single table (e.g. employee reporting to manager).</p>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Employee and Manager Hierarchy Query via Self Join
+SELECT 
+    e.emp_name AS employee,
+    e.role AS employee_role,
+    COALESCE(m.emp_name, 'Top Level Executive') AS manager_name
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.emp_id;</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What is a CROSS JOIN and what is its output cardinality?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> A <code>CROSS JOIN</code> produces the Cartesian Product of two tables. If Table A has $M$ rows and Table B has $N$ rows, the CROSS JOIN produces exactly $M \times N$ rows.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7</span>
+    <h2 class="section-title">GROUP BY, HAVING &amp; Aggregate Functions</h2>
+    <p class="section-intro">COUNT, SUM, AVG, MIN, MAX, grouping buckets, and WHERE vs HAVING filtering order.</p>
+
+    <h3>1. Theory: Query Execution Order</h3>
+    <p>Understanding the internal order in which SQL executes clauses is critical for writing correct aggregates:</p>
+    <pre><code>1. FROM &amp; JOINs    (identifies working table dataset)
+2. WHERE           (filters raw rows BEFORE grouping)
+3. GROUP BY        (collapses rows into aggregate buckets)
+4. HAVING          (filters grouped buckets AFTER aggregation)
+5. SELECT          (computes projections and aliases)
+6. DISTINCT        (removes duplicate result rows)
+7. ORDER BY        (sorts final output)
+8. LIMIT / OFFSET  (paginates result set)</code></pre>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Find departments with at least 2 students and an average grade above 80
+SELECT 
+    d.dept_name,
+    COUNT(s.student_id) AS total_students,
+    ROUND(AVG(s.grade), 2) AS avg_grade
+FROM departments d
+JOIN students s ON d.dept_id = s.dept_id
+WHERE s.grade >= 50.0  -- Filter individual failing rows first
+GROUP BY d.dept_name
+HAVING COUNT(s.student_id) >= 2 AND AVG(s.grade) > 80.0
+ORDER BY avg_grade DESC;</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: Why can't you use WHERE AVG(grade) > 80.0?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> The <code>WHERE</code> clause evaluates row-by-row <em>before</em> any grouping occurs. Aggregate functions (like <code>AVG</code>, <code>COUNT</code>, <code>SUM</code>) operate on grouped sets of rows, which only exist after <code>GROUP BY</code>. Therefore, aggregate filtering must be placed in the <code>HAVING</code> clause.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8</span>
+    <h2 class="section-title">Subqueries &amp; Nested Queries (Scalar &amp; Correlated)</h2>
+    <p class="section-intro">Single-row, multi-row (IN/ANY/ALL), and correlated subqueries with EXISTS and NOT EXISTS.</p>
+
+    <h3>1. Theory: Scalar vs Correlated Subqueries</h3>
+    <ul>
+      <li><strong>Independent / Scalar Subquery:</strong> Executes once independently; its result is passed to the outer query.</li>
+      <li><strong>Correlated Subquery:</strong> References a column from the outer query table ($e.dept\_id = d.dept\_id$). It re-executes for <em>every candidate row</em> in the outer query.</li>
+    </ul>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Find students whose grade is above their own department's average grade
+SELECT s.name, s.grade, s.dept_id
+FROM students s
+WHERE s.grade > (
+    SELECT AVG(inner_s.grade)
+    FROM students inner_s
+    WHERE inner_s.dept_id = s.dept_id  -- Correlated reference!
+);</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: Why is EXISTS generally faster than IN for checking record existence in large tables?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> <code>EXISTS</code> utilizes short-circuit evaluation: as soon as the query planner finds the first matching row, it immediately returns <code>TRUE</code> without scanning the rest of the subquery table. Additionally, <code>EXISTS</code> handles <code>NULL</code> values safely without unexpected truth-table pitfalls.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9</span>
+    <h2 class="section-title">Common Table Expressions (CTEs) &amp; Recursive Queries</h2>
+    <p class="section-intro">WITH clause syntax, modular query composition, and recursive tree traversal for organizational charts.</p>
+
+    <h3>1. Theory: Why use CTEs?</h3>
+    <p>A Common Table Expression (CTE) defines a temporary named result set available within the execution scope of a single <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code>. CTEs dramatically improve readability over deeply nested subqueries and enable recursion.</p>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- CTE to calculate department statistics and filter top departments
+WITH DeptStats AS (
+    SELECT 
+        dept_id,
+        COUNT(*) AS student_count,
+        AVG(grade) AS avg_dept_grade
+    FROM students
+    GROUP BY dept_id
+),
+HighPerformingDepts AS (
+    SELECT dept_id 
+    FROM DeptStats 
+    WHERE avg_dept_grade > 85.0
+)
+SELECT s.name, s.grade, d.dept_name
+FROM students s
+JOIN departments d ON s.dept_id = d.dept_id
+WHERE s.dept_id IN (SELECT dept_id FROM HighPerformingDepts);</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What are the two essential components of a RECURSIVE CTE?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> An <strong>Anchor Member</strong> (initial base query that starts the recursion) combined via <code>UNION ALL</code> with a <strong>Recursive Member</strong> (a query that references the CTE name and includes an exit termination condition).
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 10 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10</span>
+    <h2 class="section-title">Window Functions: ROW_NUMBER, RANK, DENSE_RANK &amp; LEAD/LAG</h2>
+    <p class="section-intro">OVER clause, PARTITION BY, ORDER BY frame specifications, and running totals.</p>
+
+    <h3>1. Theory &amp; Concepts</h3>
+    <p>Unlike <code>GROUP BY</code> (which collapses rows into a single summary row), <strong>Window Functions</strong> compute calculations across a set of related table rows while <em>retaining individual row identities</em> in the final output.</p>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- Ranking students within their respective departments
+SELECT 
+    name,
+    dept_id,
+    grade,
+    ROW_NUMBER() OVER(PARTITION BY dept_id ORDER BY grade DESC) AS row_num,
+    RANK() OVER(PARTITION BY dept_id ORDER BY grade DESC) AS rank_pos,
+    DENSE_RANK() OVER(PARTITION BY dept_id ORDER BY grade DESC) AS dense_rank_pos,
+    LAG(grade, 1) OVER(PARTITION BY dept_id ORDER BY grade DESC) AS next_higher_grade
+FROM students;</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What is the exact difference between RANK() and DENSE_RANK() when there are ties?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong>
+          <ul>
+            <li><code>RANK()</code> leaves gaps in numbering after ties. For tied scores at rank 1, ranks become: <code>1, 1, 3, 4</code>.</li>
+            <li><code>DENSE_RANK()</code> does NOT leave gaps. For tied scores at rank 1, ranks become: <code>1, 1, 2, 3</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 11 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11</span>
+    <h2 class="section-title">Database Normalization: 1NF, 2NF, 3NF &amp; BCNF</h2>
+    <p class="section-intro">Eliminating insertion, update, and deletion anomalies through functional dependency decomposition.</p>
+
+    <h3>1. Theory &amp; Normal Form Progression</h3>
+    <table class="data-table">
+      <tr><th>Normal Form</th><th>Requirement &amp; Rule</th><th>Anomaly Eliminated</th></tr>
+      <tr><td><strong>1NF (First Normal Form)</strong></td><td>Atomic values only; no repeating groups or arrays.</td><td>Multi-valued entry anomalies.</td></tr>
+      <tr><td><strong>2NF (Second Normal Form)</strong></td><td>Must be in 1NF + No <em>Partial Dependency</em> (every non-key attribute must depend on the whole composite primary key).</td><td>Redundancy in composite key tables.</td></tr>
+      <tr><td><strong>3NF (Third Normal Form)</strong></td><td>Must be in 2NF + No <em>Transitive Dependency</em> (non-key attributes must not determine other non-key attributes).</td><td>Transitive update anomalies.</td></tr>
+      <tr><td><strong>BCNF (Boyce-Codd NF)</strong></td><td>For every functional dependency $X \rightarrow Y$, $X$ must be a super key.</td><td>Anomalies where candidate keys overlap.</td></tr>
+    </table>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What is a Transitive Dependency?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> An indirect functional dependency where column A determines column B, and column B determines column C ($A \rightarrow B \rightarrow C$). In 3NF, column C must be moved to a separate table where B is the primary key.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 12 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12</span>
+    <h2 class="section-title">Database Indexing, ACID Properties &amp; Transactions</h2>
+    <p class="section-intro">B-Tree vs Hash indexes, query execution plans (EXPLAIN), and isolation levels.</p>
+
+    <h3>1. Theory: The ACID Principles</h3>
+    <ul>
+      <li><strong>Atomicity:</strong> "All or nothing" — all statements in a transaction succeed, or the entire transaction is rolled back.</li>
+      <li><strong>Consistency:</strong> The database transitions from one valid state to another, preserving all schema constraints.</li>
+      <li><strong>Isolation:</strong> Concurrent transactions execute independently without interfering with one another (Read Committed, Repeatable Read, Serializable).</li>
+      <li><strong>Durability:</strong> Once committed, transaction writes survive power losses and crashes via Write-Ahead Logging (WAL).</li>
+    </ul>
+
+    <h3>2. Code Example</h3>
+    <pre><code>-- B-Tree Index Creation & EXPLAIN Query Analysis
+CREATE INDEX idx_student_dept_grade ON students(dept_id, grade);
+
+-- Transaction Block Demo
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 500 WHERE account_id = 101;
+UPDATE accounts SET balance = balance + 500 WHERE account_id = 202;
+COMMIT; -- Permanently saves changes</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Concept Q&amp;A / Knowledge Check</div>
+      
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: Why doesn't adding an index on every single column improve performance?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <strong>Answer:</strong> While indexes accelerate read queries (<code>SELECT</code>), every additional index imposes write overhead during <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> operations because the RDBMS must rebalance the B-Tree index structures on disk.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-title">🎉 Track Completed!</div>
+      <p>Test your queries live in the in-browser <a href="/code-editor" style="color: #0284c7; font-weight: bold;">SQL Playground</a>!</p>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(11)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 12;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(headerEl) {
+    const body = headerEl.nextElementSibling;
+    const icon = headerEl.querySelector('.icon');
+    if (body) {
+      body.classList.toggle('open');
+      if (icon) icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+    }
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ &amp; Data Structures &amp; Algorithms – Comprehensive Engineering Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 300px; min-width: 300px; background: #0f172a; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 920px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #1e293b; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #f8fafc; }
+  #sidebar-header p { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #1e293b; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #3b82f6; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #94a3b8; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #94a3b8; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #1e293b; color: #f8fafc; }
+  .nav-item.active { background: #1e293b; color: #93c5fd; border-left-color: #3b82f6; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #1e293b; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #2563eb; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #0f172a; color: #f1f5f9; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #1e293b; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #f1f5f9; color: #334155; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #3b82f6; background: #eff6ff; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #1d4ed8; }
+  .callout.warn .callout-title { color: #b45309; }
+  .callout.success .callout-title { color: #047857; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  table.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th, table.data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #2563eb; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>⚡ C++ &amp; DSA Mastery</h1>
+    <p>Competitive Programming &amp; Core DSA</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 14 completed</div>
+  </div>
+  <div class="nav-section">Curriculum Modules</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> Fast I/O &amp; Compilation</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Pointers, Memory &amp; Smart Ptrs</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> OOP, RAII &amp; Move Semantics</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> STL Vectors, Deque &amp; Iterators</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Sets, Maps &amp; Custom Hash</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Stack, Queue &amp; Monotonic</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> Complexity &amp; Recursion</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Two Pointers &amp; Sliding Window</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Binary Search Optimization</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> Linked Lists &amp; LRU Cache</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Binary Trees, BST &amp; Traversals</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> Heaps &amp; Priority Queue Patterns</div>
+  <div class="nav-item" onclick="goTo(12)" id="nav12"><span class="check" id="chk12">○</span><span class="num">13</span> Graphs, BFS/DFS &amp; DSU</div>
+  <div class="nav-item" onclick="goTo(13)" id="nav13"><span class="check" id="chk13">○</span><span class="num">14</span> Dynamic Programming Patterns</div>
+</nav>
+
+<main id="main">
+  <!-- Section 0 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1</span>
+    <h2 class="section-title">Modern C++ Foundations, Fast I/O &amp; Compilation</h2>
+    <p class="section-intro">Understand C++ compilation stages, modern standard features (C++17/20), namespaces, and high-speed I/O optimization for competitive programming.</p>
+
+    <h3>1. Fast I/O Boilerplate for Online Judges</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+void fastIO() {
+    // Untie cin from cout and disable C stdio sync for high-speed I/O
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+}
+
+int main() {
+    fastIO();
+    int t;
+    if (cin &gt;&gt; t) {
+        while (t--) {
+            int n;
+            cin &gt;&gt; n;
+            cout &lt;&lt; "Output: " &lt;&lt; (n * 2) &lt;&lt; "\n"; // Prefer \n over endl (flushing overhead)
+        }
+    }
+    return 0;
+}</code></pre>
+
+    <div class="callout warn">
+      <div class="callout-title">Performance Warning: endl vs \n</div>
+      <code>std::endl</code> not only prints a newline character but also flushes the standard output stream buffer. In competitive programming loops with 100,000+ iterations, flushing each cycle causes Time Limit Exceeded (TLE). Always use <code>'\n'</code>.
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>Why does cin.tie(NULL) improve performance?</span><span class="icon">▼</span></div>
+        <div class="qa-body">By default, <code>cin</code> is tied to <code>cout</code>, meaning any read operation on <code>cin</code> automatically flushes <code>cout</code> to ensure prompts are displayed before input. Calling <code>cin.tie(NULL)</code> breaks this coupling, preventing unnecessary flushes and saving significant CPU time.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2</span>
+    <h2 class="section-title">Pointers, Memory Layout &amp; Smart Pointers</h2>
+    <p class="section-intro">Master raw pointer arithmetic, stack vs heap allocation, reference qualifiers, and modern C++ smart pointers (unique_ptr, shared_ptr, weak_ptr).</p>
+
+    <h3>1. Smart Pointers (C++11/14/17)</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct Node {
+    int val;
+    std::shared_ptr&lt;Node&gt; next;
+    Node(int v) : val(v), next(nullptr) {}
+    ~Node() { std::cout &lt;&lt; "Node " &lt;&lt; val &lt;&lt; " destroyed\n"; }
+};
+
+int main() {
+    // 1. std::unique_ptr - Exclusive ownership (zero runtime overhead)
+    auto uPtr = std::make_unique&lt;int&gt;(42);
+    std::cout &lt;&lt; "Unique val: " &lt;&lt; *uPtr &lt;&lt; "\n";
+
+    // 2. std::shared_ptr - Reference counted ownership
+    auto head = std::make_shared&lt;Node&gt;(10);
+    head-&gt;next = std::make_shared&lt;Node&gt;(20);
+
+    std::cout &lt;&lt; "Head ref count: " &lt;&lt; head.use_count() &lt;&lt; "\n";
+    return 0; // Automatically freed when leaving scope
+}</code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">Best Practice: make_unique &amp; make_shared</div>
+      Always prefer <code>std::make_unique&lt;T&gt;()</code> and <code>std::make_shared&lt;T&gt;()</code> over raw <code>new</code>. They ensure exception safety and allocate the control block and managed object in a single contiguous memory block.
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>How does weak_ptr prevent circular reference memory leaks?</span><span class="icon">▼</span></div>
+        <div class="qa-body">A <code>std::weak_ptr</code> observes an object managed by a <code>std::shared_ptr</code> without incrementing its reference count. When two objects reference each other using <code>shared_ptr</code>, reference counts never drop to 0, causing leaks. Replacing one direction with <code>weak_ptr</code> resolves cyclic ownership.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3</span>
+    <h2 class="section-title">Classes, RAII &amp; Move Semantics</h2>
+    <p class="section-intro">Understand Resource Acquisition Is Initialization (RAII), Rule of Five, rvalue references (&&), and std::move for high-performance memory management.</p>
+
+    <h3>1. Rule of 5 and Move Constructor</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;utility&gt;
+
+class DynamicBuffer {
+private:
+    int* data;
+    size_t size;
+public:
+    DynamicBuffer(size_t s) : size(s), data(new int[s]) {}
+    ~DynamicBuffer() { delete[] data; }
+
+    // Move constructor: transfers ownership of resource without copying
+    DynamicBuffer(DynamicBuffer&amp;&amp; other) noexcept : data(other.data), size(other.size) {
+        other.data = nullptr;
+        other.size = 0;
+    }
+
+    // Move assignment
+    DynamicBuffer&amp; operator=(DynamicBuffer&amp;&amp; other) noexcept {
+        if (this != &amp;other) {
+            delete[] data;
+            data = other.data;
+            size = other.size;
+            other.data = nullptr;
+            other.size = 0;
+        }
+        return *this;
+    }
+};</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>What does std::move actually do at runtime?</span><span class="icon">▼</span></div>
+        <div class="qa-body"><code>std::move</code> is an unconditional cast to an rvalue reference (<code>T&amp;&amp;</code>). It emits no runtime instructions; it informs the compiler that the argument can be treated as a temporary, enabling move constructors or move assignments.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4</span>
+    <h2 class="section-title">STL Sequential Containers: Vector, Deque &amp; Iterators</h2>
+    <p class="section-intro">Deep dive into std::vector reallocation, capacity vs size, std::deque ring-buffer architecture, and iterator invalidation rules.</p>
+
+    <h3>1. std::vector Memory Operations &amp; Emplace</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; vec;
+    vec.reserve(100); // Pre-allocate memory to prevent costly O(N) reallocations
+
+    vec.push_back(10);
+    vec.emplace_back(20); // Constructs element in-place
+
+    // Iterating with structured bindings or auto
+    for (const auto&amp; x : vec) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\nCapacity: " &lt;&lt; vec.capacity() &lt;&lt; ", Size: " &lt;&lt; vec.size() &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5</span>
+    <h2 class="section-title">STL Associative Containers: Map, Set &amp; Custom Hash</h2>
+    <p class="section-intro">Understand Red-Black tree ordered structures (std::map, std::set) vs Hash Table unordered structures (std::unordered_map) and custom hashing.</p>
+
+    <h3>1. Custom Hash Struct for std::unordered_map</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;unordered_map&gt;
+
+struct PairHash {
+    template &lt;class T1, class T2&gt;
+    size_t operator()(const std::pair&lt;T1, T2&gt;&amp; p) const {
+        auto h1 = std::hash&lt;T1&gt;{}(p.first);
+        auto h2 = std::hash&lt;T2&gt;{}(p.second);
+        return h1 ^ (h2 &lt;&lt; 1);
+    }
+};
+
+int main() {
+    std::unordered_map&lt;std::pair&lt;int, int&gt;, int, PairHash&gt; gridMap;
+    gridMap[{1, 2}] = 100;
+    std::cout &lt;&lt; "Value at (1,2): " &lt;&lt; gridMap[{1, 2}] &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6</span>
+    <h2 class="section-title">Stack, Queue &amp; Monotonic Data Structures</h2>
+    <p class="section-intro">Master LIFO/FIFO adapters, min-stack design, and Next Greater Element problems using Monotonic Stacks and Deques in O(N).</p>
+
+    <h3>1. Monotonic Stack for Next Greater Element</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stack&gt;
+
+std::vector&lt;int&gt; nextGreaterElement(const std::vector&lt;int&gt;&amp; nums) {
+    int n = nums.size();
+    std::vector&lt;int&gt; res(n, -1);
+    std::stack&lt;int&gt; st; // stores indices
+
+    for (int i = 0; i &lt; n; ++i) {
+        while (!st.empty() &amp;&amp; nums[i] &gt; nums[st.top()]) {
+            res[st.top()] = nums[i];
+            st.pop();
+        }
+        st.push(i);
+    }
+    return res;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7</span>
+    <h2 class="section-title">Algorithmic Complexity &amp; Recursion Analysis</h2>
+    <p class="section-intro">Asymptotic notations (Big O, Omega, Theta), Master Theorem, recurrence relations, and recursion tree space/time analysis.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Complexity</th><th>Operations (N=10^5)</th><th>Verdict in 1.0s limit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>O(1) / O(log N)</td><td>~17 ops</td><td>Instant (&lt; 1ms)</td></tr>
+        <tr><td>O(N)</td><td>10^5 ops</td><td>Passed (~1-5ms)</td></tr>
+        <tr><td>O(N log N)</td><td>~1.7 * 10^6 ops</td><td>Passed (~15ms)</td></tr>
+        <tr><td>O(N^2)</td><td>10^10 ops</td><td>TLE (Limit ~ 10^8 ops/sec)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8</span>
+    <h2 class="section-title">Two Pointers &amp; Sliding Window Patterns</h2>
+    <p class="section-intro">Solve contiguous subarray problems, minimum window substrings, and target sum pairs efficiently in linear O(N) time.</p>
+
+    <h3>1. Dynamic Sliding Window (Length of Longest Substring)</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int lengthOfLongestSubstring(const std::string&amp; s) {
+    std::vector&lt;int&gt; lastIdx(256, -1);
+    int maxLen = 0, left = 0;
+
+    for (int right = 0; right &lt; (int)s.size(); ++right) {
+        if (lastIdx[(unsigned char)s[right]] &gt;= left) {
+            left = lastIdx[(unsigned char)s[right]] + 1;
+        }
+        lastIdx[(unsigned char)s[right]] = right;
+        maxLen = std::max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9</span>
+    <h2 class="section-title">Binary Search Patterns &amp; Answer Search Space</h2>
+    <p class="section-intro">Binary search on monotonic sorted arrays, lower_bound / upper_bound mechanics, and Binary Search on the Answer (e.g. Koko Eating Bananas, Aggressive Cows).</p>
+
+    <h3>1. Binary Search on Answer Space Pattern</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;numeric&gt;
+#include &lt;algorithm&gt;
+
+bool isValid(const std::vector&lt;int&gt;&amp; piles, int h, int k) {
+    long long hours = 0;
+    for (int p : piles) {
+        hours += (p + k - 1) / k; // Ceil division
+    }
+    return hours &lt;= h;
+}
+
+int minEatingSpeed(std::vector&lt;int&gt;&amp; piles, int h) {
+    int low = 1, high = *std::max_element(piles.begin(), piles.end());
+    int ans = high;
+
+    while (low &lt;= high) {
+        int mid = low + (high - low) / 2;
+        if (isValid(piles, h, mid)) {
+            ans = mid;
+            high = mid - 1; // Try smaller speed
+        } else {
+            low = mid + 1;  // Need faster speed
+        }
+    }
+    return ans;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10</span>
+    <h2 class="section-title">Linked Lists, Floyd's Cycle &amp; LRU Cache</h2>
+    <p class="section-intro">Pointer manipulation, in-place reversal, Floyd's Tortoise and Hare cycle detection algorithm, and building an O(1) LRU Cache.</p>
+
+    <h3>1. LRU Cache Implementation (Hash Map + Doubly Linked List)</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;unordered_map&gt;
+#include &lt;list&gt;
+
+class LRUCache {
+    int capacity;
+    std::list&lt;std::pair&lt;int, int&gt;&gt; dll; // {key, value}
+    std::unordered_map&lt;int, std::list&lt;std::pair&lt;int, int&gt;&gt;::iterator&gt; map;
+
+public:
+    LRUCache(int cap) : capacity(cap) {}
+
+    int get(int key) {
+        if (map.find(key) == map.end()) return -1;
+        dll.splice(dll.begin(), dll, map[key]); // Move to front
+        return map[key]-&gt;second;
+    }
+
+    void put(int key, int value) {
+        if (map.find(key) != map.end()) {
+            map[key]-&gt;second = value;
+            dll.splice(dll.begin(), dll, map[key]);
+            return;
+        }
+        if ((int)dll.size() == capacity) {
+            int evictKey = dll.back().first;
+            dll.pop_back();
+            map.erase(evictKey);
+        }
+        dll.emplace_front(key, value);
+        map[key] = dll.begin();
+    }
+};</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 10 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11</span>
+    <h2 class="section-title">Binary Trees, BSTs &amp; Tree Traversals</h2>
+    <p class="section-intro">Inorder, Preorder, Postorder, Level-Order BFS, Lowest Common Ancestor (LCA), Diameter of Tree, and BST validation.</p>
+
+    <h3>1. Diameter of Binary Tree (Post-Order DFS)</h3>
+    <pre><code>struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+int maxDiameter = 0;
+int maxDepth(TreeNode* root) {
+    if (!root) return 0;
+    int lh = maxDepth(root-&gt;left);
+    int rh = maxDepth(root-&gt;right);
+    maxDiameter = std::max(maxDiameter, lh + rh);
+    return 1 + std::max(lh, rh);
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 11 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12</span>
+    <h2 class="section-title">Heaps, Priority Queues &amp; Top-K Patterns</h2>
+    <p class="section-intro">Binary heaps, heapify in O(N), max-heaps vs min-heaps in std::priority_queue, and Top-K Frequent Elements.</p>
+
+    <h3>1. Top-K Frequent Elements using Min-Heap</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;queue&gt;
+
+std::vector&lt;int&gt; topKFrequent(std::vector&lt;int&gt;&amp; nums, int k) {
+    std::unordered_map&lt;int, int&gt; freq;
+    for (int x : nums) freq[x]++;
+
+    // Min-heap pair: {count, value}
+    std::priority_queue&lt;std::pair&lt;int, int&gt;, std::vector&lt;std::pair&lt;int, int&gt;&gt;, std::greater&lt;&gt;&gt; minHeap;
+
+    for (auto&amp; [val, count] : freq) {
+        minHeap.push({count, val});
+        if ((int)minHeap.size() &gt; k) minHeap.pop();
+    }
+
+    std::vector&lt;int&gt; result;
+    while (!minHeap.empty()) {
+        result.push_back(minHeap.top().second);
+        minHeap.pop();
+    }
+    return result;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(11)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 12 -->
+  <div class="section" id="sec12">
+    <span class="section-badge">Module 13</span>
+    <h2 class="section-title">Graph Theory: BFS, DFS, Dijkstra &amp; DSU</h2>
+    <p class="section-intro">Adjacency lists, shortest path with Dijkstra, cycle detection, topological sorting (Kahn's algorithm), and Disjoint Set Union with path compression.</p>
+
+    <h3>1. Disjoint Set Union (DSU / Union-Find) with Rank &amp; Path Compression</h3>
+    <pre><code>#include &lt;vector&gt;
+#include &lt;numeric&gt;
+
+class DSU {
+    std::vector&lt;int&gt; parent, rank;
+public:
+    DSU(int n) : parent(n), rank(n, 0) {
+        std::iota(parent.begin(), parent.end(), 0);
+    }
+
+    int find(int i) {
+        if (parent[i] == i) return i;
+        return parent[i] = find(parent[i]); // Path compression
+    }
+
+    bool unite(int i, int j) {
+        int rootI = find(i);
+        int rootJ = find(j);
+        if (rootI == rootJ) return false; // Cycle detected
+
+        if (rank[rootI] &lt; rank[rootJ]) parent[rootI] = rootJ;
+        else if (rank[rootI] &gt; rank[rootJ]) parent[rootJ] = rootI;
+        else { parent[rootJ] = rootI; rank[rootI]++; }
+        return true;
+    }
+};</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(11)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(12)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 13 -->
+  <div class="section" id="sec13">
+    <span class="section-badge">Module 14</span>
+    <h2 class="section-title">Dynamic Programming: 1D, 2D Grid &amp; Knapsack Patterns</h2>
+    <p class="section-intro">Master overlapping subproblems, optimal substructure, memoization vs tabulation, 0/1 Knapsack, and Longest Common Subsequence (LCS).</p>
+
+    <h3>1. 0/1 Knapsack Space-Optimized 1D DP</h3>
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int knapsack01(int W, const std::vector&lt;int&gt;&amp; wt, const std::vector&lt;int&gt;&amp; val, int n) {
+    std::vector&lt;int&gt; dp(W + 1, 0);
+
+    for (int i = 0; i &lt; n; ++i) {
+        // Iterate backward to prevent reusing the same item multiple times
+        for (int w = W; w &gt;= wt[i]; --w) {
+            dp[w] = std::max(dp[w], val[i] + dp[w - wt[i]]);
+        }
+    }
+    return dp[W];
+}</code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">DP State Transitions</div>
+      When reducing 2D DP <code>dp[i][w]</code> to 1D DP <code>dp[w]</code>, always check whether the current state depends on values from the previous row. For 0/1 Knapsack, right-to-left iteration ensures previous states are not overwritten.
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>How to identify whether a problem can be solved with DP?</span><span class="icon">▼</span></div>
+        <div class="qa-body">Look for two primary traits: (1) <strong>Optimal Substructure</strong>: an optimal solution to the problem contains within it optimal solutions to subproblems, and (2) <strong>Overlapping Subproblems</strong>: the recursive solution revisits the same subproblems repeatedly rather than generating new ones each time.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(12)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(13)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 14;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(el) {
+    const body = el.nextElementSibling;
+    const icon = el.querySelector('.icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '▼';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '▲';
+    }
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

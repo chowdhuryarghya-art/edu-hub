@@ -82,6 +82,28 @@ const SHAPE_PALETTES = [
 
 const TEMPLATES = [
   {
+    id: 'algorithm-flowchart',
+    name: 'Algorithm Flowchart (Binary Search / Decision Tree)',
+    description: 'Start -> Input -> Condition Decision -> Branch Loop -> Terminal',
+    nodes: [
+      { id: 'f1', type: 'rounded', label: 'Start (Array, Target)', x: 60, y: 150, width: 140, height: 55, fill: '#1e293b', stroke: '#10b981', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'f2', type: 'rectangle', label: 'low = 0, high = n - 1', x: 240, y: 150, width: 150, height: 55, fill: '#1e293b', stroke: '#3b82f6', shapeType: 'rectangle', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'f3', type: 'diamond', label: 'low <= high ?', x: 430, y: 130, width: 120, height: 95, fill: '#1e293b', stroke: '#f59e0b', shapeType: 'diamond', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'f4', type: 'rectangle', label: 'mid = (low + high) / 2', x: 590, y: 150, width: 150, height: 55, fill: '#1e293b', stroke: '#3b82f6', shapeType: 'rectangle', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'f5', type: 'diamond', label: 'arr[mid] == target ?', x: 780, y: 130, width: 130, height: 95, fill: '#1e293b', stroke: '#f59e0b', shapeType: 'diamond', fontSize: 11, align: 'center', textColor: '#ffffff' },
+      { id: 'f6', type: 'rounded', label: 'Return mid (Found)', x: 950, y: 150, width: 140, height: 55, fill: '#1e293b', stroke: '#10b981', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'f7', type: 'rounded', label: 'Return -1 (Not Found)', x: 420, y: 290, width: 140, height: 55, fill: '#1e293b', stroke: '#ef4444', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' }
+    ],
+    connections: [
+      { id: 'fc1', from: 'f1', to: 'f2', label: 'Initialize', style: 'solid', color: '#10b981' },
+      { id: 'fc2', from: 'f2', to: 'f3', label: '', style: 'solid', color: '#3b82f6' },
+      { id: 'fc3', from: 'f3', to: 'f4', label: 'True', style: 'solid', color: '#34d399' },
+      { id: 'fc4', from: 'f3', to: 'f7', label: 'False', style: 'solid', color: '#f87171' },
+      { id: 'fc5', from: 'f4', to: 'f5', label: 'Evaluate', style: 'solid', color: '#3b82f6' },
+      { id: 'fc6', from: 'f5', to: 'f6', label: 'True (Match)', style: 'solid', color: '#34d399' }
+    ]
+  },
+  {
     id: 'microservices',
     name: 'Microservices & Event Bus',
     description: 'API Gateway + Services + Cache + Kafka + DB',
@@ -145,6 +167,44 @@ const TEMPLATES = [
       { id: 'nc4', from: 'n3', to: 'n5', label: 'Publish Event', style: 'solid', color: '#8b5cf6' },
       { id: 'nc5', from: 'n5', to: 'n6', label: 'On Failure (Retry 3x)', style: 'dashed', color: '#ef4444' }
     ]
+  },
+  {
+    id: 'netflix-streaming',
+    name: 'Netflix Video Streaming & Transcoding Pipeline (Pro)',
+    description: 'CloudFront Edge CDN + Transcoder Lambda + Cassandra + S3 Origin',
+    nodes: [
+      { id: 'nf1', type: 'client', label: 'Smart TV / Web Client', x: 60, y: 140, width: 150, height: 60, fill: '#1e293b', stroke: '#ef4444', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'nf2', type: 'cloud', label: 'CloudFront Open Connect CDN', x: 270, y: 140, width: 160, height: 75, fill: '#1e293b', stroke: '#06b6d4', shapeType: 'cloud', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'nf3', type: 'storage', label: 'S3 Origin (Encrypted HLS)', x: 490, y: 140, width: 150, height: 70, fill: '#1e293b', stroke: '#14b8a6', shapeType: 'rectangle', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'nf4', type: 'lambda', label: 'Transcoder Workers (FFmpeg)', x: 490, y: 260, width: 160, height: 65, fill: '#1e293b', stroke: '#f97316', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'nf5', type: 'database', label: 'Cassandra (Watch Progress)', x: 710, y: 140, width: 150, height: 75, fill: '#1e293b', stroke: '#8b5cf6', shapeType: 'cylinder', fontSize: 12, align: 'center', textColor: '#ffffff' }
+    ],
+    connections: [
+      { id: 'nfc1', from: 'nf1', to: 'nf2', label: 'Stream Video Chunk', style: 'solid', color: '#06b6d4' },
+      { id: 'nfc2', from: 'nf2', to: 'nf3', label: 'Cache Miss Origin Fetch', style: 'solid', color: '#14b8a6' },
+      { id: 'nfc3', from: 'nf4', to: 'nf3', label: 'Upload Bitrate Renditions', style: 'dashed', color: '#f97316' },
+      { id: 'nfc4', from: 'nf1', to: 'nf5', label: 'Heartbeat Ping (10s)', style: 'dashed', color: '#a78bfa' }
+    ]
+  },
+  {
+    id: 'whatsapp-chat',
+    name: 'WhatsApp Real-Time Chat & Presence (Pro)',
+    description: 'WebSocket Gateway + Redis Pub/Sub + Cassandra/HBase Cluster',
+    nodes: [
+      { id: 'wa1', type: 'client', label: 'Mobile Client (Sender)', x: 60, y: 100, width: 140, height: 60, fill: '#1e293b', stroke: '#10b981', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'wa2', type: 'client', label: 'Mobile Client (Receiver)', x: 60, y: 240, width: 140, height: 60, fill: '#1e293b', stroke: '#10b981', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'wa3', type: 'api-gateway', label: 'WS Gateway Cluster', x: 260, y: 160, width: 140, height: 65, fill: '#1e293b', stroke: '#3b82f6', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'wa4', type: 'cache', label: 'Redis Pub/Sub (User Sessions)', x: 470, y: 80, width: 160, height: 65, fill: '#1e293b', stroke: '#ef4444', shapeType: 'rounded', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'wa5', type: 'queue', label: 'Kafka Ingestion Buffer', x: 470, y: 240, width: 160, height: 65, fill: '#1e293b', stroke: '#8b5cf6', shapeType: 'queue', fontSize: 12, align: 'center', textColor: '#ffffff' },
+      { id: 'wa6', type: 'database', label: 'Cassandra Message Store', x: 690, y: 240, width: 150, height: 75, fill: '#1e293b', stroke: '#6366f1', shapeType: 'cylinder', fontSize: 12, align: 'center', textColor: '#ffffff' }
+    ],
+    connections: [
+      { id: 'wac1', from: 'wa1', to: 'wa3', label: 'WSS: Send Message', style: 'solid', color: '#10b981' },
+      { id: 'wac2', from: 'wa3', to: 'wa4', label: 'Lookup Receiver Gateway', style: 'dashed', color: '#ef4444' },
+      { id: 'wac3', from: 'wa3', to: 'wa2', label: 'Push Message', style: 'solid', color: '#10b981' },
+      { id: 'wac4', from: 'wa3', to: 'wa5', label: 'Async Write Event', style: 'solid', color: '#8b5cf6' },
+      { id: 'wac5', from: 'wa5', to: 'wa6', label: 'Batch Commit', style: 'solid', color: '#818cf8' }
+    ]
   }
 ];
 
@@ -157,9 +217,36 @@ const STROKE_SWATCHES = [
 ];
 
 export default function SystemDesignCanvas() {
-  // Canvas Items
-  const [nodes, setNodes] = useState(TEMPLATES[0].nodes);
-  const [connections, setConnections] = useState(TEMPLATES[0].connections);
+  // Canvas Items with LocalStorage hydration
+  const [nodes, setNodes] = useState(() => {
+    try {
+      const saved = localStorage.getItem('eduhub_system_design_nodes');
+      return saved ? JSON.parse(saved) : TEMPLATES[0].nodes;
+    } catch {
+      return TEMPLATES[0].nodes;
+    }
+  });
+
+  const [connections, setConnections] = useState(() => {
+    try {
+      const saved = localStorage.getItem('eduhub_system_design_connections');
+      return saved ? JSON.parse(saved) : TEMPLATES[0].connections;
+    } catch {
+      return TEMPLATES[0].connections;
+    }
+  });
+
+  const [isSavedLocally, setIsSavedLocally] = useState(true);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('eduhub_system_design_nodes', JSON.stringify(nodes));
+      localStorage.setItem('eduhub_system_design_connections', JSON.stringify(connections));
+      setIsSavedLocally(true);
+    } catch (e) {
+      console.warn('Failed to save diagram to localStorage', e);
+    }
+  }, [nodes, connections]);
 
   // Tools & Modes: 'select' | 'connect' | 'rectangle' | 'circle' | 'diamond' | 'text' | 'pan'
   const [activeTool, setActiveTool] = useState('select');

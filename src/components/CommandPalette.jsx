@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tracksConfig } from '../data/tracks';
 import { questionsBank } from '../data/interviewBank';
-import { Search, X, ArrowRight, BookOpen, HelpCircle, Activity, FileText } from 'lucide-react';
+import { Search, X, ArrowRight, BookOpen, HelpCircle, Activity, FileText, Crown, Layout, Play } from 'lucide-react';
 import './CommandPalette.css';
 
-export default function CommandPalette({ isOpen, onClose }) {
+export default function CommandPalette({ isOpen, onClose, onOpenPro }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
@@ -53,17 +53,26 @@ export default function CommandPalette({ isOpen, onClose }) {
   }));
 
   const quickTools = [
+    { title: 'Edu Hub Pro & Architect Studio', subtitle: 'Unlock FAANG System Design & Anki Kits', action: 'pro', icon: Crown, badge: 'Pro' },
+    { title: 'System Design Canvas & Architecture Studio', subtitle: 'Design Microservices & Event-Driven Systems', url: '/system-design-canvas', icon: Layout, badge: 'Canvas' },
     { title: 'Interactive Mock Interview Arena', subtitle: 'Timed questions & flashcards', url: '/interview-arena', icon: HelpCircle, badge: 'Tool' },
-    { title: 'Event Loop & GraphQL Visualizer', subtitle: 'Step-by-step interactive simulator', url: '/visualizer', icon: Activity, badge: 'Interactive' },
-    { title: 'Cheat Sheet & Summary Builder', subtitle: 'Custom revision & export', url: '/cheatsheets', icon: FileText, badge: 'Export' },
+    { title: 'Code Playground & Runtimes', subtitle: 'Live execution for Python, Java, JS, HTML', url: '/code-editor', icon: Play, badge: 'Sandbox' },
+    { title: 'Cheat Sheet & Summary Builder', subtitle: 'Custom revision & markdown/PDF export', url: '/cheatsheets', icon: FileText, badge: 'Export' },
     { title: 'Readiness & Analytics Dashboard', subtitle: 'Track your competency matrix', url: '/readiness', icon: Activity, badge: 'Analytics' }
   ].filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
 
   const allResults = [...trackResults, ...quickTools, ...qaResults];
 
-  const handleSelect = (url) => {
-    navigate(url);
-    onClose(false);
+  const handleSelect = (item) => {
+    if (item.action === 'pro' && onOpenPro) {
+      onClose(false);
+      onOpenPro();
+      return;
+    }
+    if (item.url) {
+      navigate(item.url);
+      onClose(false);
+    }
   };
 
   return (
@@ -92,7 +101,7 @@ export default function CommandPalette({ isOpen, onClose }) {
                 <div
                   key={idx}
                   className={`palette-item ${selectedIndex === idx ? 'selected' : ''}`}
-                  onClick={() => handleSelect(item.url)}
+                  onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
                 >
                   <div className="item-icon-box">

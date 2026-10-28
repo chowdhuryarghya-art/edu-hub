@@ -62,16 +62,6 @@ export const questionsBank = [
     answer: 'When a list query resolves child relationships (e.g. 50 posts resolving author), each child resolver executes an individual DB query (1 + 50 = 51 queries). DataLoader uses Node.js event-loop tick batching to consolidate all IDs into a single SQL `WHERE IN (...)` query and provides request-scoped memoization caching.',
     keyPoints: ['Resolver execution tree runs per field', 'DataLoader batches during the same event loop tick', 'Memoizes per-request cache to prevent redundant queries']
   },
-  {
-    id: 'gql-3',
-    trackId: 'graphql',
-    trackName: 'GraphQL',
-    category: 'Security',
-    difficulty: 'Principal',
-    question: 'How do you secure a production GraphQL API from resource exhaustion attacks?',
-    answer: 'Implement Query Depth Limiting (restricting nested child levels), Query Complexity Analysis (assigning point costs to fields and rejecting queries over budget), Rate Limiting based on IP/token, and disabling Schema Introspection in production.',
-    keyPoints: ['Depth limiting plugin', 'Cost calculation / complexity budget', 'Disable introspection in prod']
-  },
 
   // Java Spring Boot
   {
@@ -94,15 +84,27 @@ export const questionsBank = [
     answer: 'Use `JOIN FETCH` in JPQL repository queries, apply `@EntityGraph(attributePaths = {"..."})` to repository methods, use DTO projections via constructor expressions, or configure `hibernate.default_batch_fetch_size: 50` in application properties.',
     keyPoints: ['JOIN FETCH loads relations in 1 SQL roundtrip', '@EntityGraph overrides lazy fetching plan', 'Batch fetch size solves collection cascades']
   },
+
+  // Java Core & ICSE/ISC
   {
-    id: 'sb-3',
-    trackId: 'springboot',
-    trackName: 'Java Spring Boot',
-    category: 'Transactions',
-    difficulty: 'Principal',
-    question: 'How does @Transactional work under the hood and why does self-invocation fail?',
-    answer: 'Spring creates CGLIB dynamic proxies wrapping the bean with TransactionInterceptor. When called externally, the proxy intercepts the call, starts a transaction on the TransactionManager, executes the method, and commits/rolls back. Self-invocation (`this.method()`) bypasses the proxy and calls the target directly without transaction boundaries.',
-    keyPoints: ['AOP proxy intercepts public method calls', 'Self-invocation bypasses proxy', 'Requires public method modifier']
+    id: 'jc-1',
+    trackId: 'java-core',
+    trackName: 'Java Core & OOP',
+    category: 'ICSE/ISC OOP',
+    difficulty: 'Beginner',
+    question: 'Explain the difference between Method Overloading and Method Overriding with an example.',
+    answer: 'Method Overloading occurs in the same class when two methods have the same name but different parameter lists (compile-time polymorphism). Method Overriding occurs when a subclass redefines a method from its superclass with the exact same signature and return type (runtime polymorphism).',
+    keyPoints: ['Overloading: compile-time, same class, different parameters', 'Overriding: runtime, subclass/inheritance, exact same signature', 'Use @Override annotation for safety']
+  },
+  {
+    id: 'jc-2',
+    trackId: 'java-core',
+    trackName: 'Java Core & OOP',
+    category: 'Memory & Types',
+    difficulty: 'Intermediate',
+    question: 'What is the difference between String, StringBuilder, and StringBuffer in Java?',
+    answer: 'String is immutable (stored in String Constant Pool). Any modification creates a new object. StringBuilder is mutable and not synchronized (fastest for single-threaded string concatenations). StringBuffer is mutable and synchronized (thread-safe, but with slight lock overhead).',
+    keyPoints: ['String is immutable (pool caching)', 'StringBuilder is fast and single-threaded', 'StringBuffer is thread-safe and synchronized']
   },
 
   // Node.js
@@ -126,20 +128,20 @@ export const questionsBank = [
     answer: 'Backpressure occurs when the destination writable stream cannot write chunks as fast as the readable source produces them, accumulating memory in internal buffers. Using `stream.pipeline()` or `pipe()` automatically pauses the readable stream when `highWaterMark` threshold is reached and resumes on drain events.',
     keyPoints: ['highWaterMark buffer limits', 'stream.pipeline() handles cleanup and error forwarding', 'Prevents out-of-memory crashes on large files']
   },
-  {
-    id: 'node-3',
-    trackId: 'nodejs',
-    trackName: 'Node.js',
-    category: 'Concurrency',
-    difficulty: 'Principal',
-    question: 'Cluster Module vs Worker Threads: When to use which?',
-    answer: 'Cluster module forks multiple independent OS processes sharing the server port, ideal for scaling I/O-bound web traffic across CPU cores. Worker Threads execute multiple threads within the same process sharing memory via SharedArrayBuffer, essential for CPU-bound computations (image encoding, ML, cryptography).',
-    keyPoints: ['Cluster = multi-process for web scale', 'Worker Threads = multi-threaded CPU tasks with shared memory', 'IPC communication vs SharedArrayBuffer']
-  },
 
-  // Python
+  // Python (CBSE & Advanced)
   {
     id: 'py-1',
+    trackId: 'python',
+    trackName: 'Python',
+    category: 'CBSE CS Core',
+    difficulty: 'Beginner',
+    question: 'What is the difference between Mutable and Immutable data types in Python?',
+    answer: 'Mutable types (Lists, Dictionaries, Sets) can have their content modified in-place without changing their memory address (id). Immutable types (Integers, Floats, Strings, Tuples, Booleans) cannot be altered once created; any modification returns a new object with a new id.',
+    keyPoints: ['Mutable: list, dict, set', 'Immutable: int, str, tuple, float', 'Passing mutable objects to functions alters original data']
+  },
+  {
+    id: 'py-2',
     trackId: 'python',
     trackName: 'Python',
     category: 'Internals & GIL',
@@ -148,175 +150,297 @@ export const questionsBank = [
     answer: 'The GIL is a mutex in CPython that allows only one thread to execute Python bytecode at a time to keep reference counting thread-safe. As a result, multi-threading benefits I/O-bound tasks (threads release GIL during I/O), but provides no speedup for CPU-bound tasks. CPU tasks require `multiprocessing` or native C extensions.',
     keyPoints: ['Protects CPython memory reference counting', 'IO-bound: threading or AsyncIO works well', 'CPU-bound: requires multiprocessing / ProcessPoolExecutor']
   },
+
+  // C Programming & Systems
   {
-    id: 'py-2',
-    trackId: 'python',
-    trackName: 'Python',
-    category: 'Language Core',
-    difficulty: 'Senior',
-    question: 'How do Python Decorators and @functools.wraps work?',
-    answer: 'Decorators are higher-order functions that take a function, wrap it with additional pre/post behavior, and return a new callable. `@functools.wraps(fn)` copies original metadata like `__name__`, `__doc__`, and module attributes from the wrapped function to avoid breaking introspection and doc generators.',
-    keyPoints: ['Syntactic sugar for fn = decorator(fn)', 'wraps preserves docstrings and function identity', 'Can accept parameters via 3-level nested closures']
+    id: 'c-1',
+    trackId: 'c-systems',
+    trackName: 'C Programming',
+    category: 'Pointers & Memory',
+    difficulty: 'Intermediate',
+    question: 'Explain the difference between Stack Memory and Heap Memory in C, and how malloc/free work.',
+    answer: 'Stack memory is managed automatically by CPU for local variables and function call frames (fast, fixed size, automatically deallocated on return). Heap memory is allocated dynamically at runtime via `malloc()` / `calloc()` and persists until explicitly freed with `free()`. Failing to call `free()` leads to memory leaks.',
+    keyPoints: ['Stack: fast, auto-allocated, LIFO function frames', 'Heap: dynamic, manual lifecycle via malloc/free', 'Always check malloc != NULL and set pointer to NULL after free']
   },
+
+  // C++ & DSA
   {
-    id: 'py-3',
-    trackId: 'python',
-    trackName: 'Python',
-    category: 'AsyncIO & Web',
-    difficulty: 'Senior',
-    question: 'How does AsyncIO achieve cooperative concurrency and how does FastAPI leverage it?',
-    answer: 'AsyncIO runs a single-threaded event loop managing Coroutines. When a coroutine reaches `await`, it suspends execution and yields control back to the event loop so other ready tasks execute. FastAPI runs on ASGI servers (Uvicorn), allowing thousands of concurrent HTTP connections without thread context-switching overhead.',
-    keyPoints: ['Single-threaded event loop + coroutines', 'Non-blocking cooperative yielding at await', 'FastAPI + Pydantic v2 high-speed async throughput']
+    id: 'cpp-1',
+    trackId: 'cpp-dsa',
+    trackName: 'C++ & DSA',
+    category: 'Data Structures & STL',
+    difficulty: 'Intermediate',
+    question: 'What is the time complexity of searching in `std::vector` vs `std::unordered_map` vs `std::map`?',
+    answer: '`std::vector`: O(N) linear search (or O(log N) if sorted using binary_search). `std::unordered_map`: O(1) average time using hash tables (O(N) worst case under hash collisions). `std::map`: O(log N) guaranteed using self-balancing Red-Black Trees (maintains keys in sorted order).',
+    keyPoints: ['vector: O(N) unsorted', 'unordered_map: O(1) average hash lookup', 'map: O(log N) ordered Red-Black tree']
+  },
+
+  // SQL & Databases
+  {
+    id: 'sql-1',
+    trackId: 'sql',
+    trackName: 'SQL & Databases',
+    category: 'Queries & Joins',
+    difficulty: 'Beginner',
+    question: 'What is the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN?',
+    answer: 'INNER JOIN returns only rows that have matching values in both tables. LEFT JOIN (or LEFT OUTER JOIN) returns all records from the left table, and matching records from the right table (NULL if no match). FULL OUTER JOIN returns all records when there is a match in either left or right table.',
+    keyPoints: ['INNER: only intersecting rows', 'LEFT: all left + matching right (NULL if none)', 'Indexes on join keys speed up query execution']
+  },
+
+  // Web Foundations (HTML/CSS/JS)
+  {
+    id: 'web-1',
+    trackId: 'web-foundations',
+    trackName: 'HTML, CSS & JS',
+    category: 'CSS & DOM',
+    difficulty: 'Beginner',
+    question: 'Explain the CSS Box Model (Content, Padding, Border, Margin) and box-sizing: border-box.',
+    answer: 'The Box Model consists of: Content (the actual element), Padding (space around content inside border), Border (frame wrapping padding and content), and Margin (outer clearance separating element from neighbors). By default `box-sizing: content-box` adds padding and border on top of width. Setting `box-sizing: border-box` includes padding and border within the declared width/height.',
+    keyPoints: ['Order: Content -> Padding -> Border -> Margin', 'border-box makes width calculations predictable', 'Margin collapse occurs on vertical block siblings']
+  },
+
+  // Scratch & Logic
+  {
+    id: 'scratch-1',
+    trackId: 'scratch-logic',
+    trackName: 'Scratch & Logic',
+    category: 'Algorithmic Thinking',
+    difficulty: 'Beginner',
+    question: 'What are the three fundamental control structures used in every programming algorithm?',
+    answer: '1. Sequence (executing statements in order from top to bottom), 2. Selection / Branching (making decisions using IF-THEN-ELSE conditions), and 3. Iteration / Loops (repeating instructions using WHILE, FOR, or REPEAT UNTIL loops).',
+    keyPoints: ['Sequence: linear flow', 'Selection: conditional branching', 'Iteration: finite or condition-driven repetition']
   }
 ];
 
 export const cheatSheetsData = {
-  aws: {
-    track: 'AWS Cloud',
-    color: '#FF9900',
+  sql: {
+    track: 'SQL & Databases',
+    color: '#336791',
     sections: [
       {
-        title: 'Core Compute & Serverless Rules',
+        title: 'Query Order of Execution & DML',
         items: [
-          'Lambda execution limit: 15 minutes max; memory: 128 MB to 10,240 MB.',
-          'EC2 instances: EBS (network persistent) vs Instance Store (ephemeral, high IOPS).',
-          'ECS Fargate: serverless containers (no EC2 management); EKS: managed Kubernetes.'
+          'Logical Processing: FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT.',
+          'Aggregation: COUNT(col) ignores NULLs; COUNT(*) counts all rows including NULLs.',
+          'WHERE vs HAVING: WHERE filters rows before aggregation; HAVING filters aggregated groups.',
+          'JOIN Types: INNER (matches only), LEFT (all left + matched right), FULL OUTER (all rows from both).'
         ]
       },
       {
-        title: 'Storage & DB Cheat Codes',
+        title: 'Indexing & Transactions (ACID)',
         items: [
-          'S3 Standard vs Glacier Deep Archive (12h retrieval, lowest cost).',
-          'DynamoDB: Partition Key (hash) + Sort Key (range); 1 RCU = 4KB strongly consistent read.',
-          'Aurora: 6 copies across 3 AZs; up to 15 read replicas with sub-10ms lag.'
-        ]
-      },
-      {
-        title: 'VPC & Networking Essentials',
-        items: [
-          'Security Groups: Stateful (allow outbound for accepted inbound).',
-          'NACLs: Stateless (evaluated by rule order, inbound + outbound required).',
-          'NAT Gateway: Private subnet outbound access (lives in public subnet).'
-        ]
-      }
-    ]
-  },
-  graphql: {
-    track: 'GraphQL',
-    color: '#E535AB',
-    sections: [
-      {
-        title: 'SDL & Type System Rules',
-        items: [
-          'Field modifiers: String (nullable) vs String! (non-nullable) vs [String!]! (list & elements required).',
-          'Query = read operations; Mutation = write operations with return payloads; Subscription = WebSocket pushes.',
-          'Input Types (`input UserInput`) cannot contain interfaces or unions.'
-        ]
-      },
-      {
-        title: 'Performance & N+1 Prevention',
-        items: [
-          'DataLoader consolidates array of keys in single event loop tick.',
-          'DataLoader instances MUST be request-scoped (never global singleton cache).',
-          'Use Persisted Queries (APQ) for HTTP GET caching on CDN edge.'
-        ]
-      },
-      {
-        title: 'Security Must-Haves',
-        items: [
-          'Always set maximum Query Depth Limit (e.g. max 5-7).',
-          'Calculate Query Complexity before resolver execution.',
-          'Disable Schema Introspection in production environments.'
-        ]
-      }
-    ]
-  },
-  springboot: {
-    track: 'Java Spring Boot',
-    color: '#6DB33F',
-    sections: [
-      {
-        title: 'IoC & Bean Lifecycle',
-        items: [
-          'Preferred Injection: Constructor Injection with `final` fields (avoids NPEs and circular ref).',
-          'Bean scopes: singleton (default), prototype, request, session.',
-          'Bean Lifecycle: Constructor -> Dependency Injection -> BeanPostProcessor -> @PostConstruct -> Ready.'
-        ]
-      },
-      {
-        title: 'JPA Performance Cheat Sheet',
-        items: [
-          'Eliminate N+1 with `JOIN FETCH` or `@EntityGraph(attributePaths = {"..."})`.',
-          'Set `spring.jpa.properties.hibernate.default_batch_fetch_size: 50`.',
-          'Never call `@Transactional` method from the same class (self-invocation proxy bypass).'
-        ]
-      },
-      {
-        title: 'Spring Security 6 Pattern',
-        items: [
-          'Use `SecurityFilterChain` bean instead of deprecated `WebSecurityConfigurerAdapter`.',
-          'Stateless APIs: `SessionCreationPolicy.STATELESS` + JWT Resource Server.',
-          'Actuator: protect `/actuator/**` in production except `/health`.'
-        ]
-      }
-    ]
-  },
-  nodejs: {
-    track: 'Node.js',
-    color: '#339933',
-    sections: [
-      {
-        title: 'Libuv Event Loop Order',
-        items: [
-          'Execution priority: Synchronous code -> process.nextTick() -> Promise microtasks -> Libuv Phase.',
-          'Phases: Timers -> Pending I/O -> Idle/Prepare -> Poll -> Check (setImmediate) -> Close.',
-          'Never run CPU-heavy JSON.parse / crypto sync on the main thread.'
-        ]
-      },
-      {
-        title: 'Streams & Buffer Rules',
-        items: [
-          'Always use `stream.pipeline()` instead of `.pipe()` for safe error propagation.',
-          'Backpressure: writable stream buffer `highWaterMark` reached returns `false`.',
-          'Buffers live in V8 external memory, not the JS heap.'
-        ]
-      },
-      {
-        title: 'Scaling & Clustering',
-        items: [
-          'Cluster module forks OS processes sharing the same TCP port.',
-          'Worker Threads share memory via `SharedArrayBuffer` for CPU compute.',
-          'Debug memory leaks with `node --inspect` heap snapshots.'
+          'B-Tree Index: O(log N) point lookup and range scans. Composite index requires leftmost prefix match.',
+          'ACID: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrency levels), Durability (persisted on disk).',
+          'Isolation Levels: READ UNCOMMITTED → READ COMMITTED → REPEATABLE READ → SERIALIZABLE.'
         ]
       }
     ]
   },
   python: {
-    track: 'Python',
+    track: 'Python Core & Applied',
     color: '#3776AB',
     sections: [
       {
-        title: 'Core Language Mechanics',
+        title: 'Data Structures & Comprehensions',
         items: [
-          'Use `@functools.wraps(fn)` on all custom decorators to preserve metadata.',
-          'Generators: `yield` creates lazy state machine saving gigabytes of memory.',
-          'Context Managers: implement `__enter__` and `__exit__` for clean cleanup.'
+          'Lists: [1, 2, 3] (mutable dynamic array); Tuples: (1, 2) (immutable); Dicts: {"k": "v"} (hash table O(1)).',
+          'List Comprehension: `[x**2 for x in nums if x % 2 == 0]` (faster than map/filter).',
+          'Dict Comprehension: `{k: v for k, v in zip(keys, vals)}`',
+          'String Slicing: `s[start:stop:step]` (e.g. `s[::-1]` reverses string).'
         ]
       },
       {
-        title: 'Concurrency & The GIL',
+        title: 'Functions, Decorators & Memory',
         items: [
-          'CPython GIL allows only 1 thread to execute bytecode at a time.',
-          'I/O-bound: Use `asyncio` or `threading` (GIL is released during I/O).',
-          'CPU-bound: Use `multiprocessing` or `concurrent.futures.ProcessPoolExecutor`.'
+          'Args/Kwargs: `def fn(*args, **kwargs)` packs positional args into tuple and keyword args into dict.',
+          'Context Managers: `with open("f.txt", "r") as f:` guarantees automatic stream cleanup.',
+          'Decorators: `@functools.wraps(fn)` preserves function metadata during wrapping.',
+          'Global Interpreter Lock (GIL): CPython mutex allowing only one native thread to execute bytecode at once.'
+        ]
+      }
+    ]
+  },
+  'java-core': {
+    track: 'Java Core & OOP',
+    color: '#E76F00',
+    sections: [
+      {
+        title: 'OOP Pillars & Class Design',
+        items: [
+          'Encapsulation: private fields accessed via public getters/setters.',
+          'Inheritance: single class inheritance via `extends`; multiple interface contracts via `implements`.',
+          'Polymorphism: Compile-time (Method Overloading) vs Runtime (Method Overriding with `@Override`).',
+          'Abstraction: Abstract classes (state + partial implementation) vs Interfaces (contracts, default methods).'
         ]
       },
       {
-        title: 'FastAPI & Modern Backend',
+        title: 'JVM Memory & Collections Framework',
         items: [
-          'FastAPI routes: `async def` runs on main event loop; regular `def` runs on thread pool.',
-          'Pydantic v2 is implemented in Rust for 5-20x validation speedup.',
-          'Use Composable Dependency Injection via `Annotated[Type, Depends(...)]`.'
+          'Stack: stores primitive local variables and method call frames. Heap: stores dynamic objects and arrays.',
+          'String Pool: `String s = "a"` reuses pooled literal; `new String("a")` forces heap allocation.',
+          'ArrayList (contiguous O(1) random access) vs LinkedList (doubly linked nodes O(1) insert/remove).',
+          'HashMap: Array of buckets with linked lists converted to Red-Black Trees when bucket size > 8.'
+        ]
+      }
+    ]
+  },
+  'c-systems': {
+    track: 'C Language & Systems',
+    color: '#A8B9CC',
+    sections: [
+      {
+        title: 'Pointers & Memory Architecture',
+        items: [
+          'Address-of `&var` retrieves memory location; Dereference `*ptr` accesses value at address.',
+          'Pointer Arithmetic: `ptr + 1` increments address by `sizeof(*ptr)` bytes.',
+          'Dynamic Memory: `malloc(size)` (uninitialized), `calloc(n, size)` (zeroed), `realloc(ptr, size)`, `free(ptr)`.',
+          'Memory Safety: Always set pointers to `NULL` after `free(ptr)` to prevent dangling pointer hazards.'
+        ]
+      },
+      {
+        title: 'Structs, Unions & Bit Manipulation',
+        items: [
+          'Struct Alignment: Compilers pad struct members to align with CPU architecture boundaries (e.g., 4 or 8 bytes).',
+          'Bitwise Operators: `&` (AND), `|` (OR), `^` (XOR), `~` (NOT), `<<` (left shift = *2), `>>` (right shift = /2).',
+          'Bit Masking: Set bit: `x |= (1 << n)`; Clear bit: `x &= ~(1 << n)`; Toggle bit: `x ^= (1 << n)`; Check bit: `(x >> n) & 1`.'
+        ]
+      }
+    ]
+  },
+  'cpp-dsa': {
+    track: 'C++ & DSA Competitive Coding',
+    color: '#00599C',
+    sections: [
+      {
+        title: 'Competitive Fast I/O & STL Containers',
+        items: [
+          'Fast I/O: `ios_base::sync_with_stdio(false); cin.tie(NULL);` prevents standard I/O synchronization bottlenecks.',
+          'std::vector: Dynamic contiguous array; use `vec.reserve(N)` to prevent amortized reallocation.',
+          'std::map (Red-Black tree, O(log N) sorted) vs std::unordered_map (Hash table, average O(1)).',
+          'Priority Queue: `priority_queue<int>` (Max-Heap default); `priority_queue<int, vector<int>, greater<int>>` (Min-Heap).'
+        ]
+      },
+      {
+        title: 'Core Algorithmic Patterns',
+        items: [
+          'Two Pointers & Sliding Window: Solve contiguous subarray / substring problems in linear O(N) time.',
+          'Binary Search on Answer: Monotonic condition check with `mid = low + (high - low) / 2`.',
+          'Monotonic Stack: Next Greater Element / Stock Span problems in linear O(N) amortized time.',
+          'Union-Find (DSU): Disjoint sets with Path Compression and Union by Rank runs in near-constant alpha(N) time.'
+        ]
+      }
+    ]
+  },
+  'web-foundations': {
+    track: 'HTML, CSS & JavaScript',
+    color: '#F7DF1E',
+    sections: [
+      {
+        title: 'CSS Box Model, Flexbox & Grid',
+        items: [
+          'Box Sizing: `*, *::before, *::after { box-sizing: border-box; }` includes padding and border inside width.',
+          'Flexbox: 1D layout (`justify-content` aligns along main axis; `align-items` aligns along cross axis).',
+          'CSS Grid: 2D responsive matrix; `grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))` eliminates media queries.',
+          'CSS Specificity: `!important` > Inline style (1000) > ID (100) > Class/Attribute/Pseudo-class (10) > Element (1).'
+        ]
+      },
+      {
+        title: 'DOM, Event Loop & Modern ES6+',
+        items: [
+          'Event Delegation: Attach single listener on parent using `event.target.closest(".item")` for dynamic lists.',
+          'Event Loop: Call Stack → Microtasks (Promises, queueMicrotask) → Macrotasks (setTimeout, I/O) → Rendering.',
+          'Closures: Functions retain lexical access to outer variables even after outer function has returned.',
+          'Fetch API: Always verify `res.ok` before parsing JSON; use `AbortController` for request timeouts.'
+        ]
+      }
+    ]
+  },
+  'scratch-logic': {
+    track: 'Scratch & Visual Logic',
+    color: '#FFAB19',
+    sections: [
+      {
+        title: 'Block Structures & Algorithmic Translation',
+        items: [
+          'Events & Triggers: `when green flag clicked` initializes state, reset positions, and zero score counters.',
+          'Sequential Execution: Blocks snap together vertically and execute sequentially from top to bottom.',
+          'Conditionals: `if <condition> then` vs `if <condition> then ... else` branching constructs.',
+          'Loops: `repeat (n)` (fixed loop), `forever` (infinite game loop), `repeat until <condition>` (while loop).'
+        ]
+      },
+      {
+        title: 'Variables, Broadcasting & Flowcharts',
+        items: [
+          'Variable Scope: "For all sprites" (global state) vs "For this sprite only" (local instance variable).',
+          'Broadcasting: Publish-subscribe event messaging between sprites (`broadcast [msg]` and `when I receive [msg]`).',
+          'Flowchart Symbols: Oval (Start/End), Rectangle (Process/Assignment), Diamond (Decision/Condition), Parallelogram (I/O).'
+        ]
+      }
+    ]
+  },
+  springboot: {
+    track: 'Java Spring Boot & Microservices',
+    color: '#6DB33F',
+    sections: [
+      {
+        title: 'Core Annotations & IoC Container',
+        items: [
+          '@SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan.',
+          'Stereotypes: @Component, @Service (business logic), @Repository (DAO exceptions translation), @RestController (JSON output).',
+          'Dependency Injection: Prefer Constructor Injection over @Autowired on fields for testability and immutability.',
+          'Bean Scopes: Singleton (default, single instance per Spring context), Prototype (new instance on every request).'
+        ]
+      },
+      {
+        title: 'Spring Data JPA & Security',
+        items: [
+          'JPA N+1 Problem: Solve using `@EntityGraph` or `JOIN FETCH` queries instead of default lazy collection queries.',
+          'Transactions: `@Transactional` manages commit/rollback; by default rolls back on unchecked RuntimeExceptions only.',
+          'Spring Security 6: Use `SecurityFilterChain` bean with method chaining and stateless JWT filter chain.'
+        ]
+      }
+    ]
+  },
+  nodejs: {
+    track: 'Node.js & Asynchronous Systems',
+    color: '#339933',
+    sections: [
+      {
+        title: 'Libuv Architecture & Event Loop Phases',
+        items: [
+          'Phases: Timers (setTimeout) → Pending Callbacks → Idle/Prepare → Poll (I/O) → Check (setImmediate) → Close Callbacks.',
+          'process.nextTick(): Runs immediately before the next phase of the event loop (higher priority than microtasks).',
+          'Cluster & Worker Threads: `cluster` forks OS processes sharing ports; `worker_threads` runs CPU-heavy tasks in threads.'
+        ]
+      },
+      {
+        title: 'Streams & Buffer Management',
+        items: [
+          'Stream Types: Readable, Writable, Duplex (TCP socket), Transform (zlib, crypto cipher).',
+          'Backpressure: Handle slow consumer buffering by respecting `stream.write() === false` and waiting for `drain` event.',
+          'Pipeline: Use `stream.promises.pipeline(readStream, transformStream, writeStream)` for safe error handling.'
+        ]
+      }
+    ]
+  },
+  aws: {
+    track: 'AWS Cloud Architecture',
+    color: '#FF9900',
+    sections: [
+      {
+        title: 'Core Compute & Serverless Rules',
+        items: [
+          'Lambda: 15 minutes max execution timeout; memory configurable from 128 MB to 10,240 MB.',
+          'EC2 Storage: EBS (network persistent volume) vs Instance Store (ephemeral, physically attached, high IOPS).',
+          'ECS Fargate (serverless container management without EC2 instances) vs EKS (managed Kubernetes cluster).'
+        ]
+      },
+      {
+        title: 'Storage & Distributed Databases',
+        items: [
+          'S3 Storage Classes: Standard → Infrequent Access (IA) → Glacier Flexible (minutes to hours) → Glacier Deep Archive (12h).',
+          'DynamoDB: Partition Key (hash key) + Sort Key (range key); 1 RCU = 4KB strongly consistent read/sec.',
+          'Aurora: Multi-AZ storage engine with 6 storage copies across 3 AZs; up to 15 read replicas with sub-10ms replication lag.'
         ]
       }
     ]

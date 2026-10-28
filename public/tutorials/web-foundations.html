@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Development Foundations – HTML5, CSS3, DOM &amp; Modern JavaScript ES6+</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 300px; min-width: 300px; background: #0f172a; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 920px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #1e293b; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #f8fafc; }
+  #sidebar-header p { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #1e293b; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #eab308; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #94a3b8; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #94a3b8; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #1e293b; color: #f8fafc; }
+  .nav-item.active { background: #1e293b; color: #fde047; border-left-color: #eab308; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #1e293b; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #ca8a04; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #fefce8; color: #a16207; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #0f172a; color: #f1f5f9; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #1e293b; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #fef08a; color: #854d0e; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #eab308; background: #fefce8; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #a16207; }
+  .callout.warn .callout-title { color: #b45309; }
+  .callout.success .callout-title { color: #047857; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #ca8a04; color: #fff; }
+  .btn-primary:hover { background: #a16207; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  table.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th, table.data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #ca8a04; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🌐 Web Foundations</h1>
+    <p>HTML5, CSS3, DOM &amp; Modern JS ES6+</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 14 completed</div>
+  </div>
+  <div class="nav-section">Curriculum Modules</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> HTTP, DNS &amp; Critical Render</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Semantic HTML5 &amp; WCAG</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> CSS Box Model &amp; Specificity</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Flexbox Deep Dive</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> CSS Grid &amp; Modern Layouts</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Responsive &amp; Container Queries</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> JS ES6+ Core &amp; Closures</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Functional JS &amp; Arrays</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> DOM &amp; Event Propagation</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> Event Loop &amp; Promises</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Fetch API &amp; REST Integration</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> Browser Storage &amp; Cookies</div>
+  <div class="nav-item" onclick="goTo(12)" id="nav12"><span class="check" id="chk12">○</span><span class="num">13</span> Web Security (XSS, CORS, CSP)</div>
+  <div class="nav-item" onclick="goTo(13)" id="nav13"><span class="check" id="chk13">○</span><span class="num">14</span> Performance &amp; Core Web Vitals</div>
+</nav>
+
+<main id="main">
+  <!-- Section 0 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1</span>
+    <h2 class="section-title">Client-Server HTTP/HTTPS, DNS &amp; Critical Rendering Path</h2>
+    <p class="section-intro">Understand what happens when a user types a URL into their browser, the network layers involved, and how the browser constructs pixels from HTML, CSS, and JS.</p>
+
+    <h3>1. The 5-Stage Network &amp; Rendering Pipeline</h3>
+    <ol>
+      <li><strong>DNS Resolution:</strong> Browser checks in-memory cache -> OS hosts cache -> Local Resolver -> Authoritative DNS server to resolve hostname to IP.</li>
+      <li><strong>TCP 3-Way Handshake:</strong> Client SYN -> Server SYN-ACK -> Client ACK.</li>
+      <li><strong>TLS 1.3 Cryptographic Handshake:</strong> Key exchange, cipher suite negotiation, and server identity validation over HTTPS.</li>
+      <li><strong>HTTP GET &amp; Response:</strong> Server returns HTTP headers (Status 200, Content-Type, Cache-Control) and HTML payload stream.</li>
+      <li><strong>Critical Rendering Path (CRP):</strong>
+        <ul>
+          <li><strong>DOM Construction:</strong> Bytes -> Characters -> Tokens -> Nodes -> Document Object Model Tree.</li>
+          <li><strong>CSSOM Construction:</strong> Parsing CSS into rules and style nodes (Render-blocking).</li>
+          <li><strong>Render Tree:</strong> Merging visible DOM nodes with CSSOM computed styles.</li>
+          <li><strong>Layout (Reflow):</strong> Computing exact geometry and coordinates on viewport.</li>
+          <li><strong>Paint &amp; Composite:</strong> Rasterizing layers to GPU and displaying pixels.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>Why is CSS considered render-blocking while JS is parser-blocking?</span><span class="icon">▼</span></div>
+        <div class="qa-body">The browser cannot render the page before constructing the CSSOM because doing so would cause a flash of unstyled content (FOUC). JavaScript is parser-blocking because scripts can use <code>document.write()</code> or modify the DOM, so HTML parsing pauses when a synchronous <code>&lt;script&gt;</code> is encountered unless marked with <code>defer</code> or <code>async</code>.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2</span>
+    <h2 class="section-title">Semantic HTML5, Forms, Validation &amp; WCAG Accessibility</h2>
+    <p class="section-intro">Write accessible, SEO-optimized markup following WCAG 2.1 AA standards and HTML5 semantic hierarchy.</p>
+
+    <h3>1. Semantic Layout &amp; Accessible Form Architecture</h3>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Accessible Registration Form&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header role="banner"&gt;
+    &lt;nav aria-label="Primary Navigation"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#main"&gt;Skip to Content&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="main" tabindex="-1"&gt;
+    &lt;form action="/api/register" method="POST" novalidate&gt;
+      &lt;div class="form-group"&gt;
+        &lt;label for="user-email"&gt;Email Address (Required)&lt;/label&gt;
+        &lt;input type="email" id="user-email" name="email" required aria-describedby="email-hint"&gt;
+        &lt;small id="email-hint"&gt;We will never share your email.&lt;/small&gt;
+      &lt;/div&gt;
+
+      &lt;button type="submit"&gt;Create Account&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3</span>
+    <h2 class="section-title">CSS Box Model, Specificity &amp; Custom Properties</h2>
+    <p class="section-intro">Master content-box vs border-box, specificity calculation rules, CSS Cascade layers, and dynamic variables.</p>
+
+    <h3>1. Border-Box Reset and CSS Variables</h3>
+    <pre><code>:root {
+  --primary-color: #2563eb;
+  --text-main: #1e293b;
+  --surface-bg: #ffffff;
+  --radius-md: 8px;
+}
+
+/* Universal border-box reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  background: var(--surface-bg);
+  border-radius: var(--radius-md);
+  padding: 1.5rem; /* Included inside width calculation */
+  border: 1px solid #e2e8f0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4</span>
+    <h2 class="section-title">Modern Layouts: Flexbox Deep-Dive</h2>
+    <p class="section-intro">Understand main axis vs cross axis, justify-content, align-items, flex-grow, flex-shrink, and flex-basis math.</p>
+
+    <h3>1. Responsive Centering and Flex Allocation</h3>
+    <pre><code>.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.flex-item-grow {
+  /* flex: <flex-grow> <flex-shrink> <flex-basis> */
+  flex: 1 1 0%; /* Absorbs all remaining available space proportionally */
+}
+
+.flex-item-fixed {
+  flex: 0 0 240px; /* Locked at 240px width */
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5</span>
+    <h2 class="section-title">CSS Grid Architecture &amp; Auto-Fit / MinMax</h2>
+    <p class="section-intro">Two-dimensional layout systems, fractional units (fr), grid template areas, and zero-media-query responsive card grids.</p>
+
+    <h3>1. Responsive Card Grid without Media Queries</h3>
+    <pre><code>.grid-dashboard {
+  display: grid;
+  /* Automatically wraps cards when column drops below 280px */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.grid-span-2 {
+  grid-column: span 2;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6</span>
+    <h2 class="section-title">Responsive Design &amp; CSS Container Queries</h2>
+    <p class="section-intro">Mobile-first design principles, viewport breakpoints, responsive images with srcset, and modern component-level @container queries.</p>
+
+    <h3>1. Component-Level Container Queries</h3>
+    <pre><code>/* Parent defines container context */
+.card-wrapper {
+  container-type: inline-size;
+  container-name: sidebar-card;
+}
+
+/* Card adapts based on its OWN parent width, not viewport */
+@container sidebar-card (min-width: 400px) {
+  .card {
+    display: flex;
+    flex-direction: row;
+  }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7</span>
+    <h2 class="section-title">JavaScript ES6+ Core: Scoping, Closures &amp; Prototypes</h2>
+    <p class="section-intro">Execution contexts, lexical scoping, var vs let/const hoisting, closure memory retaining, and prototypical inheritance.</p>
+
+    <h3>1. Closures and Private State Encapsulation</h3>
+    <pre><code>function createCounter(initialValue = 0) {
+  let count = initialValue; // Enclosed lexical environment
+
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count
+  };
+}
+
+const counter = createCounter(10);
+console.log(counter.increment()); // 11
+console.log(counter.getCount());  // 11
+// count variable is inaccessible directly from global scope</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8</span>
+    <h2 class="section-title">Functional JavaScript: Array Methods &amp; Destructuring</h2>
+    <p class="section-intro">Immutability, map, filter, reduce pipelines, rest/spread operators, and deep vs shallow cloning.</p>
+
+    <h3>1. Array Transformation Pipelines</h3>
+    <pre><code>const transactions = [
+  { id: 1, type: 'credit', amount: 250 },
+  { id: 2, type: 'debit', amount: 80 },
+  { id: 3, type: 'credit', amount: 150 }
+];
+
+// Calculate total credit balance in single immutable pipeline
+const totalCredit = transactions
+  .filter(t => t.type === 'credit')
+  .map(t => t.amount)
+  .reduce((acc, curr) => acc + curr, 0);
+
+console.log("Total Credit:", totalCredit); // 400</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9</span>
+    <h2 class="section-title">DOM Manipulation, Event Bubbling &amp; Delegation</h2>
+    <p class="section-intro">Capturing vs bubbling phases, e.stopPropagation(), dynamic elements, and high-performance Event Delegation.</p>
+
+    <h3>1. High-Performance Event Delegation Pattern</h3>
+    <pre><code>const userList = document.querySelector('#user-list');
+
+// Attach single listener to parent instead of 1,000 child buttons
+userList.addEventListener('click', (event) => {
+  const deleteBtn = event.target.closest('.btn-delete');
+  if (!deleteBtn) return;
+
+  const row = deleteBtn.closest('li');
+  const userId = row.dataset.id;
+  console.log(`Deleting user: ${userId}`);
+  row.remove();
+});</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10</span>
+    <h2 class="section-title">Asynchronous JS, Event Loop &amp; Microtask Queue</h2>
+    <p class="section-intro">Call stack, Web APIs, Macrotasks (setTimeout) vs Microtasks (Promise.then, MutationObserver), and async/await mechanics.</p>
+
+    <h3>1. Event Loop Order of Execution</h3>
+    <pre><code>console.log('1: Synchronous start');
+
+setTimeout(() => {
+  console.log('4: Macrotask (setTimeout)');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('3: Microtask (Promise)');
+});
+
+console.log('2: Synchronous end');
+
+// Output order: 1 -> 2 -> 3 -> 4</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Checks &amp; Common Interview Questions</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)"><span>Why does a resolved Promise run before setTimeout(..., 0)?</span><span class="icon">▼</span></div>
+        <div class="qa-body">Promises are scheduled in the <strong>Microtask Queue</strong>, while <code>setTimeout</code> callbacks are placed in the <strong>Macrotask (Task) Queue</strong>. The JavaScript runtime drains all pending microtasks completely after every call stack execution before picking the next macrotask.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 10 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11</span>
+    <h2 class="section-title">Fetch API, REST Integration &amp; AbortController</h2>
+    <p class="section-intro">HTTP requests with modern Fetch, error status handling, JSON parsing, timeout cancellation, and Promise.all concurrent requests.</p>
+
+    <h3>1. Robust Fetch with Timeout &amp; AbortController</h3>
+    <pre><code>async function fetchUserData(userId) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+  try {
+    const res = await fetch(`https://api.example.com/users/${userId}`, {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      console.error('Request timed out and was aborted.');
+    } else {
+      console.error('Fetch failed:', err.message);
+    }
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 11 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12</span>
+    <h2 class="section-title">Browser Storage: localStorage, sessionStorage &amp; Cookies</h2>
+    <p class="section-intro">Storage capacities, lifecycle differences, security flags (HttpOnly, Secure, SameSite), and IndexedDB overview.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Storage Mechanism</th><th>Capacity</th><th>Lifespan</th><th>Sent to Server?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>localStorage</strong></td><td>~5-10 MB</td><td>Persistent until explicitly deleted</td><td>No</td></tr>
+        <tr><td><strong>sessionStorage</strong></td><td>~5 MB</td><td>Current browser tab session</td><td>No</td></tr>
+        <tr><td><strong>Cookies</strong></td><td>~4 KB</td><td>Configurable via Expires / Max-Age</td><td>Yes (Every HTTP request)</td></tr>
+        <tr><td><strong>IndexedDB</strong></td><td>500MB+</td><td>Persistent transactional database</td><td>No</td></tr>
+      </tbody>
+    </table>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(11)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 12 -->
+  <div class="section" id="sec12">
+    <span class="section-badge">Module 13</span>
+    <h2 class="section-title">Web Security Essentials: XSS, CSRF, CORS &amp; CSP</h2>
+    <p class="section-intro">Cross-Site Scripting mitigation, Cross-Origin Resource Sharing headers, SameSite cookie protection against CSRF, and Content Security Policy.</p>
+
+    <h3>1. Sanitization against Cross-Site Scripting (XSS)</h3>
+    <pre><code>// UNSAFE: Allows arbitrary script execution
+element.innerHTML = userInput;
+
+// SAFE: Sets text content without parsing as HTML tags
+element.textContent = userInput;
+
+// SAFE: Programmatic DOM node creation
+const span = document.createElement('span');
+span.textContent = userInput;
+element.appendChild(span);</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(11)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(12)">Mark Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Section 13 -->
+  <div class="section" id="sec13">
+    <span class="section-badge">Module 14</span>
+    <h2 class="section-title">Web Performance &amp; Core Web Vitals</h2>
+    <p class="section-intro">LCP, FID/INP, CLS optimization, Debounce &amp; Throttle utility patterns, image lazy loading, and code-splitting.</p>
+
+    <h3>1. Debounce and Throttle Utility Implementations</h3>
+    <pre><code>// Debounce: Executes callback only after delay has passed since LAST invocation
+function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// Throttle: Guarantees callback runs at most once per time window
+function throttle(fn, limit) {
+  let inThrottle = false;
+  return function (...args) {
+    if (!inThrottle) {
+      fn.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}</code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">Track Completed!</div>
+      <p>Congratulations! You have mastered full-stack web foundations, modern CSS layout architectures, and asynchronous JavaScript engineering.</p>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(12)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(13)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 14;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(el) {
+    const body = el.nextElementSibling;
+    const icon = el.querySelector('.icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '▼';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '▲';
+    }
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

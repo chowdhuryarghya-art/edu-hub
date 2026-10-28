@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scratch &amp; Algorithmic Logic – Visual Flow to Text Code</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 300px; min-width: 300px; background: #261f14; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 920px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #3d3120; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #f8fafc; }
+  #sidebar-header p { font-size: 11px; color: #a8a29e; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #3d3120; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #ffab19; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #a8a29e; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #a8a29e; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #a8a29e; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #352b1c; color: #f8fafc; }
+  .nav-item.active { background: #352b1c; color: #fde047; border-left-color: #ffab19; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #3d3120; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #d97706; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #fffbeb; color: #b45309; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #1c1917; color: #f5f5f4; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #292524; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #fef3c7; color: #b45309; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #ffab19; background: #fffbeb; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #b45309; }
+  .callout.success .callout-title { color: #047857; }
+  .callout.warn .callout-title { color: #b45309; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #d97706; color: #fff; }
+  .btn-primary:hover { background: #b45309; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  table.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th, table.data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #d97706; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🧩 Scratch &amp; Logic</h1>
+    <p>Visual Thinking to Algorithmic Mastery</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 12 completed</div>
+  </div>
+  <div class="nav-section">Part 1: Foundations &amp; Flow</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> Algorithmic Flowcharts</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Coordinates &amp; Vector Motion</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> Variables &amp; Sensing Inputs</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Conditionals &amp; Boolean Logic</div>
+  <div class="nav-section">Part 2: Control &amp; Concurrency</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Loops &amp; Iteration Control</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Broadcast Messaging &amp; Events</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> Lists &amp; Data Structures</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Custom Blocks &amp; Modularity</div>
+  <div class="nav-section">Part 3: Algorithms &amp; Code Translation</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Math &amp; Number Theory Logic</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> Searching &amp; Sorting Algorithms</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Game Physics &amp; State Machines</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> Block Code to Python / Java / C++</div>
+</nav>
+
+<main id="main">
+  <!-- Module 1 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1 · Core Foundations</span>
+    <h2 class="section-title">Algorithmic Thinking &amp; Flowchart Notation</h2>
+    <p class="section-intro">Deconstruct problems into unambiguous, step-by-step sequences, input collection, and conditional decision points.</p>
+
+    <h3>1. What is an Algorithm?</h3>
+    <p>An algorithm is an ordered sequence of well-defined, unambiguous instructions designed to solve a specific problem or compute a result in a finite number of steps.</p>
+
+    <h3>2. Standard ANSI Flowchart Symbols</h3>
+    <table class="data-table">
+      <tr><th>Symbol</th><th>Standard Name</th><th>Role in Program Execution</th><th>Block / Code Equivalent</th></tr>
+      <tr><td><strong>Rounded Oval</strong></td><td>Terminal</td><td>Indicates Start or End of procedure.</td><td><code>when green flag clicked</code> / <code>main()</code></td></tr>
+      <tr><td><strong>Parallelogram</strong></td><td>Input / Output</td><td>Receiving external inputs or printing results.</td><td><code>ask [] and wait</code> / <code>say []</code></td></tr>
+      <tr><td><strong>Rectangle</strong></td><td>Process</td><td>Arithmetic calculation, assignment, state updates.</td><td><code>set [score] to (10)</code></td></tr>
+      <tr><td><strong>Diamond</strong></td><td>Decision</td><td>Evaluates condition to <code>true</code> or <code>false</code>.</td><td><code>if &lt;&gt; then / else</code></td></tr>
+      <tr><td><strong>Arrow Line</strong></td><td>Flowline</td><td>Directs control progression between blocks.</td><td>Sequential execution order</td></tr>
+    </table>
+
+    <pre><code>[Flowchart Structure: Maximum of Two Numbers]
+       ( Start )
+           │
+           ▼
+    [/ Input A, B /]
+           │
+           ▼
+     &lt; Is A &gt; B ? &gt;
+     ├─── YES ───► [/ Print A is Larger /] ──┐
+     └─── NO  ───► [/ Print B is Larger /] ──┤
+                                             ▼
+                                          ( End )</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Check &amp; Exam Review</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: What makes a flowchart different from pseudocode?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          A flowchart is a <strong>diagrammatic representation</strong> of an algorithm using standardized geometric shapes connected by flowlines, whereas pseudocode is a structured, informal plain-text approximation of high-level programming logic.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2 · Coordinates &amp; Vectors</span>
+    <h2 class="section-title">Stage Coordinate System &amp; Vector Motion</h2>
+    <p class="section-intro">Understand (X, Y) planes, rotation angles, direction vectors, costumes, and boundary clamping.</p>
+
+    <h3>1. Cartesian Plane Geometry</h3>
+    <p>The Scratch stage is a 480x360 pixel 2D Cartesian coordinate grid with origin <code>(0, 0)</code> centered on screen:</p>
+    <ul>
+      <li><strong>X Axis (Width):</strong> Ranges from <code>-240</code> (far left) to <code>+240</code> (far right).</li>
+      <li><strong>Y Axis (Height):</strong> Ranges from <code>-180</code> (bottom edge) to <code>+180</code> (top edge).</li>
+      <li><strong>Direction:</strong> <code>0°</code> = Up, <code>90°</code> = Right, <code>180°</code> = Down, <code>-90°</code> = Left.</li>
+    </ul>
+
+    <pre><code>// Smooth Vector Glide Algorithm:
+when green flag clicked:
+  go to x: (-200) y: (0)
+  point in direction (90)
+  repeat (40):
+    change x by (10)
+    wait (0.02) secs
+  if on edge, bounce</code></pre>
+
+    <div class="callout">
+      <div class="callout-title">⚠️ Edge Clamping &amp; Collisions</div>
+      <p>Using <code>if on edge, bounce</code> prevents sprites from vanishing off screen by detecting when bounding coordinates cross $|X| \ge 240$ or $|Y| \ge 180$.</p>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Check &amp; Exam Review</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q: What is the coordinate of the top-left corner of the stage?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          <code>(x: -240, y: 180)</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3 · State Management</span>
+    <h2 class="section-title">Variables, Data Types &amp; User Sensing Inputs</h2>
+    <p class="section-intro">Master variable declaration, Global vs Local sprite scope, user input prompts, and arithmetic operators.</p>
+
+    <h3>1. Variable Scope</h3>
+    <ul>
+      <li><strong>Global Variables ("For all sprites"):</strong> Shared state accessible and mutable by every sprite and stage (e.g. <code>GameScore</code>, <code>GlobalTimer</code>).</li>
+      <li><strong>Local Variables ("For this sprite only"):</strong> Instance variables private to an individual sprite or clone (e.g. <code>velocityX</code>, <code>health</code>).</li>
+    </ul>
+
+    <pre><code>// Dynamic Score Accumulator with User Input:
+when green flag clicked:
+  set [totalScore v] to (0)
+  ask [Enter points earned:] and wait
+  change [totalScore v] by (answer)
+  say (join [Your Updated Score: ] (totalScore)) for (2) secs</code></pre>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 Knowledge Check &amp; Exam Review</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q: What built-in sensor variable captures text typed into an 'ask and wait' block?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          The <code>answer</code> reporter block stores the string result of the most recent prompt.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4 · Branching Logic</span>
+    <h2 class="section-title">Conditionals, Relational Operators &amp; Boolean Algebra</h2>
+    <p class="section-intro">Construct decision branches using Single (`if`), Dual (`if-else`), and Nested conditional trees.</p>
+
+    <h3>1. Boolean Truth Tables in Visual Logic</h3>
+    <table class="data-table">
+      <tr><th>Condition A</th><th>Condition B</th><th><code>&lt;A and B&gt;</code></th><th><code>&lt;A or B&gt;</code></th><th><code>&lt;not A&gt;</code></th></tr>
+      <tr><td>TRUE</td><td>TRUE</td><td><strong>TRUE</strong></td><td><strong>TRUE</strong></td><td>FALSE</td></tr>
+      <tr><td>TRUE</td><td>FALSE</td><td><strong>FALSE</strong></td><td><strong>TRUE</strong></td><td>FALSE</td></tr>
+      <tr><td>FALSE</td><td>TRUE</td><td><strong>FALSE</strong></td><td><strong>TRUE</strong></td><td>TRUE</td></tr>
+      <tr><td>FALSE</td><td>FALSE</td><td><strong>FALSE</strong></td><td><strong>FALSE</strong></td><td>TRUE</td></tr>
+    </table>
+
+    <pre><code>// Grade Classification Algorithm:
+if &lt;(score) &gt; (89)&gt; then:
+  say [Grade A - Outstanding!] for (2) secs
+else:
+  if &lt;(score) &gt; (74)&gt; then:
+    say [Grade B - Good!] for (2) secs
+  else:
+    say [Grade C - Keep Practicing!] for (2) secs</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5 · Iteration &amp; Loops</span>
+    <h2 class="section-title">Loops, Definite Iteration &amp; Infinite Event Loops</h2>
+    <p class="section-intro">Understand Count-controlled (`repeat N`), Condition-controlled (`repeat until`), and Infinite continuous execution (`forever`).</p>
+
+    <pre><code>// 1. Definite Loop (Equivalent to for loop):
+repeat (10):
+  change [counter v] by (1)
+
+// 2. Condition-Controlled Loop (Equivalent to while loop):
+repeat until &lt;(health) &lt; (1)&gt;:
+  wait (1) secs
+  change [health v] by (-5)
+
+// 3. Infinite Game Loop:
+forever:
+  if &lt;key [right arrow v] pressed?&gt; then:
+    change x by (5)</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6 · Event-Driven Architecture</span>
+    <h2 class="section-title">Broadcast Messaging, Signals &amp; Multi-Sprite Concurrency</h2>
+    <p class="section-intro">Decouple components using asynchronous event broadcasts (`publish/subscribe` pattern in visual computing).</p>
+
+    <pre><code>// Sprite 1 (Player Character):
+when green flag clicked:
+  forever:
+    if &lt;touching [Boss Monster v]?&gt; then:
+      broadcast [GameOverEvent v]
+      stop [this script v]
+
+// Sprite 2 (Game Over UI Screen):
+when I receive [GameOverEvent v]:
+  show
+  go to front layer
+  play sound [LoseSound v] until done</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7 · Data Structures</span>
+    <h2 class="section-title">Lists, Dynamic Arrays &amp; Index Traversals</h2>
+    <p class="section-intro">Store collections of data, iterate through elements using 1-based indexing, and compute sums and averages.</p>
+
+    <pre><code>// Summing Array Elements:
+set [sum v] to (0)
+set [index v] to (1)
+repeat (length of [marksList v]):
+  change [sum v] by (item (index) of [marksList v])
+  change [index v] by (1)
+set [average v] to ((sum) / (length of [marksList v]))</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8 · Modularity &amp; Functions</span>
+    <h2 class="section-title">Custom Blocks, Parameters &amp; Reusable Subroutines</h2>
+    <p class="section-intro">Create reusable subroutines with custom inputs (arguments) and optimize execution with "Run without screen refresh".</p>
+
+    <pre><code>// Define Custom Block (Procedure):
+define DrawSquare (sideLength) (penColor):
+  set pen color to (penColor)
+  pen down
+  repeat (4):
+    move (sideLength) steps
+    turn right (90) degrees
+  pen up
+
+// Invocation:
+when green flag clicked:
+  DrawSquare (100) [#3b82f6]</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9 · Number Theory Algorithms</span>
+    <h2 class="section-title">Mathematical Logic: Parity, Primes, Factorials &amp; GCD</h2>
+    <p class="section-intro">Translate mathematical algorithms into step-by-step conditional and loop blocks.</p>
+
+    <pre><code>// 1. Prime Number Verification:
+define CheckPrime (num):
+  set [isPrime v] to (true)
+  set [d v] to (2)
+  repeat until &lt;(d * d) &gt; (num)&gt;:
+    if &lt;((num) mod (d)) = (0)&gt; then:
+      set [isPrime v] to (false)
+    change [d v] by (1)
+
+// 2. Factorial Computation (N!):
+define CalculateFactorial (n):
+  set [fact v] to (1)
+  set [i v] to (1)
+  repeat (n):
+    set [fact v] to ((fact) * (i))
+    change [i v] by (1)</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 10 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10 · Searching &amp; Sorting</span>
+    <h2 class="section-title">Linear Search, Binary Search &amp; Bubble Sort</h2>
+    <p class="section-intro">Implement core data structure search and sort routines using visual block logic.</p>
+
+    <pre><code>// Bubble Sort Visual Block Implementation:
+define BubbleSortList:
+  set [n v] to (length of [itemsList v])
+  repeat ((n) - (1)):
+    set [j v] to (1)
+    repeat ((n) - (1)):
+      if &lt;(item (j) of [itemsList v]) &gt; (item ((j) + (1)) of [itemsList v])&gt; then:
+        // Swap elements
+        set [temp v] to (item (j) of [itemsList v])
+        replace item (j) of [itemsList v] with (item ((j) + (1)) of [itemsList v])
+        replace item ((j) + (1)) of [itemsList v] with (temp)
+      change [j v] by (1)</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 11 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11 · Game Physics &amp; State</span>
+    <h2 class="section-title">Game Physics, Velocity, Gravity &amp; State Machines</h2>
+    <p class="section-intro">Simulate gravity, momentum vectors, jumping physics, and finite state machines.</p>
+
+    <pre><code>// Platformer Gravity &amp; Jump Engine:
+when green flag clicked:
+  set [velocityY v] to (0)
+  forever:
+    change [velocityY v] by (-1) // Gravity Acceleration
+    change y by (velocityY)
+    
+    if &lt;touching [Ground Platform v]?&gt; then:
+      set [velocityY v] to (0)
+      if &lt;key [space v] pressed?&gt; then:
+        set [velocityY v] to (12) // Jump Impulse</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 12 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12 · Code Synthesis</span>
+    <h2 class="section-title">Block Code to Real-World Text Syntax: Python, Java &amp; C++</h2>
+    <p class="section-intro">Direct conceptual mapping table from visual blocks to production programming languages.</p>
+
+    <table class="data-table">
+      <tr><th>Scratch Block Concept</th><th>Python 3 Equivalent</th><th>Java Equivalent</th><th>C++ Equivalent</th></tr>
+      <tr><td><code>set [x] to (10)</code></td><td><code>x = 10</code></td><td><code>int x = 10;</code></td><td><code>int x = 10;</code></td></tr>
+      <tr><td><code>change [x] by (1)</code></td><td><code>x += 1</code></td><td><code>x++;</code></td><td><code>x++;</code></td></tr>
+      <tr><td><code>say [Hello]</code></td><td><code>print("Hello")</code></td><td><code>System.out.println("Hello");</code></td><td><code>cout &lt;&lt; "Hello\n";</code></td></tr>
+      <tr><td><code>repeat (5):</code></td><td><code>for _ in range(5):</code></td><td><code>for (int i=0; i&lt;5; i++) {</code></td><td><code>for (int i=0; i&lt;5; i++) {</code></td></tr>
+      <tr><td><code>repeat until &lt;c&gt;:</code></td><td><code>while not c:</code></td><td><code>while (!c) {</code></td><td><code>while (!c) {</code></td></tr>
+      <tr><td><code>add [item] to [list]</code></td><td><code>list.append(item)</code></td><td><code>list.add(item);</code></td><td><code>vec.push_back(item);</code></td></tr>
+      <tr><td><code>define Func(x):</code></td><td><code>def func(x):</code></td><td><code>public void func(int x) {</code></td><td><code>void func(int x) {</code></td></tr>
+    </table>
+
+    <div class="callout success">
+      <div class="callout-title">🎉 Curriculum Track Completed!</div>
+      <p>You have mastered core computational logic. Transition now to <a href="/track/python" style="color: #b45309; font-weight: bold;">Python</a>, <a href="/track/java-core" style="color: #b45309; font-weight: bold;">Java Core</a>, or test algorithms in the <a href="/code-editor" style="color: #b45309; font-weight: bold;">Code Playground</a>!</p>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(11)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 12;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(el) {
+    const body = el.nextElementSibling;
+    const icon = el.querySelector('.icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '▼';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '▲';
+    }
+  }
+</script>
+</body>
+</html>

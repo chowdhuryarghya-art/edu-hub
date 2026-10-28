@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { tracksConfig } from '../data/tracks';
+import { useUserPreference } from '../context/UserPreferenceContext';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -26,6 +27,8 @@ const iconMap = {
 
 export default function TutorialViewer() {
   const { trackId } = useParams();
+  const { activePersona } = useUserPreference();
+  const [showAllTracks, setShowAllTracks] = useState(false);
   const track = tracksConfig.find(t => t.id === trackId) || tracksConfig[0];
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -34,6 +37,10 @@ export default function TutorialViewer() {
   };
 
   const IconComponent = iconMap[track.icon] || BookOpen;
+
+  const displayedTracks = (activePersona && !showAllTracks)
+    ? tracksConfig.filter(t => activePersona.recommendedTracks.includes(t.id))
+    : tracksConfig;
 
   return (
     <div className={`tutorial-viewer-wrapper ${isFullscreen ? 'fullscreen' : ''}`}>
@@ -52,7 +59,7 @@ export default function TutorialViewer() {
 
         {/* Quick Track Switcher Pills */}
         <div className="track-switcher">
-          {tracksConfig.map((t) => (
+          {displayedTracks.map((t) => (
             <Link
               key={t.id}
               to={`/track/${t.id}`}
@@ -62,6 +69,15 @@ export default function TutorialViewer() {
               {t.name}
             </Link>
           ))}
+          {activePersona && (
+            <button
+              className="track-pill"
+              onClick={() => setShowAllTracks(s => !s)}
+              style={{ opacity: 0.65, fontSize: '0.72rem', background: 'transparent' }}
+            >
+              {showAllTracks ? '✕ Curated' : '+ More'}
+            </button>
+          )}
         </div>
 
         {/* Window controls */}

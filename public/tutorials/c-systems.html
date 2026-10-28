@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Programming &amp; Systems – Fundamentals to Low-Level Architecture</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 300px; min-width: 300px; background: #1a2230; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 920px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #2d3b52; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #f8fafc; }
+  #sidebar-header p { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #2d3b52; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #60a5fa; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #94a3b8; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #94a3b8; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #242f42; color: #f8fafc; }
+  .nav-item.active { background: #242f42; color: #93c5fd; border-left-color: #3b82f6; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #2d3b52; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #2563eb; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #0f172a; color: #f1f5f9; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #1e293b; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #f1f5f9; color: #334155; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #3b82f6; background: #eff6ff; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #1d4ed8; }
+  .callout.warn .callout-title { color: #b45309; }
+  .callout.success .callout-title { color: #047857; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  table.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th, table.data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #2563eb; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>⚙️ C Programming &amp; Systems</h1>
+    <p>Complete College CSE &amp; Systems Curriculum</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 14 completed</div>
+  </div>
+  <div class="nav-section">Part 1: Compilation &amp; Types</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> Pipeline &amp; Memory Layout</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Data Types &amp; Bitwise Math</div>
+  <div class="nav-section">Part 2: Pointers &amp; Arrays</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> Pointers &amp; Dereferencing</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Pointer Arithmetic &amp; Arrays</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Strings &amp; Buffer Overflows</div>
+  <div class="nav-section">Part 3: Dynamic Memory &amp; Structs</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Dynamic Heap (malloc/calloc)</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> Memory Leaks &amp; Valgrind</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Structs, Padding &amp; Unions</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Function Pointers &amp; Callbacks</div>
+  <div class="nav-section">Part 4: Systems, I/O &amp; OS</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> File I/O &amp; Binary Streams</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Preprocessor &amp; Header Guards</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> POSIX System Calls (read/write)</div>
+  <div class="nav-item" onclick="goTo(12)" id="nav12"><span class="check" id="chk12">○</span><span class="num">13</span> Process Control: fork &amp; exec</div>
+  <div class="nav-item" onclick="goTo(13)" id="nav13"><span class="check" id="chk13">○</span><span class="num">14</span> POSIX Threads &amp; Mutex Sync</div>
+</nav>
+
+<main id="main">
+  <!-- Module 1 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1 · Compilation &amp; Architecture</span>
+    <h2 class="section-title">The 4-Stage GCC Compilation Pipeline &amp; Process Memory</h2>
+    <p class="section-intro">Understand Preprocessing, Compilation, Assembly, Linking, and virtual memory segments.</p>
+
+    <h3>1. GCC Compilation Toolchain Stages</h3>
+    <pre><code>[app.c] 
+   │
+   ▼ 1. Preprocessor (cpp / gcc -E): Expands #include, #define macros, strips comments
+[app.i]
+   │
+   ▼ 2. Compiler (gcc -S): Parses AST, typechecks, generates target Assembly code
+[app.s]
+   │
+   ▼ 3. Assembler (as / gcc -c): Translates Assembly instructions to Object Bytecode
+[app.o] (Relocatable Object File)
+   │
+   ▼ 4. Linker (ld / gcc -o): Resolves external symbols (libc.so), sets entry points
+[app] (ELF / Mach-O / PE Binary Executable)</code></pre>
+
+    <h3>2. Linux Process Virtual Memory Segments</h3>
+    <table class="data-table">
+      <tr><th>Segment</th><th>Address Range</th><th>Read/Write Permissions</th><th>Contents &amp; Lifetime</th></tr>
+      <tr><td><strong>Stack</strong></td><td>High memory $\downarrow$</td><td>Read / Write</td><td>Stack frames, local auto variables, return pointers. Cleared on function exit.</td></tr>
+      <tr><td><strong>Heap</strong></td><td>Low memory $\uparrow$</td><td>Read / Write</td><td>Dynamic allocation (<code>malloc</code>). Persists until explicit <code>free()</code>.</td></tr>
+      <tr><td><strong>BSS</strong></td><td>Fixed</td><td>Read / Write</td><td>Uninitialized static and global variables. Zeroed by OS kernel on startup.</td></tr>
+      <tr><td><strong>Data (.data)</strong></td><td>Fixed</td><td>Read / Write</td><td>Explicitly initialized static and global variables (e.g. <code>int count = 10;</code>).</td></tr>
+      <tr><td><strong>Text (.text)</strong></td><td>Low memory</td><td>Read / Execute (No Write)</td><td>Compiled machine code instructions &amp; string literals (Read-Only).</td></tr>
+    </table>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2 · Types &amp; Bits</span>
+    <h2 class="section-title">Data Types, Two's Complement, Overflow &amp; Bitwise Math</h2>
+    <p class="section-intro">Integer widths, sign representation, bitmasking, and bit shifts.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+int main() {
+    uint8_t flags = 0b00000101; // Bitmask: Bit 0 and Bit 2 set
+
+    // Set Bit 1: flags |= (1 << 1)
+    flags |= (1 << 1); // 0b00000111 (7)
+
+    // Clear Bit 0: flags &= ~(1 << 0)
+    flags &= ~(1 << 0); // 0b00000110 (6)
+
+    // Toggle Bit 2: flags ^= (1 << 2)
+    flags ^= (1 << 2); // 0b00000010 (2)
+
+    printf("Updated flags byte: %u\n", flags);
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3 · Pointers</span>
+    <h2 class="section-title">Pointers, Memory Addresses &amp; Dereferencing Mechanics</h2>
+    <p class="section-intro">Understand address-of (`&`), dereference operator (`*`), pointer sizing (32-bit vs 64-bit), and pass-by-reference.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+
+void swapByReference(int *a, int *b) {
+    int temp = *a; // Dereference pointer 'a' to read integer value
+    *a = *b;       // Store value of 'b' into memory location pointed by 'a'
+    *b = temp;     // Store temp into memory location pointed by 'b'
+}
+
+int main() {
+    int x = 10, y = 20;
+    printf("Before: x=%d, y=%d\n", x, y);
+    swapByReference(&x, &y); // Pass physical memory addresses
+    printf("After:  x=%d, y=%d\n", x, y); // x=20, y=10
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4 · Pointer Arithmetic</span>
+    <h2 class="section-title">Pointer Arithmetic, Arrays &amp; Memory Offsets</h2>
+    <p class="section-intro">Why `arr[i]` is identical to `*(arr + i)` and how pointer scaling works with `sizeof(T)`.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int nums[] = {100, 200, 300, 400};
+    int *ptr = nums; // Points to nums[0]
+
+    // Pointer arithmetic advances by sizeof(int) = 4 bytes!
+    printf("ptr = %p, *ptr = %d\n", (void*)ptr, *ptr);         // 100
+    printf("ptr+1 = %p, *(ptr+1) = %d\n", (void*)(ptr+1), *(ptr+1)); // 200
+
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5 · Strings &amp; Security</span>
+    <h2 class="section-title">C Strings, Null Terminator (`\0`) &amp; Buffer Overflow Vulnerabilities</h2>
+    <p class="section-intro">Dangers of unbounded copy functions (`gets`, `strcpy`, `strcat`) and modern safe alternatives (`snprintf`, `strncat`).</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    char dest[16];
+    const char *src = "Secure Systems Engineering";
+
+    // VULNERABLE: strcpy(dest, src); // Overwrites return address on stack!
+    // SAFE ALTERNATIVE:
+    snprintf(dest, sizeof(dest), "%s", src);
+    printf("Safely bounded buffer: '%s' (Length: %lu)\n", dest, strlen(dest));
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6 · Dynamic Allocation</span>
+    <h2 class="section-title">Dynamic Heap Memory: `malloc`, `calloc`, `realloc` &amp; `free`</h2>
+    <p class="section-intro">Heap allocation lifetimes, zero-initialized buffers, and resizing dynamic arrays.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    // Allocate array of 5 integers initialized to zero
+    int *scores = (int*)calloc(5, sizeof(int));
+    if (!scores) { perror("Allocation failed"); return 1; }
+
+    for (int i = 0; i < 5; i++) scores[i] = (i + 1) * 20;
+
+    // Resize array to 10 integers
+    int *resized = (int*)realloc(scores, 10 * sizeof(int));
+    if (!resized) { free(scores); return 1; }
+    scores = resized;
+
+    // Always free heap memory when finished
+    free(scores);
+    scores = NULL; // Defend against dangling pointer
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7 · Memory Debugging</span>
+    <h2 class="section-title">Memory Leaks, Dangling Pointers, Double Free &amp; Valgrind Diagnostics</h2>
+    <p class="section-intro">Detect and eliminate heap memory leaks using `valgrind --leak-check=full`.</p>
+
+    <div class="callout warn">
+      <div class="callout-title">⚠️ The 3 Classic C Memory Bugs</div>
+      <ul>
+        <li><strong>Memory Leak:</strong> Allocating on heap without corresponding <code>free()</code> before losing pointer.</li>
+        <li><strong>Dangling Pointer:</strong> Accessing memory address after it has already been freed.</li>
+        <li><strong>Double Free:</strong> Calling <code>free()</code> twice on the same pointer, corrupting the heap allocator metadata.</li>
+      </ul>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8 · Structs &amp; Alignment</span>
+    <h2 class="section-title">Structs, Byte Alignment, Structure Padding &amp; Unions</h2>
+    <p class="section-intro">Understand memory alignment rules (4-byte/8-byte boundaries) and memory-sharing `union` constructs.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+
+// Alignment with padding:
+struct Unpadded {
+    char a;    // 1 byte
+    // 3 bytes padding inserted here by compiler!
+    int b;     // 4 bytes
+    char c;    // 1 byte
+    // 3 bytes padding at end to align struct to 4-byte multiple!
+}; // Total size: 12 bytes (not 6!)
+
+int main() {
+    printf("sizeof(struct Unpadded) = %lu bytes\n", sizeof(struct Unpadded)); // 12
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9 · Function Pointers</span>
+    <h2 class="section-title">Function Pointers, Callbacks &amp; Polymorphism in C</h2>
+    <p class="section-intro">Store executable function addresses and implement custom sorting comparators with `qsort`.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int compareDescending(const void *a, const void *b) {
+    int valA = *(const int*)a;
+    int valB = *(const int*)b;
+    return valB - valA; // Positive if B > A (Descending)
+}
+
+int main() {
+    int arr[] = {42, 12, 88, 3, 99, 56};
+    qsort(arr, 6, sizeof(int), compareDescending);
+    
+    printf("Sorted Descending: ");
+    for (int i = 0; i < 6; i++) printf("%d ", arr[i]);
+    printf("\n");
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 10 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10 · File I/O</span>
+    <h2 class="section-title">File Streams, Binary Serialization (`fread`/`fwrite`) &amp; Buffering</h2>
+    <p class="section-intro">Persist and deserialize structs directly to binary disk streams.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+
+typedef struct {
+    int id;
+    char name[32];
+    float gpa;
+} Student;
+
+int main() {
+    Student s = {101, "Aarav Sharma", 3.85f};
+    
+    // Write struct binary image to disk
+    FILE *fp = fopen("student.bin", "wb");
+    if (fp) {
+        fwrite(&s, sizeof(Student), 1, fp);
+        fclose(fp);
+    }
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 11 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11 · Preprocessor</span>
+    <h2 class="section-title">Preprocessor Directives, Header Guards &amp; Macro Mechanics</h2>
+    <p class="section-intro">Defend against duplicate symbol definitions with `#ifndef` / `#define` / `#endif` header guards.</p>
+
+    <pre><code>// Header File Guard (math_utils.h):
+#ifndef MATH_UTILS_H
+#define MATH_UTILS_H
+
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+int add(int a, int b);
+
+#endif // MATH_UTILS_H</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 12 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12 · System Calls</span>
+    <h2 class="section-title">POSIX File Descriptors &amp; Kernel System Calls (`open`, `read`, `write`)</h2>
+    <p class="section-intro">Bypass user-space stdio buffers and interact directly with Linux kernel VFS file descriptors.</p>
+
+    <pre><code>#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+
+int main() {
+    const char *msg = "Direct Kernel write() system call\n";
+    // STDOUT_FILENO = 1
+    write(STDOUT_FILENO, msg, 34);
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(11)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 13 -->
+  <div class="section" id="sec12">
+    <span class="section-badge">Module 13 · Process Control</span>
+    <h2 class="section-title">Process Creation &amp; Lifecycle: `fork()`, `execvp()` &amp; `waitpid()`</h2>
+    <p class="section-intro">Clone address spaces with Copy-On-Write (COW), spawn subprocesses, and prevent Zombie processes.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
+
+int main() {
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Child Process
+        printf("[CHILD] Executing in PID %d\n", getpid());
+        execlp("ls", "ls", "-l", NULL);
+    } else if (pid > 0) {
+        // Parent Process
+        waitpid(pid, NULL, 0); // Reaps child, preventing Zombie state
+        printf("[PARENT] Child finished.\n");
+    }
+    return 0;
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(11)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(12)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 14 -->
+  <div class="section" id="sec13">
+    <span class="section-badge">Module 14 · Concurrency</span>
+    <h2 class="section-title">POSIX Multithreading (`pthreads`) &amp; Mutex Synchronization</h2>
+    <p class="section-intro">Shared memory concurrency, race conditions, and critical section protection via `pthread_mutex_t`.</p>
+
+    <pre><code>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+int counter = 0;
+pthread_mutex_t lock;
+
+void* worker(void* arg) {
+    for (int i = 0; i < 10000; i++) {
+        pthread_mutex_lock(&lock);   // Enter Critical Section
+        counter++;
+        pthread_mutex_unlock(&lock); // Leave Critical Section
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    pthread_mutex_init(&lock, NULL);
+
+    pthread_create(&t1, NULL, worker, NULL);
+    pthread_create(&t2, NULL, worker, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    pthread_mutex_destroy(&lock);
+    printf("Final synchronized counter: %d\n", counter); // Guaranteed 20000
+    return 0;
+}</code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">🎉 Curriculum Track Completed!</div>
+      <p>Congratulations! You have mastered low-level systems programming in C from pointers and heap allocators to POSIX system calls and threads. Continue in the <a href="/code-editor" style="color: #2563eb; font-weight: bold;">C Playground</a> or test your knowledge in the <a href="/interview-arena?track=c-systems" style="color: #2563eb; font-weight: bold;">Interview Arena</a>!</p>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(12)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(13)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 14;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(el) {
+    const body = el.nextElementSibling;
+    const icon = el.querySelector('.icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '▼';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '▲';
+    }
+  }
+</script>
+</body>
+</html>
