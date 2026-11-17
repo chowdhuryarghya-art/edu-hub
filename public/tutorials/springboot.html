@@ -55,6 +55,16 @@ p code,li code{background:#f0f2f5;color:#d63384;padding:1px 5px;border-radius:4p
 .callout.success{border-color:#10b981;background:#ecfdf5}
 .ct{font-weight:700;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#c2410c}
 .callout.warn .ct{color:#92400e}.callout.danger .ct{color:#991b1b}.callout.info .ct{color:#1d4ed8}.callout.success .ct{color:#065f46}
+
+.problem-card{background:#f8fafc;border:1px solid #cbd5e1;border-left:5px solid #ea580c;border-radius:8px;padding:15px 18px;margin:15px 0}
+.problem-card .tag{font-size:11px;font-weight:700;text-transform:uppercase;color:#ea580c;letter-spacing:.5px;margin-bottom:4px}
+.problem-card h4{margin:0 0 5px;color:#0f172a;font-size:15.5px}
+
+.pitfall-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;border-radius:8px;padding:13px 17px;margin:15px 0;font-size:13.5px}
+.pitfall-box .p-title{font-weight:700;color:#991b1b;text-transform:uppercase;font-size:11.5px;margin-bottom:3px}
+
+.output-block{background:#0b1120;color:#38bdf8;border:1px solid #1e293b;border-radius:6px;padding:12px 15px;font-family:"Cascadia Code",monospace;font-size:12.5px;margin:10px 0 15px;white-space:pre-wrap}
+
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
 th{background:#f0f2f5;text-align:left;padding:8px 13px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;border:1px solid #e5e7eb}
 td{padding:8px 13px;border:1px solid #e5e7eb;vertical-align:top}
@@ -203,6 +213,17 @@ hr.div{border:none;border-top:1px solid #e5e7eb;margin:28px 0}
 <span class="badge badge-orange">Foundations</span>
 <h2 class="t">IoC &amp; Dependency Injection</h2>
 <p class="intro">Inversion of Control is the backbone of Spring. Instead of objects creating their dependencies, the container injects them — enabling testability, loose coupling, and declarative configuration.</p>
+
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Decoupling Payment Gateways (Stripe vs PayPal) for Unit Testing</h4>
+  <p>An enterprise checkout service needs to swap between payment providers based on customer region and currency without modifying business logic. It must also allow mocking the payment client in fast unit tests without bootstrapping a heavy Spring ApplicationContext.</p>
+</div>
+
+<div class="pitfall-box">
+  <div class="p-title">⚠️ The Anti-Pattern: @Autowired on Private Fields</div>
+  <p>Field injection hides dependencies from the class constructor, making it impossible to instantiate in pure JUnit tests with <code>new OrderService(mockRepo)</code> and risks <code>NullPointerException</code> at test time.</p>
+</div>
 
 <h3>DI Styles — Constructor vs Field vs Setter</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// ✅ PREFERRED: Constructor injection — immutable, testable without Spring</span>
@@ -639,6 +660,12 @@ spring:
 <h2 class="t">Spring Data JPA &amp; Hibernate</h2>
 <p class="intro">Spring Data JPA eliminates boilerplate DAO code while Hibernate manages the ORM mapping. Senior candidates must know the N+1 problem, fetch strategies, and when to drop down to native SQL.</p>
 
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Eliminating the Database N+1 Query Cascade in E-Commerce Catalog</h4>
+  <p>Loading 500 products with their category list causes 501 separate SQL queries to be sent to PostgreSQL, spiking database CPU to 99% and adding 2.4s latency. We resolve this by switching from naive lazy loading to an optimized JPQL <code>JOIN FETCH</code> and <code>@EntityGraph</code>.</p>
+</div>
+
 <h3>Entity &amp; Repository</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="an">@Entity</span>
 <span class="an">@Table</span>(name = <span class="st">"users"</span>)
@@ -713,6 +740,17 @@ List&lt;User&gt; <span class="fn">findAllWithOrdersAndItems</span>();
 <span class="badge badge-blue">Web &amp; Data</span>
 <h2 class="t">Transactions &amp; DB Migrations</h2>
 <p class="intro">Transactions guarantee data consistency. <code>@Transactional</code> is deceptively simple — its propagation, isolation, and proxy mechanics have many gotchas that senior engineers must know.</p>
+
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Atomic Balance Deduction &amp; Ledger Audit Guarantee</h4>
+  <p>When a student purchases a course, the wallet must be debited and an audit ledger entry created in one atomic transaction. If the audit ledger table throws a constraint violation, the wallet deduction must automatically roll back to prevent funds loss.</p>
+</div>
+
+<div class="pitfall-box">
+  <div class="p-title">⚠️ The Self-Invocation Trap in Spring AOP</div>
+  <p>Calling a <code>@Transactional</code> method from another method inside the same class (e.g. <code>this.processPayment()</code>) bypasses the Spring CGLIB proxy entirely — meaning <strong>no transaction is started</strong> and no rollback will occur on exception!</p>
+</div>
 
 <h3>@Transactional Deep Dive</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="an">@Service</span>

@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS – Senior/Architect Interview Prep</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f7f8fa;color:#1f2328;font-size:15px;line-height:1.7}
+#app{display:flex;min-height:100vh}
+#sidebar{width:280px;min-width:280px;background:#1e2330;color:#c9d1d9;position:sticky;top:0;height:100vh;overflow-y:auto;padding:0 0 40px}
+#main{flex:1;max-width:900px;padding:40px 48px 100px;overflow-x:hidden}
+#sidebar-header{padding:20px 20px 14px;border-bottom:1px solid #30363d}
+#sidebar-header h1{font-size:14px;font-weight:700;color:#e6edf3}
+#sidebar-header p{font-size:11px;color:#8b949e;margin-top:2px}
+.pb-wrap{margin:8px 20px 0;background:#30363d;border-radius:4px;height:5px}
+.pb-fill{height:5px;background:#f59e0b;border-radius:4px;transition:width .4s ease;width:0%}
+.pb-label{font-size:11px;color:#8b949e;padding:3px 20px 0}
+.nav-section{padding:12px 20px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8b949e}
+.nav-item{display:flex;align-items:center;gap:7px;padding:6px 20px;cursor:pointer;font-size:12.5px;color:#8b949e;border-left:3px solid transparent;transition:background .12s,color .12s}
+.nav-item:hover{background:#2d333b;color:#e6edf3}
+.nav-item.active{background:#2d333b;color:#79c0ff;border-left-color:#f59e0b}
+.nav-item.done .ck{color:#3fb950}
+.nav-item .ck{font-size:11px;min-width:13px}
+.nav-item .num{font-size:10px;background:#30363d;border-radius:10px;padding:1px 5px;min-width:20px;text-align:center}
+.nav-item.active .num{background:#92400e;color:#fef3c7}
+.section{display:none;animation:fadeIn .2s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-orange{background:#ffedd5;color:#9a3412}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-amber{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+h2.t{font-size:25px;font-weight:800;margin-bottom:5px}
+.intro{color:#57606a;margin-bottom:26px;font-size:15px}
+h3{font-size:16px;font-weight:700;margin:26px 0 7px;color:#1f2328}
+h4{font-size:14px;font-weight:700;margin:16px 0 5px;color:#444d56}
+p{margin-bottom:11px}ul,ol{padding-left:22px;margin-bottom:11px}li{margin-bottom:4px}
+strong{color:#1f2328}
+.cw{position:relative;margin:12px 0}
+pre{background:#161b22;color:#e6edf3;border-radius:8px;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.6;border:1px solid #30363d}
+code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+pre code{background:none;padding:0}
+p code,li code{background:#f0f2f5;color:#d63384;padding:1px 5px;border-radius:4px;font-size:12.5px;font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+.cp{position:absolute;top:7px;right:9px;background:#30363d;color:#8b949e;border:none;border-radius:5px;padding:2px 9px;font-size:11px;cursor:pointer}
+.cp:hover{background:#444d56;color:#e6edf3}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}.nm{color:#79c0ff}.dc{color:#ffa657}.bl{color:#56d364}.op{color:#ff7b72}
+.callout{border-left:4px solid #f59e0b;background:#fffbeb;padding:11px 15px;border-radius:0 6px 6px 0;margin:14px 0;font-size:14px}
+.callout.info{border-color:#3b82d4;background:#eff6ff}
+.callout.danger{border-color:#ef4444;background:#fef2f2}
+.callout.success{border-color:#10b981;background:#ecfdf5}
+.ct{font-weight:700;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#92400e}
+.callout.info .ct{color:#1d4ed8}.callout.danger .ct{color:#991b1b}.callout.success .ct{color:#065f46}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th{background:#f0f2f5;text-align:left;padding:8px 13px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;border:1px solid #e5e7eb}
+td{padding:8px 13px;border:1px solid #e5e7eb;vertical-align:top}
+tr:nth-child(even) td{background:#fafafa}
+.qbox{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px 22px;margin:22px 0}
+.qbox h4{margin-top:0;font-size:14.5px}
+.qopts{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.qopt{padding:9px 13px;border:2px solid #e5e7eb;border-radius:7px;cursor:pointer;font-size:13.5px;transition:border-color .12s,background .12s}
+.qopt:hover{border-color:#f59e0b;background:#fffbeb}
+.qopt.correct{border-color:#10b981;background:#ecfdf5}
+.qopt.wrong{border-color:#ef4444;background:#fef2f2}
+.qopt.disabled{pointer-events:none}
+.qfb{margin-top:10px;font-size:13.5px;padding:9px 13px;border-radius:7px;display:none}
+.qfb.show{display:block}
+.qfb.ok{background:#ecfdf5;color:#065f46}
+.qfb.bad{background:#fef2f2;color:#991b1b}
+.nav-btns{display:flex;gap:10px;margin-top:38px;padding-top:22px;border-top:1px solid #e5e7eb}
+.btn{padding:8px 20px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:background .12s}
+.btn-p{background:#92400e;color:#fff}.btn-p:hover{background:#78350f}
+.btn-s{background:#f0f2f5;color:#444d56;border:1px solid #e5e7eb}.btn-s:hover{background:#e5e7eb}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{background:#f0f2f5;color:#57606a;border:1px solid #e5e7eb;border-radius:20px;padding:3px 11px;font-size:12px;font-weight:600}
+.diagram{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 18px;margin:14px 0;font-family:"Cascadia Code",monospace;font-size:12px;color:#8b949e;line-height:1.8;overflow-x:auto;white-space:pre}
+.diagram .hl{color:#79c0ff}.diagram .hl2{color:#56d364}.diagram .hl3{color:#ffa657}.diagram .hl4{color:#ff7b72}
+.ti{display:inline-block;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:5px;vertical-align:middle}
+hr.div{border:none;border-top:1px solid #e5e7eb;margin:28px 0}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
+@media(max-width:768px){#sidebar{display:none}#main{padding:22px 16px 60px}}
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+<div id="sidebar-header">
+  <h1>☁️ AWS — Senior/Architect</h1>
+  <p>Complete Interview Preparation</p>
+  <div class="pb-wrap"><div class="pb-fill" id="pb"></div></div>
+  <div class="pb-label" id="pbl">0 of 28 completed</div>
+</div>
+<div class="nav-section">Track 1 · Foundations</div>
+<div class="nav-item active" onclick="goTo(0)" id="n0"><span class="ck" id="c0">○</span><span class="num">1</span>What is AWS &amp; Global Infra</div>
+<div class="nav-item" onclick="goTo(1)" id="n1"><span class="ck" id="c1">○</span><span class="num">2</span>IAM — Identity &amp; Access</div>
+<div class="nav-item" onclick="goTo(2)" id="n2"><span class="ck" id="c2">○</span><span class="num">3</span>EC2 &amp; Lambda Compute</div>
+<div class="nav-item" onclick="goTo(3)" id="n3"><span class="ck" id="c3">○</span><span class="num">4</span>S3 &amp; Storage</div>
+<div class="nav-item" onclick="goTo(4)" id="n4"><span class="ck" id="c4">○</span><span class="num">5</span>VPC &amp; Networking</div>
+<div class="nav-section">Track 2 · Data &amp; Messaging</div>
+<div class="nav-item" onclick="goTo(5)" id="n5"><span class="ck" id="c5">○</span><span class="num">6</span>Databases — RDS, DynamoDB, ElastiCache</div>
+<div class="nav-item" onclick="goTo(6)" id="n6"><span class="ck" id="c6">○</span><span class="num">7</span>SQS, SNS &amp; EventBridge</div>
+<div class="nav-item" onclick="goTo(7)" id="n7"><span class="ck" id="c7">○</span><span class="num">8</span>API Gateway</div>
+<div class="nav-item" onclick="goTo(8)" id="n8"><span class="ck" id="c8">○</span><span class="num">9</span>Data Pipelines — Glue, Athena, Redshift</div>
+<div class="nav-section">Track 3 · Scalability &amp; Reliability</div>
+<div class="nav-item" onclick="goTo(9)" id="n9"><span class="ck" id="c9">○</span><span class="num">10</span>Auto Scaling &amp; Load Balancing</div>
+<div class="nav-item" onclick="goTo(10)" id="n10"><span class="ck" id="c10">○</span><span class="num">11</span>Well-Architected Framework</div>
+<div class="nav-item" onclick="goTo(11)" id="n11"><span class="ck" id="c11">○</span><span class="num">12</span>CAP Theorem &amp; Distributed Systems</div>
+<div class="nav-item" onclick="goTo(12)" id="n12"><span class="ck" id="c12">○</span><span class="num">13</span>ECS, EKS &amp; Containers</div>
+<div class="nav-item" onclick="goTo(13)" id="n13"><span class="ck" id="c13">○</span><span class="num">14</span>Step Functions &amp; Workflows</div>
+<div class="nav-section">Track 4 · Security &amp; Compliance</div>
+<div class="nav-item" onclick="goTo(14)" id="n14"><span class="ck" id="c14">○</span><span class="num">15</span>Shield, WAF &amp; Security Services</div>
+<div class="nav-item" onclick="goTo(15)" id="n15"><span class="ck" id="c15">○</span><span class="num">16</span>Encryption &amp; Key Management (KMS)</div>
+<div class="nav-item" onclick="goTo(16)" id="n16"><span class="ck" id="c16">○</span><span class="num">17</span>Compliance &amp; Auditing</div>
+<div class="nav-item" onclick="goTo(17)" id="n17"><span class="ck" id="c17">○</span><span class="num">18</span>Multi-Account Strategy</div>
+<div class="nav-section">Track 5 · DevOps &amp; Observability</div>
+<div class="nav-item" onclick="goTo(18)" id="n18"><span class="ck" id="c18">○</span><span class="num">19</span>CloudWatch &amp; X-Ray</div>
+<div class="nav-item" onclick="goTo(19)" id="n19"><span class="ck" id="c19">○</span><span class="num">20</span>Infrastructure as Code</div>
+<div class="nav-item" onclick="goTo(20)" id="n20"><span class="ck" id="c20">○</span><span class="num">21</span>CI/CD — CodePipeline &amp; GitOps</div>
+<div class="nav-item" onclick="goTo(21)" id="n21"><span class="ck" id="c21">○</span><span class="num">22</span>Blue/Green &amp; Canary Deployments</div>
+<div class="nav-section">Track 6 · Architecture</div>
+<div class="nav-item" onclick="goTo(22)" id="n22"><span class="ck" id="c22">○</span><span class="num">23</span>Disaster Recovery &amp; RTO/RPO</div>
+<div class="nav-item" onclick="goTo(23)" id="n23"><span class="ck" id="c23">○</span><span class="num">24</span>Cost Optimization</div>
+<div class="nav-item" onclick="goTo(24)" id="n24"><span class="ck" id="c24">○</span><span class="num">25</span>Route 53 &amp; DNS Failover</div>
+<div class="nav-item" onclick="goTo(25)" id="n25"><span class="ck" id="c25">○</span><span class="num">26</span>Event-Driven Architecture</div>
+<div class="nav-item" onclick="goTo(26)" id="n26"><span class="ck" id="c26">○</span><span class="num">27</span>Serverless Architecture Patterns</div>
+<div class="nav-item" onclick="goTo(27)" id="n27"><span class="ck" id="c27">○</span><span class="num">28</span>Anti-patterns &amp; Wrap-up</div>
+</nav>
+<main id="main">
+
+<!-- ===== SECTION 0 ===== -->
+<div class="section active" id="s0">
+<span class="badge badge-orange">Foundations</span>
+<h2 class="t">What is AWS &amp; Global Infrastructure</h2>
+<p class="intro">AWS is the world's leading cloud platform with 200+ services across 30+ geographic regions. Understanding the global infrastructure is the foundation of every architecture decision.</p>
+
+<h3>Global Infrastructure</h3>
+<div class="diagram"><span class="hl">Region</span> (e.g. us-east-1, eu-west-1, ap-southeast-1)
+  └── 3+ <span class="hl2">Availability Zones (AZs)</span>
+        Each AZ = one or more discrete data centers
+        Redundant power, networking, connectivity
+        Connected via low-latency private links
+        └── <span class="hl3">Edge Locations / Points of Presence (400+)</span>
+              CloudFront CDN, Route 53 DNS, Lambda@Edge</div>
+
+<h3>Core Service Categories</h3>
+<table><thead><tr><th>Category</th><th>Key Services</th></tr></thead><tbody>
+<tr><td>Compute</td><td>EC2, Lambda, ECS, EKS, Fargate, Batch</td></tr>
+<tr><td>Storage</td><td>S3, EBS, EFS, FSx, Glacier, Storage Gateway</td></tr>
+<tr><td>Database</td><td>RDS, Aurora, DynamoDB, ElastiCache, Redshift, Neptune</td></tr>
+<tr><td>Networking</td><td>VPC, Route 53, CloudFront, ALB/NLB, Transit Gateway, Direct Connect</td></tr>
+<tr><td>Security</td><td>IAM, KMS, WAF, Shield, GuardDuty, Secrets Manager, Macie</td></tr>
+<tr><td>Messaging</td><td>SQS, SNS, EventBridge, Kinesis, MSK (Kafka)</td></tr>
+<tr><td>DevOps</td><td>CodePipeline, CodeBuild, CodeDeploy, CloudFormation, CDK</td></tr>
+<tr><td>Observability</td><td>CloudWatch, X-Ray, CloudTrail, Config, Health Dashboard</td></tr>
+</tbody></table>
+
+<h3>Shared Responsibility Model</h3>
+<div class="diagram"><span class="hl">AWS Responsibility</span> — Security OF the cloud
+  Physical hardware, data centers, global network, managed service internals
+  Hypervisor, host OS for managed services
+
+<span class="hl2">Customer Responsibility</span> — Security IN the cloud
+  Your data encryption, OS patching (EC2), IAM configuration
+  Network controls (Security Groups, NACLs), application security</div>
+
+<div class="callout"><div class="ct">Exam/Interview Tip</div>The shared responsibility boundary shifts based on service type. For Lambda (serverless), AWS manages more (runtime, OS). For EC2, you manage the OS and above. Know where the line is for each service type.</div>
+
+<div class="qbox" id="q0">
+<h4>Q: What is an AWS Availability Zone?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q0','b')">A) A geographic region like US East or EU West</div>
+<div class="qopt" data-val="b" onclick="quiz('q0','b')">B) One or more discrete data centers with redundant power/networking — an isolated failure domain within a Region</div>
+<div class="qopt" data-val="c" onclick="quiz('q0','b')">C) A CloudFront edge location for CDN caching</div>
+<div class="qopt" data-val="d" onclick="quiz('q0','b')">D) An AWS Local Zone for ultra-low latency</div>
+</div>
+<div class="qfb ok">✓ Correct! An AZ is one or more physically separate data centers within a Region. Designing Multi-AZ is the foundation of high availability on AWS.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 1 ===== -->
+<div class="section" id="s1">
+<span class="badge badge-orange">Foundations</span>
+<h2 class="t">IAM — Identity &amp; Access Management</h2>
+<p class="intro">IAM is the cornerstone of AWS security — controlling who can do what on which resources. Every senior AWS interview includes IAM questions.</p>
+
+<h3>Core IAM Concepts</h3>
+<table><thead><tr><th>Concept</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>User</strong></td><td>A person or app with long-lived credentials (avoid for services)</td></tr>
+<tr><td><strong>Group</strong></td><td>Collection of users — attach policies to groups, not individual users</td></tr>
+<tr><td><strong>Role</strong></td><td>Assumable identity — for services, cross-account, federated users</td></tr>
+<tr><td><strong>Policy</strong></td><td>JSON document defining permissions (Allow/Deny on Actions/Resources)</td></tr>
+<tr><td><strong>Permission Boundary</strong></td><td>Maximum permissions an entity can have — even if policy allows more</td></tr>
+</tbody></table>
+
+<h3>IAM Policy Anatomy</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code>{
+  <span class="st">"Version"</span>: <span class="st">"2012-10-17"</span>,
+  <span class="st">"Statement"</span>: [
+    {
+      <span class="st">"Sid"</span>: <span class="st">"AllowS3ReadWrite"</span>,
+      <span class="st">"Effect"</span>: <span class="st">"Allow"</span>,
+      <span class="st">"Action"</span>: [<span class="st">"s3:GetObject"</span>, <span class="st">"s3:PutObject"</span>],
+      <span class="st">"Resource"</span>: <span class="st">"arn:aws:s3:::my-bucket/*"</span>,
+      <span class="st">"Condition"</span>: {
+        <span class="st">"StringEquals"</span>: { <span class="st">"aws:RequestedRegion"</span>: <span class="st">"us-east-1"</span> }
+      }
+    },
+    {
+      <span class="st">"Effect"</span>: <span class="st">"Deny"</span>,
+      <span class="st">"Action"</span>: <span class="st">"s3:DeleteObject"</span>,
+      <span class="st">"Resource"</span>: <span class="st">"*"</span>
+    }
+  ]
+}</code></pre></div>
+
+<h3>Policy Evaluation Logic</h3>
+<div class="diagram">Request → Check for explicit <span class="hl4">DENY</span> → If found: DENY immediately
+        → Check for explicit <span class="hl2">ALLOW</span> → If found: ALLOW
+        → Default: <span class="hl4">DENY</span> (implicit deny)
+
+Priority: Explicit Deny &gt; Allow &gt; Implicit Deny
+SCP (Org) &gt; Resource Policy &gt; IAM Policy &gt; Permission Boundary &gt; Session Policy</div>
+
+<h3>IAM Best Practices</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># ✅ Use roles for EC2/Lambda — never embed credentials in code</span>
+aws iam create-role --role-name MyLambdaRole \
+  --assume-role-policy-document file://trust-policy.json
+
+<span class="cm"># ✅ Least privilege — start with no permissions, add only what's needed</span>
+<span class="cm"># ✅ Enable MFA for console access and critical operations</span>
+<span class="cm"># ✅ Use AWS Organizations SCPs to enforce guardrails across accounts</span>
+<span class="cm"># ✅ Rotate access keys; prefer short-lived role credentials</span>
+<span class="cm"># ✅ Use Secrets Manager / SSM Parameter Store for credentials</span>
+<span class="cm"># ❌ Never use root account for daily operations</span>
+<span class="cm"># ❌ Never hardcode access keys in application code</span></code></pre></div>
+
+<div class="qbox" id="q1">
+<h4>Q: An EC2 application needs to read from DynamoDB. What is the correct approach?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q1','c')">A) Store AWS access keys as environment variables on the EC2 instance</div>
+<div class="qopt" data-val="b" onclick="quiz('q1','c')">B) Create an IAM user with DynamoDB permissions and embed the keys in code</div>
+<div class="qopt" data-val="c" onclick="quiz('q1','c')">C) Attach an IAM Role with a DynamoDB policy to the EC2 instance — credentials are auto-rotated via instance metadata</div>
+<div class="qopt" data-val="d" onclick="quiz('q1','c')">D) Use the root account credentials stored in Secrets Manager</div>
+</div>
+<div class="qfb ok">✓ Correct! IAM Roles attached to EC2 deliver short-lived credentials via the instance metadata service (IMDS) — no keys in code, auto-rotation, no credential leakage risk.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 2 ===== -->
+<div class="section" id="s2">
+<span class="badge badge-orange">Foundations</span>
+<h2 class="t">EC2 &amp; Lambda Compute</h2>
+<p class="intro">EC2 gives you full control over virtual machines. Lambda is serverless event-driven compute. Knowing when to use each — and Lambda's cold start mechanics — is essential.</p>
+
+<h3>EC2 Instance Families</h3>
+<table><thead><tr><th>Family</th><th>Optimized For</th><th>Examples</th></tr></thead><tbody>
+<tr><td>General Purpose</td><td>Balanced CPU/memory</td><td>t3, t4g, m6i, m7g</td></tr>
+<tr><td>Compute Optimized</td><td>CPU-intensive workloads</td><td>c6i, c7g, c6a</td></tr>
+<tr><td>Memory Optimized</td><td>Large in-memory datasets</td><td>r6i, r7g, x2idn</td></tr>
+<tr><td>Storage Optimized</td><td>High sequential I/O</td><td>i4i, im4gn, d3en</td></tr>
+<tr><td>Accelerated Computing</td><td>GPU/ML/HPC</td><td>p4, g5, trn1 (Trainium)</td></tr>
+</tbody></table>
+
+<h3>Lambda Cold Start Deep Dive</h3>
+<div class="diagram">Cold Start (new execution environment):
+  <span class="hl">Download package</span> → <span class="hl2">Init runtime</span> → <span class="hl3">Run init code</span> → <span class="hl2">Handle request</span>
+  ↑_______________100ms – 1s overhead_______________↑
+
+Warm invocation (reused environment):
+  <span class="hl2">Handle request</span> only  ← milliseconds
+
+Provisioned Concurrency: pre-warmed environments, <span class="hl2">zero cold start</span></div>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Cold start mitigations</span>
+
+<span class="cm"># 1. Move heavy init outside the handler (module-level)</span>
+<span class="kw">const</span> db = <span class="kw">new</span> <span class="fn">Pool</span>({ ... });          <span class="cm">// created once per execution env</span>
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">DynamoDBClient</span>();   <span class="cm">// reused on warm calls</span>
+
+exports.<span class="fn">handler</span> = <span class="kw">async</span> (event) =&gt; {
+    <span class="kw">return</span> <span class="kw">await</span> db.<span class="fn">query</span>(<span class="st">'SELECT ...'</span>);
+};
+
+<span class="cm"># 2. Provisioned Concurrency (AWS CLI)</span>
+aws lambda put-provisioned-concurrency-config \
+  --function-name my-fn \
+  --qualifier LIVE \
+  --provisioned-concurrent-executions 10
+
+<span class="cm"># 3. Lambda SnapStart (Java) — snapshots post-init state</span>
+<span class="cm"># 4. Keep deployment package small — use layers for large deps</span>
+<span class="cm"># 5. Choose Node.js/Python over Java/.NET for faster init</span></code></pre></div>
+
+<h3>EC2 Pricing Models</h3>
+<table><thead><tr><th>Model</th><th>Discount</th><th>Best For</th></tr></thead><tbody>
+<tr><td>On-Demand</td><td>0%</td><td>Dev/test, unpredictable workloads</td></tr>
+<tr><td>Reserved (1/3 yr)</td><td>~40–72%</td><td>Steady-state production workloads</td></tr>
+<tr><td>Savings Plans</td><td>~40–66%</td><td>Flexible commitment (compute family)</td></tr>
+<tr><td>Spot</td><td>~70–90%</td><td>Fault-tolerant: batch, ML training</td></tr>
+<tr><td>Dedicated Host</td><td>Variable</td><td>Licensing compliance (BYOL)</td></tr>
+</tbody></table>
+
+<div class="qbox" id="q2">
+<h4>Q: What causes a Lambda cold start?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q2','b')">A) When Lambda runs out of memory and restarts the handler</div>
+<div class="qopt" data-val="b" onclick="quiz('q2','b')">B) When Lambda must create a new execution environment: download code, init runtime, and run module-level initialization</div>
+<div class="qopt" data-val="c" onclick="quiz('q2','b')">C) When a Lambda function hasn't been invoked in 24 hours</div>
+<div class="qopt" data-val="d" onclick="quiz('q2','b')">D) When Lambda scales beyond its reserved concurrency limit</div>
+</div>
+<div class="qfb ok">✓ Correct! Cold starts happen when no warm execution environment exists. Provisioned Concurrency pre-warms environments to eliminate this latency entirely.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 3 ===== -->
+<div class="section" id="s3">
+<span class="badge badge-orange">Foundations</span>
+<h2 class="t">S3 &amp; Storage</h2>
+<p class="intro">S3 is AWS's infinitely scalable object storage — the backbone of data lakes, backups, static sites, and media delivery. Know storage classes, encryption, and lifecycle policies cold.</p>
+
+<h3>S3 Storage Classes</h3>
+<table><thead><tr><th>Class</th><th>Access Pattern</th><th>Retrieval</th><th>Use Case</th></tr></thead><tbody>
+<tr><td>Standard</td><td>Frequent</td><td>Immediate</td><td>Active data, websites</td></tr>
+<tr><td>Intelligent-Tiering</td><td>Unknown/changing</td><td>Immediate</td><td>Auto-tiering, cost optimization</td></tr>
+<tr><td>Standard-IA</td><td>Infrequent</td><td>Immediate</td><td>Backups, DR replicas</td></tr>
+<tr><td>One Zone-IA</td><td>Infrequent</td><td>Immediate</td><td>Recreatable data (cheaper)</td></tr>
+<tr><td>Glacier Instant</td><td>Rare</td><td>Milliseconds</td><td>Archive with immediate access</td></tr>
+<tr><td>Glacier Flexible</td><td>Rare</td><td>Minutes–hours</td><td>Long-term archive</td></tr>
+<tr><td>Glacier Deep Archive</td><td>Very rare</td><td>12 hours</td><td>7–10 yr compliance retention</td></tr>
+</tbody></table>
+
+<h3>S3 Encryption Options</h3>
+<table><thead><tr><th>Type</th><th>Key Management</th><th>Audit Trail</th><th>Use When</th></tr></thead><tbody>
+<tr><td><strong>SSE-S3</strong></td><td>AWS managed (AES-256)</td><td>No</td><td>Default, minimal overhead</td></tr>
+<tr><td><strong>SSE-KMS</strong></td><td>AWS KMS (your CMKs)</td><td>Yes — CloudTrail</td><td>Compliance, cross-account, audit</td></tr>
+<tr><td><strong>SSE-C</strong></td><td>You provide key per request</td><td>No</td><td>Maximum key control</td></tr>
+<tr><td><strong>CSE</strong></td><td>Client-side before upload</td><td>No</td><td>End-to-end encryption</td></tr>
+</tbody></table>
+
+<h3>S3 Security: Block Public Access + Bucket Policies</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Block all public access (apply at account level)</span>
+aws s3control put-public-access-block \
+  --account-id 123456789012 \
+  --public-access-block-configuration \
+  "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+
+<span class="cm"># CloudFront OAC — only CloudFront can read from S3</span>
+{
+  <span class="st">"Effect"</span>: <span class="st">"Allow"</span>,
+  <span class="st">"Principal"</span>: { <span class="st">"Service"</span>: <span class="st">"cloudfront.amazonaws.com"</span> },
+  <span class="st">"Action"</span>: <span class="st">"s3:GetObject"</span>,
+  <span class="st">"Resource"</span>: <span class="st">"arn:aws:s3:::my-bucket/*"</span>,
+  <span class="st">"Condition"</span>: {
+    <span class="st">"StringEquals"</span>: {
+      <span class="st">"AWS:SourceArn"</span>: <span class="st">"arn:aws:cloudfront::123456789012:distribution/DIST_ID"</span>
+    }
+  }
+}</code></pre></div>
+
+<div class="qbox" id="q3">
+<h4>Q: Which S3 encryption option provides a full audit trail for every object decryption?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q3','b')">A) SSE-S3 — AWS manages keys and provides the most security</div>
+<div class="qopt" data-val="b" onclick="quiz('q3','b')">B) SSE-KMS — every KMS key usage is logged in CloudTrail, providing a compliance audit trail</div>
+<div class="qopt" data-val="c" onclick="quiz('q3','b')">C) SSE-C — customer provides the key so they have full control</div>
+<div class="qopt" data-val="d" onclick="quiz('q3','b')">D) CSE — client-side encryption is always audited</div>
+</div>
+<div class="qfb ok">✓ Correct! SSE-KMS logs every Encrypt/Decrypt/GenerateDataKey call in CloudTrail — making it the choice for compliance-driven audit requirements.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 4 ===== -->
+<div class="section" id="s4">
+<span class="badge badge-orange">Foundations</span>
+<h2 class="t">VPC &amp; Networking</h2>
+<p class="intro">A VPC is your private network inside AWS. Understanding subnets, route tables, security groups, NACLs, and VPC connectivity is essential for any AWS architect role.</p>
+
+<h3>VPC Architecture</h3>
+<div class="diagram"><span class="hl">VPC</span>  10.0.0.0/16  (region-wide)
+  ├── <span class="hl2">Public Subnet</span>  10.0.1.0/24  (AZ-a)
+  │     Route: 0.0.0.0/0 → <span class="hl2">Internet Gateway</span>
+  │     Resources: ALB, NAT Gateway, Bastion
+  ├── <span class="hl3">Private Subnet</span>  10.0.2.0/24  (AZ-a)
+  │     Route: 0.0.0.0/0 → <span class="hl3">NAT Gateway</span> (outbound only)
+  │     Resources: EC2, ECS, RDS, Lambda
+  └── <span class="hl3">Isolated Subnet</span>  10.0.3.0/24  (AZ-a)
+        No internet route at all
+        Resources: RDS, ElastiCache (DB tier)</div>
+
+<h3>Security Groups vs NACLs</h3>
+<table><thead><tr><th></th><th>Security Groups</th><th>NACLs</th></tr></thead><tbody>
+<tr><td>Level</td><td>Instance/ENI level</td><td>Subnet level</td></tr>
+<tr><td>Stateful?</td><td>✅ Yes — return traffic auto-allowed</td><td>❌ No — must explicitly allow inbound AND outbound</td></tr>
+<tr><td>Rules</td><td>Allow only</td><td>Allow and Deny</td></tr>
+<tr><td>Evaluation</td><td>All rules evaluated</td><td>Rules evaluated in number order, first match wins</td></tr>
+<tr><td>Default</td><td>Deny all inbound, allow all outbound</td><td>Allow all (default NACL)</td></tr>
+</tbody></table>
+
+<h3>VPC Connectivity Options</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># VPC Peering — direct, point-to-point, NOT transitive</span>
+<span class="cm"># A↔B and B↔C does NOT mean A↔C</span>
+aws ec2 create-vpc-peering-connection \
+  --vpc-id vpc-111 --peer-vpc-id vpc-222
+
+<span class="cm"># Transit Gateway — hub-and-spoke, fully transitive</span>
+<span class="cm"># Scales to thousands of VPCs + on-premises connections</span>
+aws ec2 create-transit-gateway
+
+<span class="cm"># VPC Endpoints — private access to AWS services (no internet)</span>
+<span class="cm"># Gateway endpoint: S3, DynamoDB (free)</span>
+<span class="cm"># Interface endpoint: most other services (PrivateLink, $$$)</span>
+aws ec2 create-vpc-endpoint \
+  --vpc-id vpc-111 \
+  --service-name com.amazonaws.us-east-1.s3 \
+  --vpc-endpoint-type Gateway</code></pre></div>
+
+<div class="callout danger"><div class="ct">VPC Peering Gotcha</div>VPC peering is NOT transitive. If VPC-A peers with VPC-B and VPC-B peers with VPC-C, traffic from A <strong>cannot</strong> reach C through B. Use Transit Gateway for hub-and-spoke connectivity at scale.</div>
+
+<div class="qbox" id="q4">
+<h4>Q: You have 50 VPCs needing full mesh connectivity and on-premises access. What is the right approach?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q4','c')">A) Create VPC peering between all pairs (50×49/2 = 1,225 peerings)</div>
+<div class="qopt" data-val="b" onclick="quiz('q4','c')">B) Use a shared VPC with security group isolation</div>
+<div class="qopt" data-val="c" onclick="quiz('q4','c')">C) Use Transit Gateway — attach all VPCs and on-premises Direct Connect/VPN for centralized transitive routing</div>
+<div class="qopt" data-val="d" onclick="quiz('q4','c')">D) Assign Elastic IPs and route over the internet</div>
+</div>
+<div class="qfb ok">✓ Correct! Transit Gateway is the hub-and-spoke solution for large-scale VPC connectivity. It supports transitive routing, on-premises connectivity, and inter-region peering.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 5 ===== -->
+<div class="section" id="s5">
+<span class="badge badge-blue">Data</span>
+<h2 class="t">Databases — RDS, DynamoDB, ElastiCache</h2>
+<p class="intro">AWS offers managed relational and NoSQL databases. The RDS Multi-AZ vs Read Replica distinction is one of the most tested senior interview questions.</p>
+
+<h3>RDS Multi-AZ vs Read Replicas</h3>
+<table><thead><tr><th></th><th>Multi-AZ</th><th>Read Replica</th></tr></thead><tbody>
+<tr><td>Purpose</td><td>High availability &amp; automatic failover</td><td>Read scalability</td></tr>
+<tr><td>Replication</td><td>Synchronous</td><td>Asynchronous</td></tr>
+<tr><td>Serves reads?</td><td>❌ Standby is passive</td><td>✅ Read-only queries</td></tr>
+<tr><td>Failover</td><td>Automatic ~60–120s (DNS flip)</td><td>Manual promotion required</td></tr>
+<tr><td>Cross-region</td><td>Same region only</td><td>✅ Cross-region supported</td></tr>
+<tr><td>Use for DR?</td><td>Within-region HA only</td><td>✅ Cross-region DR + promote</td></tr>
+</tbody></table>
+
+<div class="callout info"><div class="ct">Key Insight</div>Multi-AZ standby is <strong>NOT</strong> for reads — it exists only for automatic failover. Use Read Replicas for read scaling. Use both together: Multi-AZ for HA, Read Replicas for performance.</div>
+
+<h3>Aurora vs RDS</h3>
+<table><thead><tr><th>Feature</th><th>Aurora</th><th>RDS (MySQL/Postgres)</th></tr></thead><tbody>
+<tr><td>Storage</td><td>Auto-grows to 128 TB, 6-way replication across 3 AZs</td><td>Manual provisioning, Multi-AZ = 1 standby</td></tr>
+<tr><td>Read Replicas</td><td>Up to 15 low-latency (~10ms lag) replicas</td><td>Up to 5, higher replication lag</td></tr>
+<tr><td>Failover</td><td>&lt;30s (no DNS propagation delay)</td><td>60–120s</td></tr>
+<tr><td>Cost</td><td>~20% more than RDS</td><td>Lower base cost</td></tr>
+<tr><td>Serverless v2</td><td>✅ Auto-scales to 0</td><td>❌</td></tr>
+</tbody></table>
+
+<h3>DynamoDB Key Design</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Single-table design — model multiple entity types in one table</span>
+<span class="cm"># Partition Key (PK) + Sort Key (SK) for composite keys</span>
+
+<span class="cm"># Example: E-commerce single-table design</span>
+PK              SK                  Attributes
+USER#u123       PROFILE             name, email, created_at
+USER#u123       ORDER#o456          total, status, items
+ORDER#o456      ITEM#i789           product_id, qty, price
+
+<span class="cm"># GSI (Global Secondary Index) — query on non-primary attributes</span>
+<span class="cm"># GSI1PK: status  |  GSI1SK: created_at</span>
+<span class="cm"># → Query: all PENDING orders sorted by creation time</span>
+
+<span class="cm"># Access patterns drive table design in DynamoDB!</span>
+<span class="cm"># Define all access patterns BEFORE designing the schema</span></code></pre></div>
+
+<h3>ElastiCache: Redis vs Memcached</h3>
+<table><thead><tr><th>Feature</th><th>Redis</th><th>Memcached</th></tr></thead><tbody>
+<tr><td>Data structures</td><td>Strings, hashes, lists, sets, sorted sets, streams</td><td>Simple key-value only</td></tr>
+<tr><td>Persistence</td><td>✅ RDB + AOF</td><td>❌ In-memory only</td></tr>
+<tr><td>Replication</td><td>✅ Primary-replica, cluster mode</td><td>❌ No replication</td></tr>
+<tr><td>Use cases</td><td>Session store, leaderboard, pub/sub, rate limiting</td><td>Simple caching, multi-threaded scale</td></tr>
+</tbody></table>
+
+<div class="qbox" id="q5">
+<h4>Q: Can the RDS Multi-AZ standby serve read traffic?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q5','b')">A) Yes — it serves reads to reduce primary load</div>
+<div class="qopt" data-val="b" onclick="quiz('q5','b')">B) No — the standby is completely passive and only activates for automatic failover</div>
+<div class="qopt" data-val="c" onclick="quiz('q5','b')">C) Only during maintenance windows</div>
+<div class="qopt" data-val="d" onclick="quiz('q5','b')">D) Yes, but only within the same AZ</div>
+</div>
+<div class="qfb ok">✓ Correct! Multi-AZ standby is passive — zero reads, zero writes. It only becomes active after an automatic failover. Create Read Replicas for read scaling.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 6 ===== -->
+<div class="section" id="s6">
+<span class="badge badge-blue">Data</span>
+<h2 class="t">SQS, SNS &amp; EventBridge</h2>
+<p class="intro">Decoupled, asynchronous messaging is the backbone of resilient AWS architectures. Know the differences between SQS, SNS, and EventBridge deeply.</p>
+
+<h3>SQS Standard vs FIFO</h3>
+<table><thead><tr><th>Feature</th><th>Standard Queue</th><th>FIFO Queue</th></tr></thead><tbody>
+<tr><td>Throughput</td><td>Unlimited</td><td>300 TPS (3,000 with batching)</td></tr>
+<tr><td>Ordering</td><td>Best-effort (may be out of order)</td><td>Strict FIFO within message group</td></tr>
+<tr><td>Delivery</td><td>At-least-once (duplicates possible)</td><td>Exactly-once processing</td></tr>
+<tr><td>Deduplication</td><td>Not guaranteed</td><td>Yes — 5-minute deduplication window</td></tr>
+<tr><td>Use case</td><td>Image resizing, log ingestion, high-throughput tasks</td><td>Financial transactions, order processing</td></tr>
+</tbody></table>
+
+<h3>Dead Letter Queues (DLQ)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># DLQ — messages that fail after maxReceiveCount are moved here</span>
+<span class="cm"># Without DLQ: poison-pill messages loop forever, blocking consumers</span>
+
+aws sqs create-queue --queue-name MyDLQ
+aws sqs set-queue-attributes \
+  --queue-url https://sqs.us-east-1.amazonaws.com/123/MyQueue \
+  --attributes '{
+    "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:123:MyDLQ\",
+                      \"maxReceiveCount\":\"3\"}"
+  }'
+
+<span class="cm"># CloudWatch alarm on ApproximateNumberOfMessagesNotVisible in DLQ</span></code></pre></div>
+
+<h3>SNS Fan-out Pattern</h3>
+<div class="diagram"><span class="hl">Event Producer</span>
+      │
+      ▼
+<span class="hl2">SNS Topic</span>  (pub/sub hub)
+      ├──► <span class="hl3">SQS Queue A</span> ──► Lambda (order service)
+      ├──► <span class="hl3">SQS Queue B</span> ──► Lambda (inventory service)
+      ├──► <span class="hl3">SQS Queue C</span> ──► Lambda (notification service)
+      └──► Email / HTTP endpoint</div>
+
+<h3>EventBridge vs SNS vs SQS</h3>
+<table><thead><tr><th></th><th>SQS</th><th>SNS</th><th>EventBridge</th></tr></thead><tbody>
+<tr><td>Pattern</td><td>Queue (pull)</td><td>Push (pub/sub)</td><td>Event bus (routing rules)</td></tr>
+<tr><td>Filtering</td><td>Basic</td><td>Attribute-based</td><td>Rich content-based filtering</td></tr>
+<tr><td>Sources</td><td>Your apps</td><td>Your apps</td><td>AWS services + partners + your apps</td></tr>
+<tr><td>Targets</td><td>Lambda, EC2, ECS</td><td>Lambda, SQS, HTTP, email</td><td>50+ AWS services + APIs</td></tr>
+<tr><td>Replay</td><td>DLQ reprocess</td><td>❌</td><td>✅ Archive + replay</td></tr>
+</tbody></table>
+
+<div class="qbox" id="q6">
+<h4>Q: For a financial transaction system requiring strict ordering and exactly-once delivery, which queue type should you use?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q6','c')">A) SQS Standard — unlimited throughput for transactions</div>
+<div class="qopt" data-val="b" onclick="quiz('q6','c')">B) SNS — it has built-in delivery guarantees</div>
+<div class="qopt" data-val="c" onclick="quiz('q6','c')">C) SQS FIFO — strict ordering + exactly-once delivery within a message group</div>
+<div class="qopt" data-val="d" onclick="quiz('q6','c')">D) EventBridge — it routes events reliably</div>
+</div>
+<div class="qfb ok">✓ Correct! SQS FIFO guarantees FIFO ordering and exactly-once processing within a MessageGroupId — essential for financial transactions where order and idempotency matter.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 7 ===== -->
+<div class="section" id="s7">
+<span class="badge badge-blue">Data</span>
+<h2 class="t">API Gateway</h2>
+<p class="intro">API Gateway is the front door for serverless APIs and microservices — understanding REST vs HTTP vs WebSocket APIs and throttling is critical for senior roles.</p>
+
+<h3>API Types Comparison</h3>
+<table><thead><tr><th></th><th>REST API</th><th>HTTP API</th><th>WebSocket API</th></tr></thead><tbody>
+<tr><td>Latency</td><td>Higher</td><td>~60% lower</td><td>N/A (persistent)</td></tr>
+<tr><td>Cost</td><td>Higher</td><td>~70% cheaper</td><td>Per connection + message</td></tr>
+<tr><td>Features</td><td>Full: usage plans, keys, caching, WAF</td><td>Simpler, faster</td><td>Bi-directional real-time</td></tr>
+<tr><td>Auth</td><td>Cognito, Lambda, IAM, API keys</td><td>JWT, Lambda, IAM</td><td>Lambda authorizer</td></tr>
+<tr><td>Use case</td><td>Full-featured APIs, API products</td><td>Microservices, Lambda proxy</td><td>Chat, live dashboards, IoT</td></tr>
+</tbody></table>
+
+<h3>Throttling &amp; Usage Plans</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Throttling hierarchy</span>
+<span class="cm"># Account limit: 10,000 RPS (soft limit, can increase)</span>
+<span class="cm"># Stage limit: set per stage</span>
+<span class="cm"># Method limit: override per endpoint</span>
+<span class="cm"># Usage plan: per API key (customer-level quotas)</span>
+
+<span class="cm"># When throttled → 429 Too Many Requests</span>
+<span class="cm"># Client should use exponential backoff + jitter</span>
+
+<span class="cm"># Caching (REST API only) — reduce backend calls</span>
+<span class="cm"># Cache key: method + path + query params + headers</span>
+<span class="cm"># TTL: 0–3600s (default 300s)</span>
+
+<span class="cm"># Lambda integration types</span>
+<span class="cm"># Lambda Proxy: full request/response passthrough (most common)</span>
+<span class="cm"># Lambda Custom: transform request/response with mapping templates</span></code></pre></div>
+
+<h3>API Gateway + Lambda Architecture</h3>
+<div class="diagram">Client
+  ↓ HTTPS
+<span class="hl">CloudFront</span> (optional, global edge)
+  ↓
+<span class="hl2">API Gateway</span> (throttling, auth, WAF)
+  ↓
+<span class="hl3">Lambda Authorizer</span> → verify JWT/API key
+  ↓
+<span class="hl2">Lambda Function</span>
+  ↓
+<span class="hl3">DynamoDB / RDS / S3</span></div>
+
+<div class="callout"><div class="ct">Interview Tip</div>For high-traffic APIs, prefer HTTP API (70% cheaper, lower latency) over REST API unless you need features like caching, usage plans, or request/response transformation with VTL templates.</div>
+
+<div class="qbox" id="q7">
+<h4>Q: Which API Gateway type offers the lowest cost and latency for a simple Lambda-backed microservice?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q7','b')">A) REST API — it's the most mature and feature-complete</div>
+<div class="qopt" data-val="b" onclick="quiz('q7','b')">B) HTTP API — ~70% cheaper and ~60% lower latency than REST API</div>
+<div class="qopt" data-val="c" onclick="quiz('q7','b')">C) WebSocket API — best for all real-time use cases</div>
+<div class="qopt" data-val="d" onclick="quiz('q7','b')">D) REST API with caching enabled</div>
+</div>
+<div class="qfb ok">✓ Correct! HTTP API (v2) is the modern default for Lambda-backed microservices — significantly cheaper and faster, with JWT authorizers built in.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 8 ===== -->
+<div class="section" id="s8">
+<span class="badge badge-blue">Data</span>
+<h2 class="t">Data Pipelines — Glue, Athena, Redshift</h2>
+<p class="intro">AWS provides a complete data lake and analytics stack. Knowing when to use Glue vs Athena vs Redshift vs Kinesis is essential for data-focused architect interviews.</p>
+
+<h3>AWS Analytics Stack</h3>
+<div class="diagram"><span class="hl">Ingest</span>                <span class="hl2">Store</span>           <span class="hl3">Process</span>           <span class="hl">Analyze</span>
+Kinesis Data          S3 Data Lake     Glue ETL          Athena (ad-hoc)
+  Streams       →     (Parquet/ORC) →  Glue DataBrew  →  Redshift (BI)
+Kinesis Firehose                       EMR (Spark)       QuickSight
+DMS (CDC)                              AWS Glue           SageMaker</div>
+
+<h3>Service Decision Guide</h3>
+<table><thead><tr><th>Service</th><th>What It Does</th><th>When to Use</th></tr></thead><tbody>
+<tr><td><strong>Glue</strong></td><td>Serverless ETL — crawl, catalog, transform data</td><td>Move/transform data between stores; build data catalog</td></tr>
+<tr><td><strong>Athena</strong></td><td>Serverless SQL on S3 (pay per query)</td><td>Ad-hoc analysis of S3 data, no infrastructure needed</td></tr>
+<tr><td><strong>Redshift</strong></td><td>Petabyte-scale columnar data warehouse</td><td>Complex BI queries, dashboards, large analytical workloads</td></tr>
+<tr><td><strong>Kinesis Data Streams</strong></td><td>Real-time data streaming (shards)</td><td>Real-time analytics, custom consumers, retain 7–365 days</td></tr>
+<tr><td><strong>Kinesis Firehose</strong></td><td>Fully managed delivery to S3/Redshift/ES</td><td>Stream → S3 with no code, near-real-time (60s min buffer)</td></tr>
+<tr><td><strong>EMR</strong></td><td>Managed Hadoop/Spark/Hive cluster</td><td>Large-scale batch processing, ML pipelines</td></tr>
+</tbody></table>
+
+<h3>Athena Cost Optimization</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">-- Athena charges $5/TB scanned — optimize to reduce costs</span>
+
+<span class="cm">-- 1. Use columnar formats (Parquet/ORC) — 70-90% less data scanned</span>
+CREATE TABLE orders_parquet
+WITH (format = 'PARQUET', external_location = 's3://bucket/orders/')
+AS SELECT * FROM orders_csv;
+
+<span class="cm">-- 2. Partition your data</span>
+<span class="cm">-- s3://bucket/orders/year=2024/month=01/day=15/</span>
+CREATE TABLE orders_partitioned (id STRING, total DOUBLE)
+PARTITIONED BY (year STRING, month STRING);
+
+<span class="cm">-- 3. Use partition pruning in queries</span>
+SELECT * FROM orders_partitioned
+WHERE year = '2024' AND month = '01';  <span class="cm">-- Only scans Jan 2024 partition</span></code></pre></div>
+
+<div class="qbox" id="q8">
+<h4>Q: For ad-hoc SQL analysis of data already stored in S3, which AWS service requires no infrastructure setup?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q8','b')">A) Redshift — it's the standard data warehouse</div>
+<div class="qopt" data-val="b" onclick="quiz('q8','b')">B) Athena — serverless SQL directly on S3, pay per TB scanned, no cluster needed</div>
+<div class="qopt" data-val="c" onclick="quiz('q8','b')">C) EMR — managed Spark for data processing</div>
+<div class="qopt" data-val="d" onclick="quiz('q8','b')">D) Glue — it catalogues and transforms data</div>
+</div>
+<div class="qfb ok">✓ Correct! Athena is serverless — point it at S3, write SQL, pay only for data scanned. Use Parquet + partitioning to minimize costs.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 9 ===== -->
+<div class="section" id="s9">
+<span class="badge badge-green">Scalability</span>
+<h2 class="t">Auto Scaling &amp; Load Balancing</h2>
+<p class="intro">Auto Scaling and Elastic Load Balancing work together to handle traffic spikes while keeping costs low. Know all five scaling policy types and the three load balancer types.</p>
+
+<h3>Auto Scaling Policy Types</h3>
+<table><thead><tr><th>Policy</th><th>How It Works</th><th>Best For</th></tr></thead><tbody>
+<tr><td><strong>Target Tracking</strong></td><td>Maintain a target metric (e.g., 60% CPU, 1000 RPS/instance)</td><td>Most use cases — set-and-forget simplicity</td></tr>
+<tr><td><strong>Step Scaling</strong></td><td>Add/remove instances in steps based on CloudWatch alarm thresholds</td><td>Different responses at different load levels</td></tr>
+<tr><td><strong>Simple Scaling</strong></td><td>One adjustment per alarm + cooldown period</td><td>Legacy — use Target Tracking instead</td></tr>
+<tr><td><strong>Scheduled Scaling</strong></td><td>Pre-set capacity at specific times/cron schedules</td><td>Predictable load patterns (before market open)</td></tr>
+<tr><td><strong>Predictive Scaling</strong></td><td>ML forecasts traffic + proactively scales</td><td>Regular cyclical patterns (daily/weekly spikes)</td></tr>
+</tbody></table>
+
+<h3>Load Balancer Types</h3>
+<table><thead><tr><th></th><th>ALB</th><th>NLB</th><th>CLB (legacy)</th></tr></thead><tbody>
+<tr><td>Layer</td><td>7 (HTTP/HTTPS)</td><td>4 (TCP/UDP/TLS)</td><td>4/7</td></tr>
+<tr><td>Routing</td><td>Path, host, header, query</td><td>IP, port</td><td>Basic</td></tr>
+<tr><td>Performance</td><td>Good</td><td>Ultra-low latency, millions RPS</td><td>—</td></tr>
+<tr><td>Static IP</td><td>❌ (DNS only)</td><td>✅</td><td>❌</td></tr>
+<tr><td>Use case</td><td>Web apps, microservices, gRPC</td><td>Real-time, gaming, TCP</td><td>Migrate away from</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Target Tracking — most common policy</span>
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name my-asg \
+  --policy-name target-cpu-60 \
+  --policy-type TargetTrackingScaling \
+  --target-tracking-configuration '{
+    "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ASGAverageCPUUtilization"
+    },
+    "TargetValue": 60.0,
+    "ScaleInCooldown": 300,
+    "ScaleOutCooldown": 60
+  }'
+
+<span class="cm"># ALB weighted routing — shift traffic between target groups</span>
+<span class="cm"># Used for blue/green and canary deployments</span></code></pre></div>
+
+<div class="qbox" id="q9">
+<h4>Q: Which Auto Scaling policy should you use for most web application use cases?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q9','b')">A) Simple Scaling — easiest to understand</div>
+<div class="qopt" data-val="b" onclick="quiz('q9','b')">B) Target Tracking — set a target metric and AWS automatically adjusts capacity to maintain it</div>
+<div class="qopt" data-val="c" onclick="quiz('q9','b')">C) Scheduled Scaling — most predictable</div>
+<div class="qopt" data-val="d" onclick="quiz('q9','b')">D) Step Scaling — most control over scaling increments</div>
+</div>
+<div class="qfb ok">✓ Correct! Target Tracking is the recommended default — you define a target (e.g., 60% CPU) and AWS continuously adjusts the fleet size to maintain it automatically.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 10 ===== -->
+<div class="section" id="s10">
+<span class="badge badge-green">Scalability</span>
+<h2 class="t">Well-Architected Framework</h2>
+<p class="intro">The AWS Well-Architected Framework is the architectural compass for every AWS design decision — interviewers expect you to map requirements to specific pillars and practices.</p>
+
+<h3>The 6 Pillars</h3>
+<table><thead><tr><th>Pillar</th><th>Key Question</th><th>Core AWS Services/Practices</th></tr></thead><tbody>
+<tr><td><strong>Operational Excellence</strong></td><td>Can we run and improve effectively?</td><td>IaC (CDK/CloudFormation), runbooks, CloudWatch, AWS Config</td></tr>
+<tr><td><strong>Security</strong></td><td>Are data and systems protected?</td><td>IAM least privilege, KMS encryption, WAF, GuardDuty, Shield</td></tr>
+<tr><td><strong>Reliability</strong></td><td>Can we recover from failures?</td><td>Multi-AZ, Auto Scaling, Circuit Breaker, backups, chaos engineering</td></tr>
+<tr><td><strong>Performance Efficiency</strong></td><td>Are we using resources efficiently?</td><td>Right-sizing, CloudFront, ElastiCache, Graviton, serverless</td></tr>
+<tr><td><strong>Cost Optimization</strong></td><td>Are we spending appropriately?</td><td>Savings Plans, Spot, Cost Explorer, rightsizing, S3 lifecycle</td></tr>
+<tr><td><strong>Sustainability</strong></td><td>Are we minimizing environmental impact?</td><td>Managed services, Graviton, right-sizing, efficient regions</td></tr>
+</tbody></table>
+
+<h3>Applying to a High-Traffic E-commerce Platform</h3>
+<div class="diagram"><span class="hl2">Reliability</span>
+  ✓ Multi-AZ Aurora + Read Replicas
+  ✓ ALB + Auto Scaling Group (target 60% CPU)
+  ✓ SQS for order processing (decouple checkout from fulfillment)
+  ✓ Circuit breaker (Resilience4j / AWS App Mesh)
+  ✓ S3 + RDS automated backups, cross-region replication
+
+<span class="hl3">Performance Efficiency</span>
+  ✓ CloudFront for static assets (S3 origin, global CDN)
+  ✓ ElastiCache Redis for product catalog + sessions
+  ✓ DynamoDB for cart (single-ms latency)
+  ✓ Aurora Serverless v2 for variable-load microservices
+
+<span class="hl4">Security</span>
+  ✓ WAF on CloudFront + ALB (OWASP top 10 rules)
+  ✓ Shield Standard (free DDoS protection)
+  ✓ IAM roles per service (least privilege)
+  ✓ Secrets Manager for DB credentials</div>
+
+<div class="callout"><div class="ct">Well-Architected Review</div>Use the AWS Well-Architected Tool in the console to assess workloads against all pillars. It generates improvement plan with prioritized recommendations. Every team should run this before production launches.</div>
+
+<div class="qbox" id="q10">
+<h4>Q: A production database suffers a hardware failure at 2am. Which Well-Architected pillar primarily governs the recovery strategy?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q10','b')">A) Security — the failure may have been a security incident</div>
+<div class="qopt" data-val="b" onclick="quiz('q10','b')">B) Reliability — covering fault tolerance, backup/restore, and recovery from failures</div>
+<div class="qopt" data-val="c" onclick="quiz('q10','b')">C) Operational Excellence — about running operations effectively</div>
+<div class="qopt" data-val="d" onclick="quiz('q10','b')">D) Cost Optimization — failures waste money</div>
+</div>
+<div class="qfb ok">✓ Correct! The Reliability pillar covers the ability to recover from failures — Multi-AZ, automated failover, backup/restore, and chaos engineering practices.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 11 ===== -->
+<div class="section" id="s11">
+<span class="badge badge-green">Scalability</span>
+<h2 class="t">CAP Theorem &amp; Distributed Systems</h2>
+<p class="intro">CAP Theorem explains the fundamental trade-offs in distributed systems. Knowing where AWS services land on the CAP spectrum is a senior-level topic.</p>
+
+<h3>CAP Theorem</h3>
+<div class="diagram">          <span class="hl">Consistency</span>
+          Every read returns the most recent write
+                     /       \
+                <span class="hl2">CP</span>           <span class="hl4">CA</span>
+               /               \
+  <span class="hl2">Availability</span> ────── <span class="hl3">AP</span> ────── <span class="hl">Partition Tolerance</span>
+  Every request               Network partitions ALWAYS happen
+  gets a response             → P is required for distributed systems
+
+  Real choice: CP (consistency) or AP (availability) during a partition</div>
+
+<h3>AWS Services on the CAP Spectrum</h3>
+<table><thead><tr><th>Service</th><th>Default CAP</th><th>Tunable?</th><th>Notes</th></tr></thead><tbody>
+<tr><td>DynamoDB</td><td>AP (eventual)</td><td>✅ Strongly consistent reads</td><td>Strongly consistent = higher latency, costs 2x RCUs</td></tr>
+<tr><td>Aurora</td><td>CP</td><td>No</td><td>Quorum writes to 6 copies across 3 AZs</td></tr>
+<tr><td>S3</td><td>CP (since 2020)</td><td>No</td><td>Strong read-after-write consistency for all operations</td></tr>
+<tr><td>ElastiCache Redis</td><td>CP (primary)</td><td>No</td><td>Read from replica = eventual consistency</td></tr>
+<tr><td>Kinesis</td><td>CP</td><td>No</td><td>Ordered within shard, at-least-once delivery</td></tr>
+</tbody></table>
+
+<h3>PACELC Extension</h3>
+<div class="callout"><div class="ct">Beyond CAP: PACELC</div>PACELC extends CAP: during a <strong>P</strong>artition: A vs C trade-off. <strong>E</strong>lse (normal operation): <strong>L</strong>atency vs <strong>C</strong>onsistency. DynamoDB: PA/EL — available during partitions, low latency over consistency in normal operation. Aurora: PC/EC — consistent always.</div>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// DynamoDB — choose read consistency per request</span>
+<span class="kw">const</span> result = <span class="kw">await</span> dynamodb.<span class="fn">getItem</span>({
+  TableName: <span class="st">"Orders"</span>,
+  Key: { id: { S: <span class="st">"order-123"</span> } },
+  <span class="cm">// Eventually consistent (default) — cheaper, faster</span>
+  ConsistentRead: <span class="bl">false</span>,
+
+  <span class="cm">// Strongly consistent — use when reading after a write</span>
+  <span class="cm">// ConsistentRead: true  ← 2x RCU cost, higher latency</span>
+});</code></pre></div>
+
+<div class="qbox" id="q11">
+<h4>Q: Which AWS database is designed as AP (available + partition tolerant) by default?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q11','b')">A) Aurora — it uses synchronous replication</div>
+<div class="qopt" data-val="b" onclick="quiz('q11','b')">B) DynamoDB — eventually consistent reads by default, strong consistency optional</div>
+<div class="qopt" data-val="c" onclick="quiz('q11','b')">C) RDS Multi-AZ — the standby ensures consistency</div>
+<div class="qopt" data-val="d" onclick="quiz('q11','b')">D) S3 — object storage is always consistent</div>
+</div>
+<div class="qfb ok">✓ Correct! DynamoDB is AP by default — eventual consistency for maximum availability. Strongly consistent reads are available at 2x the RCU cost.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 12 ===== -->
+<div class="section" id="s12">
+<span class="badge badge-green">Scalability</span>
+<h2 class="t">ECS, EKS &amp; Containers</h2>
+<p class="intro">AWS offers two managed container orchestration platforms — ECS (AWS-native) and EKS (Kubernetes). Choosing between them and understanding Fargate vs EC2 launch types is a key architect decision.</p>
+
+<h3>ECS vs EKS</h3>
+<table><thead><tr><th></th><th>ECS</th><th>EKS</th></tr></thead><tbody>
+<tr><td>Type</td><td>AWS-native orchestrator</td><td>Managed Kubernetes</td></tr>
+<tr><td>Control plane</td><td>AWS managed (free)</td><td>AWS managed ($0.10/hr/cluster)</td></tr>
+<tr><td>Portability</td><td>AWS only</td><td>Standard Kubernetes — portable</td></tr>
+<tr><td>Complexity</td><td>Lower — simpler API</td><td>Higher — full Kubernetes ecosystem</td></tr>
+<tr><td>Ecosystem</td><td>AWS-native integrations</td><td>Helm charts, CNCF tools, operators</td></tr>
+<tr><td>Migration path</td><td>AWS lock-in</td><td>Multi-cloud / hybrid possible</td></tr>
+<tr><td>Best for</td><td>AWS-first teams, simpler workloads</td><td>Kubernetes-experienced teams, complex workloads</td></tr>
+</tbody></table>
+
+<h3>Fargate vs EC2 Launch Types</h3>
+<table><thead><tr><th></th><th>Fargate</th><th>EC2</th></tr></thead><tbody>
+<tr><td>Server management</td><td>None — serverless containers</td><td>You manage EC2 instances</td></tr>
+<tr><td>Cost model</td><td>Per vCPU/memory per second</td><td>Per EC2 instance (+ savings plans)</td></tr>
+<tr><td>Cost efficiency</td><td>Higher $/unit, but no idle cost</td><td>Better for steady high utilization</td></tr>
+<tr><td>GPU/custom AMI</td><td>❌</td><td>✅</td></tr>
+<tr><td>Best for</td><td>Variable workloads, no infra team</td><td>Consistent load, cost-sensitive</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># ECS Task Definition (Fargate)</span>
+{
+  <span class="st">"family"</span>: <span class="st">"api-service"</span>,
+  <span class="st">"networkMode"</span>: <span class="st">"awsvpc"</span>,
+  <span class="st">"requiresCompatibilities"</span>: [<span class="st">"FARGATE"</span>],
+  <span class="st">"cpu"</span>: <span class="st">"512"</span>,
+  <span class="st">"memory"</span>: <span class="st">"1024"</span>,
+  <span class="st">"executionRoleArn"</span>: <span class="st">"arn:aws:iam::123:role/ecsTaskExecutionRole"</span>,
+  <span class="st">"taskRoleArn"</span>: <span class="st">"arn:aws:iam::123:role/api-task-role"</span>,
+  <span class="st">"containerDefinitions"</span>: [{
+    <span class="st">"name"</span>: <span class="st">"api"</span>,
+    <span class="st">"image"</span>: <span class="st">"123.dkr.ecr.us-east-1.amazonaws.com/api:latest"</span>,
+    <span class="st">"portMappings"</span>: [{ <span class="st">"containerPort"</span>: 8080 }],
+    <span class="st">"logConfiguration"</span>: {
+      <span class="st">"logDriver"</span>: <span class="st">"awslogs"</span>,
+      <span class="st">"options"</span>: { <span class="st">"awslogs-group"</span>: <span class="st">"/ecs/api"</span>, <span class="st">"awslogs-region"</span>: <span class="st">"us-east-1"</span> }
+    }
+  }]
+}</code></pre></div>
+
+<div class="qbox" id="q12">
+<h4>Q: Your team wants container portability across AWS and potentially other clouds. Which platform should you choose?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q12','b')">A) ECS — it's simpler and cheaper</div>
+<div class="qopt" data-val="b" onclick="quiz('q12','b')">B) EKS — standard Kubernetes is portable across AWS, on-premises, and other clouds</div>
+<div class="qopt" data-val="c" onclick="quiz('q12','b')">C) Lambda — serverless has no portability concerns</div>
+<div class="qopt" data-val="d" onclick="quiz('q12','b')">D) Fargate — it works on both ECS and EKS</div>
+</div>
+<div class="qfb ok">✓ Correct! EKS uses standard Kubernetes APIs — workloads can run on-premises (EKS Anywhere), other clouds, or locally. ECS is AWS-proprietary.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 13 ===== -->
+<div class="section" id="s13">
+<span class="badge badge-green">Scalability</span>
+<h2 class="t">Step Functions &amp; Workflows</h2>
+<p class="intro">Step Functions orchestrates distributed workflows — replacing complex Lambda chaining and retry logic with a visual, auditable state machine.</p>
+
+<h3>Step Functions vs Lambda Chaining</h3>
+<table><thead><tr><th></th><th>Lambda Chaining</th><th>Step Functions</th></tr></thead><tbody>
+<tr><td>Error handling</td><td>Manual try/catch in each Lambda</td><td>Built-in Retry, Catch, timeout per state</td></tr>
+<tr><td>State management</td><td>Pass state via event payloads (size limits)</td><td>Managed state machine with full execution history</td></tr>
+<tr><td>Visibility</td><td>None — need to build tracing</td><td>Visual workflow + full execution history in console</td></tr>
+<tr><td>Long-running</td><td>Max 15 min per Lambda</td><td>Standard: up to 1 year; Express: up to 5 min</td></tr>
+<tr><td>Parallel execution</td><td>Complex — requires coordination</td><td>Built-in Parallel and Map states</td></tr>
+</tbody></table>
+
+<h3>Standard vs Express Workflows</h3>
+<table><thead><tr><th></th><th>Standard</th><th>Express</th></tr></thead><tbody>
+<tr><td>Duration</td><td>Up to 1 year</td><td>Up to 5 minutes</td></tr>
+<tr><td>Execution semantics</td><td>Exactly-once</td><td>At-least-once</td></tr>
+<tr><td>Execution history</td><td>✅ Visible in console</td><td>CloudWatch Logs only</td></tr>
+<tr><td>Price</td><td>Per state transition</td><td>Per execution duration</td></tr>
+<tr><td>Best for</td><td>Long-running business workflows</td><td>High-volume, short-duration processing</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// Order Processing State Machine (ASL)</span>
+{
+  <span class="st">"Comment"</span>: <span class="st">"Order processing workflow"</span>,
+  <span class="st">"StartAt"</span>: <span class="st">"ValidateOrder"</span>,
+  <span class="st">"States"</span>: {
+    <span class="st">"ValidateOrder"</span>: {
+      <span class="st">"Type"</span>: <span class="st">"Task"</span>,
+      <span class="st">"Resource"</span>: <span class="st">"arn:aws:lambda:us-east-1:123:function:ValidateOrder"</span>,
+      <span class="st">"Retry"</span>: [{ <span class="st">"ErrorEquals"</span>: [<span class="st">"Lambda.ServiceException"</span>], <span class="st">"MaxAttempts"</span>: 3 }],
+      <span class="st">"Catch"</span>: [{ <span class="st">"ErrorEquals"</span>: [<span class="st">"InvalidOrder"</span>], <span class="st">"Next"</span>: <span class="st">"RejectOrder"</span> }],
+      <span class="st">"Next"</span>: <span class="st">"ProcessPayment"</span>
+    },
+    <span class="st">"ProcessPayment"</span>: {
+      <span class="st">"Type"</span>: <span class="st">"Task"</span>,
+      <span class="st">"Resource"</span>: <span class="st">"arn:aws:lambda:us-east-1:123:function:ProcessPayment"</span>,
+      <span class="st">"Next"</span>: <span class="st">"FulfillOrder"</span>
+    },
+    <span class="st">"FulfillOrder"</span>: { <span class="st">"Type"</span>: <span class="st">"Task"</span>, <span class="st">"Resource"</span>: <span class="st">"arn:aws:states:::sqs:sendMessage"</span>, <span class="st">"End"</span>: <span class="bl">true</span> },
+    <span class="st">"RejectOrder"</span>: { <span class="st">"Type"</span>: <span class="st">"Fail"</span>, <span class="st">"Error"</span>: <span class="st">"OrderRejected"</span> }
+  }
+}</code></pre></div>
+
+<div class="qbox" id="q13">
+<h4>Q: Which Step Functions workflow type supports executions lasting up to 1 year with exactly-once semantics?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q13','b')">A) Express Workflows — they're designed for long-running tasks</div>
+<div class="qopt" data-val="b" onclick="quiz('q13','b')">B) Standard Workflows — up to 1 year with exactly-once execution and full audit history</div>
+<div class="qopt" data-val="c" onclick="quiz('q13','b')">C) Lambda — it can run for up to 15 minutes</div>
+<div class="qopt" data-val="d" onclick="quiz('q13','b')">D) Both types support 1-year execution</div>
+</div>
+<div class="qfb ok">✓ Correct! Standard Workflows support up to 1 year and exactly-once semantics with full execution history. Express Workflows are for high-volume, short-duration (max 5 min) workloads.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 14 ===== -->
+<div class="section" id="s14">
+<span class="badge badge-red">Security</span>
+<h2 class="t">Shield, WAF &amp; Security Services</h2>
+<p class="intro">AWS provides a layered security model — WAF for application-layer attacks, Shield for DDoS, GuardDuty for threat detection, and more. Know which service protects against which threat.</p>
+
+<h3>AWS Security Service Map</h3>
+<table><thead><tr><th>Service</th><th>Protects Against</th><th>Level</th></tr></thead><tbody>
+<tr><td><strong>WAF</strong></td><td>SQLi, XSS, bot attacks, OWASP Top 10</td><td>Application (L7)</td></tr>
+<tr><td><strong>Shield Standard</strong></td><td>Common DDoS attacks (free, automatic)</td><td>Network (L3/L4)</td></tr>
+<tr><td><strong>Shield Advanced</strong></td><td>Sophisticated DDoS + 24/7 DRT support ($3k/mo)</td><td>L3/L4/L7</td></tr>
+<tr><td><strong>GuardDuty</strong></td><td>Threat detection: unusual API calls, crypto mining, compromised instances</td><td>Account-wide ML</td></tr>
+<tr><td><strong>Macie</strong></td><td>Sensitive data (PII, PCI) discovery in S3</td><td>Data classification</td></tr>
+<tr><td><strong>Inspector</strong></td><td>EC2/container/Lambda vulnerability scanning</td><td>Workload scanning</td></tr>
+<tr><td><strong>Security Hub</strong></td><td>Aggregates findings from all security services</td><td>Central dashboard</td></tr>
+</tbody></table>
+
+<h3>WAF Rule Groups</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># WAF attaches to: CloudFront, ALB, API Gateway, AppSync</span>
+
+<span class="cm"># AWS Managed Rule Groups (free with WAF)</span>
+aws wafv2 associate-web-acl \
+  --web-acl-arn arn:aws:wafv2:us-east-1:123:global/webacl/MyACL/id \
+  --resource-arn arn:aws:cloudfront::123:distribution/DIST_ID
+
+<span class="cm"># Rule group types</span>
+<span class="cm"># AWSManagedRulesCommonRuleSet — OWASP Top 10</span>
+<span class="cm"># AWSManagedRulesSQLiRuleSet — SQL injection</span>
+<span class="cm"># AWSManagedRulesKnownBadInputsRuleSet — Log4j, Spring4Shell</span>
+<span class="cm"># AWSManagedRulesAmazonIpReputationList — known malicious IPs</span>
+
+<span class="cm"># Rate limiting — block IPs exceeding N requests in 5 min</span>
+{
+  "Name": "RateLimitRule",
+  "Priority": 1,
+  "Action": { "Block": {} },
+  "Statement": {
+    "RateBasedStatement": {
+      "Limit": 2000,
+      "AggregateKeyType": "IP"
+    }
+  }
+}</code></pre></div>
+
+<div class="qbox" id="q14">
+<h4>Q: Which AWS service uses ML to detect threats like unusual API calls, crypto mining, and compromised EC2 instances?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q14','b')">A) AWS WAF — it monitors application-layer requests</div>
+<div class="qopt" data-val="b" onclick="quiz('q14','b')">B) Amazon GuardDuty — analyzes CloudTrail, VPC Flow Logs, and DNS logs with ML</div>
+<div class="qopt" data-val="c" onclick="quiz('q14','b')">C) AWS Inspector — scans for vulnerabilities in workloads</div>
+<div class="qopt" data-val="d" onclick="quiz('q14','b')">D) AWS Config — tracks resource configuration changes</div>
+</div>
+<div class="qfb ok">✓ Correct! GuardDuty is AWS's intelligent threat detection — it continuously analyzes CloudTrail, VPC Flow Logs, and DNS query logs using ML to identify threats without any agents.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 15 ===== -->
+<div class="section" id="s15">
+<span class="badge badge-red">Security</span>
+<h2 class="t">Encryption &amp; Key Management (KMS)</h2>
+<p class="intro">KMS is the heart of AWS encryption — understanding CMKs, data key encryption, envelope encryption, and key policies is essential for any security-focused role.</p>
+
+<h3>Envelope Encryption</h3>
+<div class="diagram"><span class="hl">KMS CMK</span> (Customer Master Key — never leaves KMS)
+     │
+     │ GenerateDataKey() — KMS creates a data key
+     ▼
+<span class="hl2">Data Key</span> (plaintext + encrypted copy)
+     │
+     ├── Encrypt your data with plaintext data key (AES-256)
+     │
+     └── Store encrypted data key alongside ciphertext
+         (throw away plaintext data key)
+
+Decrypt: Send encrypted data key to KMS → get plaintext data key back → decrypt data</div>
+
+<h3>KMS Key Types</h3>
+<table><thead><tr><th>Type</th><th>Management</th><th>Cost</th><th>Use Case</th></tr></thead><tbody>
+<tr><td><strong>AWS Managed Key</strong></td><td>AWS manages rotation, policy</td><td>Free</td><td>Default for S3, RDS, EBS</td></tr>
+<tr><td><strong>Customer Managed Key (CMK)</strong></td><td>You control policy, rotation</td><td>$1/key/mo + $0.03/10k API calls</td><td>Custom access control, cross-account, audit</td></tr>
+<tr><td><strong>AWS Owned Key</strong></td><td>AWS (completely hidden)</td><td>Free</td><td>Internal service use, no visibility</td></tr>
+</tbody></table>
+
+<h3>KMS Key Policy + Secrets Manager</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># KMS Key Policy — who can use the key</span>
+{
+  <span class="st">"Sid"</span>: <span class="st">"AllowLambdaDecrypt"</span>,
+  <span class="st">"Effect"</span>: <span class="st">"Allow"</span>,
+  <span class="st">"Principal"</span>: { <span class="st">"AWS"</span>: <span class="st">"arn:aws:iam::123:role/MyLambdaRole"</span> },
+  <span class="st">"Action"</span>: [<span class="st">"kms:Decrypt"</span>, <span class="st">"kms:GenerateDataKey"</span>],
+  <span class="st">"Resource"</span>: <span class="st">"*"</span>
+}
+
+<span class="cm"># Secrets Manager — store secrets encrypted with KMS CMK</span>
+<span class="cm"># Auto-rotation with Lambda rotators</span>
+aws secretsmanager create-secret \
+  --name "prod/db/password" \
+  --kms-key-id "arn:aws:kms:us-east-1:123:key/KEY_ID" \
+  --secret-string '{"username":"admin","password":"s3cr3t"}'
+
+<span class="cm"># Retrieve in Lambda (SDK handles decryption transparently)</span>
+<span class="kw">const</span> secret = <span class="kw">await</span> secretsmanager.<span class="fn">getSecretValue</span>({ SecretId: <span class="st">"prod/db/password"</span> }).<span class="fn">promise</span>();
+<span class="kw">const</span> creds = JSON.<span class="fn">parse</span>(secret.SecretString);</code></pre></div>
+
+<div class="callout danger"><div class="ct">Never Do This</div>Never store secrets in environment variables as plaintext, hard-coded in Lambda/ECS, or committed to source control. Always use Secrets Manager or SSM Parameter Store (SecureString) with KMS encryption.</div>
+
+<div class="qbox" id="q15">
+<h4>Q: In KMS envelope encryption, what is stored alongside the encrypted data?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q15','b')">A) The plaintext data key</div>
+<div class="qopt" data-val="b" onclick="quiz('q15','b')">B) The encrypted (wrapped) data key — which KMS can decrypt on demand</div>
+<div class="qopt" data-val="c" onclick="quiz('q15','b')">C) The CMK ARN only</div>
+<div class="qopt" data-val="d" onclick="quiz('q15','b')">D) A hash of the data key</div>
+</div>
+<div class="qfb ok">✓ Correct! The encrypted (wrapped) data key is stored with the ciphertext. To decrypt, you send the wrapped key to KMS → get plaintext data key → decrypt data. The CMK never leaves KMS.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 16 ===== -->
+<div class="section" id="s16">
+<span class="badge badge-red">Security</span>
+<h2 class="t">Compliance &amp; Auditing</h2>
+<p class="intro">Compliance in AWS is a shared responsibility — understanding CloudTrail, AWS Config, and audit controls is expected for any role dealing with regulated workloads.</p>
+
+<h3>Core Auditing Services</h3>
+<table><thead><tr><th>Service</th><th>What It Records</th><th>Key Use Cases</th></tr></thead><tbody>
+<tr><td><strong>CloudTrail</strong></td><td>All AWS API calls (who did what, when, from where)</td><td>Security investigation, compliance audit, governance</td></tr>
+<tr><td><strong>AWS Config</strong></td><td>Resource configuration changes over time</td><td>"What did this resource look like on date X?", drift detection</td></tr>
+<tr><td><strong>VPC Flow Logs</strong></td><td>IP-level traffic metadata (src/dst IP, port, action)</td><td>Network forensics, anomaly detection</td></tr>
+<tr><td><strong>CloudWatch Logs</strong></td><td>Application logs, Lambda logs, ECS logs</td><td>Operational monitoring, alerting, log analytics</td></tr>
+<tr><td><strong>AWS Audit Manager</strong></td><td>Continuous evidence collection for frameworks</td><td>GDPR, PCI-DSS, HIPAA audit preparation</td></tr>
+</tbody></table>
+
+<h3>CloudTrail Best Practices</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Enable CloudTrail in ALL regions (not just current)</span>
+aws cloudtrail create-trail \
+  --name org-trail \
+  --s3-bucket-name my-cloudtrail-logs \
+  --is-multi-region-trail \
+  --include-global-service-events \
+  --enable-log-file-validation   <span class="cm"># SHA-256 hash for tamper detection</span>
+
+<span class="cm"># Enable CloudTrail Insights — detects unusual API activity</span>
+aws cloudtrail put-insight-selectors \
+  --trail-name org-trail \
+  --insight-selectors '[{"InsightType":"ApiCallRateInsight"},{"InsightType":"ApiErrorRateInsight"}]'
+
+<span class="cm"># CloudTrail logs encrypted with KMS CMK by default (best practice)</span>
+<span class="cm"># Store in S3 with Glacier lifecycle policy for long-term retention</span>
+<span class="cm"># Minimum 90-day retention for security logs (IBM policy)</span></code></pre></div>
+
+<h3>AWS Config Rules</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Managed Config Rules (AWS provides ~200+)</span>
+<span class="cm"># s3-bucket-public-read-prohibited — alert if bucket is public</span>
+<span class="cm"># encrypted-volumes — all EBS volumes must be encrypted</span>
+<span class="cm"># iam-root-access-key-check — root account must have no access keys</span>
+<span class="cm"># restricted-ssh — SSH not open to 0.0.0.0/0</span>
+<span class="cm"># mfa-enabled-for-iam-console-access — MFA required for console</span>
+
+<span class="cm"># Config remediation — auto-fix non-compliant resources</span>
+<span class="cm"># via SSM Automation documents (e.g., auto-encrypt unencrypted EBS)</span></code></pre></div>
+
+<div class="qbox" id="q16">
+<h4>Q: Which AWS service records ALL API calls made in your account for auditing?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q16','b')">A) AWS Config — it tracks resource configuration</div>
+<div class="qopt" data-val="b" onclick="quiz('q16','b')">B) CloudTrail — logs every AWS API call with caller identity, time, source IP, and request details</div>
+<div class="qopt" data-val="c" onclick="quiz('q16','b')">C) CloudWatch — it monitors metrics and logs</div>
+<div class="qopt" data-val="d" onclick="quiz('q16','b')">D) GuardDuty — it detects security threats</div>
+</div>
+<div class="qfb ok">✓ Correct! CloudTrail is the AWS API audit log — every action via Console, CLI, or SDK is recorded. Enable multi-region trail with log file validation and KMS encryption.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 17 ===== -->
+<div class="section" id="s17">
+<span class="badge badge-red">Security</span>
+<h2 class="t">Multi-Account Strategy</h2>
+<p class="intro">Enterprise AWS deployments use multiple accounts for security boundaries, cost allocation, and blast radius reduction. AWS Organizations is the backbone of multi-account governance.</p>
+
+<h3>Multi-Account Landing Zone Architecture</h3>
+<div class="diagram"><span class="hl">Management Account</span> (root)
+  ├── <span class="hl2">Security OU</span>
+  │    ├── Log Archive Account  (centralized CloudTrail, Config logs)
+  │    └── Security Tooling Account  (GuardDuty master, Security Hub)
+  ├── <span class="hl3">Infrastructure OU</span>
+  │    ├── Network Account  (Transit Gateway, shared VPCs)
+  │    └── Shared Services Account  (AMIs, ECR, shared tools)
+  ├── <span class="hl">Workloads OU</span>
+  │    ├── Prod Account
+  │    ├── Staging Account
+  │    └── Dev Account
+  └── <span class="hl3">Sandbox OU</span>
+       └── Developer Sandbox Accounts</div>
+
+<h3>Service Control Policies (SCPs)</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># SCPs — maximum permissions guardrails for entire OUs/accounts</span>
+<span class="cm"># Even AdministratorAccess IAM policy cannot exceed SCP limits</span>
+
+<span class="cm"># Example: Deny all actions outside approved regions</span>
+{
+  <span class="st">"Effect"</span>: <span class="st">"Deny"</span>,
+  <span class="st">"NotAction"</span>: [
+    <span class="st">"iam:*"</span>, <span class="st">"support:*"</span>, <span class="st">"sts:*"</span>
+  ],
+  <span class="st">"Resource"</span>: <span class="st">"*"</span>,
+  <span class="st">"Condition"</span>: {
+    <span class="st">"StringNotEquals"</span>: {
+      <span class="st">"aws:RequestedRegion"</span>: [<span class="st">"us-east-1"</span>, <span class="st">"eu-west-1"</span>]
+    }
+  }
+}
+
+<span class="cm"># Example: Prevent disabling CloudTrail</span>
+{
+  <span class="st">"Effect"</span>: <span class="st">"Deny"</span>,
+  <span class="st">"Action"</span>: [<span class="st">"cloudtrail:DeleteTrail"</span>, <span class="st">"cloudtrail:StopLogging"</span>],
+  <span class="st">"Resource"</span>: <span class="st">"*"</span>
+}</code></pre></div>
+
+<h3>AWS Control Tower</h3>
+<p>Control Tower automates the multi-account landing zone setup — it provisions accounts, applies SCPs, sets up centralized logging, and enables Security Hub/GuardDuty across all accounts with a few clicks. Use it for new AWS environments instead of building from scratch.</p>
+
+<div class="qbox" id="q17">
+<h4>Q: What is the purpose of Service Control Policies (SCPs) in AWS Organizations?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q17','b')">A) They grant permissions to IAM users in member accounts</div>
+<div class="qopt" data-val="b" onclick="quiz('q17','b')">B) They define the maximum permissions available in an account/OU — even admin roles cannot exceed SCP limits</div>
+<div class="qopt" data-val="c" onclick="quiz('q17','b')">C) They replace IAM policies for cross-account access</div>
+<div class="qopt" data-val="d" onclick="quiz('q17','b')">D) They control AWS billing for member accounts</div>
+</div>
+<div class="qfb ok">✓ Correct! SCPs are guardrails — they set the maximum permissions ceiling for an OU/account. An SCP that denies an action overrides even an AdministratorAccess IAM policy.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 18 ===== -->
+<div class="section" id="s18">
+<span class="badge badge-purple">DevOps</span>
+<h2 class="t">CloudWatch &amp; X-Ray</h2>
+<p class="intro">Observability on AWS means metrics (CloudWatch), logs (CloudWatch Logs), and traces (X-Ray). Knowing how to build dashboards, alarms, and distributed traces is a senior DevOps skill.</p>
+
+<h3>CloudWatch Core Concepts</h3>
+<table><thead><tr><th>Concept</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Metrics</strong></td><td>Time-series data points (CPU, RPS, error rate). Standard + custom metrics.</td></tr>
+<tr><td><strong>Alarms</strong></td><td>Trigger actions (SNS, Auto Scaling, Lambda) when metric crosses threshold</td></tr>
+<tr><td><strong>Log Groups</strong></td><td>Container for log streams. Set retention (1d–10yr). Never log credentials.</td></tr>
+<tr><td><strong>Log Insights</strong></td><td>SQL-like query language for log analysis. Aggregations, patterns, stats.</td></tr>
+<tr><td><strong>Dashboards</strong></td><td>Real-time widgets: graphs, numbers, alarms, log insights queries</td></tr>
+<tr><td><strong>Synthetics</strong></td><td>Canary scripts that test endpoints continuously (uptime monitoring)</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># CloudWatch Logs Insights — query Lambda errors</span>
+fields @timestamp, @message, @requestId
+| filter @message like /ERROR/
+| stats count(*) as error_count by bin(5m)
+| sort @timestamp desc
+| limit 50
+
+<span class="cm"># Custom metric — push application metric from Lambda</span>
+await cloudwatch.putMetricData({
+  Namespace: 'MyApp/Orders',
+  MetricData: [{
+    MetricName: 'OrdersProcessed',
+    Value: ordersCount,
+    Unit: 'Count',
+    Dimensions: [{ Name: 'Environment', Value: 'prod' }]
+  }]
+}).promise();</code></pre></div>
+
+<h3>X-Ray Distributed Tracing</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// X-Ray traces requests across Lambda, ECS, API Gateway, RDS</span>
+<span class="kw">const</span> AWSXRay = require(<span class="st">'aws-xray-sdk'</span>);
+<span class="kw">const</span> AWS = AWSXRay.<span class="fn">captureAWS</span>(require(<span class="st">'aws-sdk'</span>));  <span class="cm">// auto-trace all AWS SDK calls</span>
+<span class="kw">const</span> https = AWSXRay.<span class="fn">captureHTTPs</span>(require(<span class="st">'https'</span>));  <span class="cm">// trace external HTTP calls</span>
+
+<span class="cm">// Create custom subsegment</span>
+<span class="kw">const</span> segment = AWSXRay.<span class="fn">getSegment</span>();
+<span class="kw">const</span> subsegment = segment.<span class="fn">addNewSubsegment</span>(<span class="st">'processOrder'</span>);
+subsegment.<span class="fn">addAnnotation</span>(<span class="st">'orderId'</span>, orderId);
+subsegment.<span class="fn">addMetadata</span>(<span class="st">'payload'</span>, payload);
+<span class="kw">try</span> {
+  <span class="kw">await</span> <span class="fn">processOrder</span>(orderId);
+} <span class="kw">finally</span> {
+  subsegment.<span class="fn">close</span>();
+}</code></pre></div>
+
+<div class="qbox" id="q18">
+<h4>Q: Which AWS service provides distributed tracing across Lambda, API Gateway, and ECS?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q18','b')">A) CloudWatch — it collects all logs and metrics</div>
+<div class="qopt" data-val="b" onclick="quiz('q18','b')">B) AWS X-Ray — traces requests end-to-end, visualizes service maps, identifies bottlenecks</div>
+<div class="qopt" data-val="c" onclick="quiz('q18','b')">C) CloudTrail — it records all API calls</div>
+<div class="qopt" data-val="d" onclick="quiz('q18','b')">D) VPC Flow Logs — it traces network traffic</div>
+</div>
+<div class="qfb ok">✓ Correct! X-Ray provides end-to-end distributed tracing — it creates a service map, shows latency at each hop, and helps identify which service is causing errors or slowdowns.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 19 ===== -->
+<div class="section" id="s19">
+<span class="badge badge-purple">DevOps</span>
+<h2 class="t">Infrastructure as Code</h2>
+<p class="intro">IaC is non-negotiable for production AWS — CloudFormation, CDK, and Terraform are the three tools interviewers expect you to know and compare.</p>
+
+<h3>CloudFormation vs CDK vs Terraform</h3>
+<table><thead><tr><th></th><th>CloudFormation</th><th>AWS CDK</th><th>Terraform</th></tr></thead><tbody>
+<tr><td>Language</td><td>YAML/JSON</td><td>Python, TypeScript, Java, C#</td><td>HCL</td></tr>
+<tr><td>Abstraction</td><td>Low — verbose</td><td>High — constructs, fewer lines</td><td>Medium</td></tr>
+<tr><td>AWS native</td><td>✅ Full</td><td>✅ Full (compiles to CFn)</td><td>Providers (some lag)</td></tr>
+<tr><td>Multi-cloud</td><td>❌</td><td>❌ (AWS-focused)</td><td>✅</td></tr>
+<tr><td>State management</td><td>AWS manages stacks</td><td>AWS manages (CDK → CFn)</td><td>Manual (S3 + DynamoDB lock)</td></tr>
+<tr><td>Testing</td><td>Limited (cfn-lint)</td><td>✅ Unit tests with jest/pytest</td><td>Terratest</td></tr>
+</tbody></table>
+
+<h3>CDK Example</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> aws_cdk <span class="kw">import</span> (
+    Stack, aws_lambda <span class="kw">as</span> lambda_,
+    aws_dynamodb <span class="kw">as</span> dynamodb,
+    aws_apigatewayv2 <span class="kw">as</span> apigw,
+)
+<span class="kw">from</span> constructs <span class="kw">import</span> Construct
+
+<span class="kw">class</span> <span class="fn">ApiStack</span>(Stack):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, scope: Construct, construct_id: <span class="nm">str</span>, **kwargs):
+        <span class="nm">super</span>().__init__(scope, construct_id, **kwargs)
+
+        table = dynamodb.<span class="fn">Table</span>(<span class="nm">self</span>, <span class="st">"OrdersTable"</span>,
+            partition_key=dynamodb.Attribute(name=<span class="st">"id"</span>, type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            encryption=dynamodb.TableEncryption.AWS_MANAGED,
+        )
+
+        fn = lambda_.<span class="fn">Function</span>(<span class="nm">self</span>, <span class="st">"OrderHandler"</span>,
+            runtime=lambda_.Runtime.PYTHON_3_12,
+            code=lambda_.Code.<span class="fn">from_asset</span>(<span class="st">"lambda"</span>),
+            handler=<span class="st">"index.handler"</span>,
+            environment={<span class="st">"TABLE_NAME"</span>: table.table_name},
+        )
+        table.<span class="fn">grant_read_write_data</span>(fn)  <span class="cm"># auto-creates least-privilege IAM policy</span></code></pre></div>
+
+<div class="qbox" id="q19">
+<h4>Q: Which IaC tool lets you write AWS infrastructure in Python/TypeScript with full programming constructs (loops, conditions, classes)?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q19','b')">A) CloudFormation — YAML/JSON with conditions</div>
+<div class="qopt" data-val="b" onclick="quiz('q19','b')">B) AWS CDK — compiles general-purpose code (Python/TypeScript/Java) into CloudFormation</div>
+<div class="qopt" data-val="c" onclick="quiz('q19','b')">C) Terraform — uses HCL with modules</div>
+<div class="qopt" data-val="d" onclick="quiz('q19','b')">D) AWS SAM — template-based serverless framework</div>
+</div>
+<div class="qfb ok">✓ Correct! AWS CDK (Cloud Development Kit) lets you write infrastructure in real programming languages — full IDE support, unit testing, and reusable constructs. It compiles to CloudFormation.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 20 ===== -->
+<div class="section" id="s20">
+<span class="badge badge-purple">DevOps</span>
+<h2 class="t">CI/CD — CodePipeline &amp; GitOps</h2>
+<p class="intro">AWS CodePipeline orchestrates a fully managed CI/CD pipeline. For modern teams, GitOps with ArgoCD on EKS or CodePipeline with CodeBuild is the standard.</p>
+
+<h3>AWS CI/CD Services</h3>
+<table><thead><tr><th>Service</th><th>Role</th><th>Integration</th></tr></thead><tbody>
+<tr><td><strong>CodeCommit</strong></td><td>Git repositories (or use GitHub/GitLab)</td><td>CodePipeline source stage</td></tr>
+<tr><td><strong>CodeBuild</strong></td><td>Managed build service — compile, test, Docker build</td><td>Build stage, triggered by CodePipeline or GitHub Actions</td></tr>
+<tr><td><strong>CodeDeploy</strong></td><td>Automated deployment to EC2, ECS, Lambda</td><td>Deploy stage — supports blue/green, canary</td></tr>
+<tr><td><strong>CodePipeline</strong></td><td>Orchestrates source → build → test → deploy</td><td>Full pipeline automation</td></tr>
+<tr><td><strong>ECR</strong></td><td>Docker/OCI container registry</td><td>CodeBuild pushes, ECS/EKS pulls</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># buildspec.yml — CodeBuild build specification</span>
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+      - python -m pytest tests/ --cov=src --cov-fail-under=80
+      - aws ecr get-login-password | docker login --username AWS \
+          --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
+  build:
+    commands:
+      - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION \
+          $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+  post_build:
+    commands:
+      - docker push $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - printf '[{"name":"api","imageUri":"%s"}]' $IMAGE_URI > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json</code></pre></div>
+
+<div class="qbox" id="q20">
+<h4>Q: Which AWS service orchestrates the end-to-end CI/CD pipeline (source → build → test → deploy)?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q20','b')">A) CodeBuild — it builds and tests code</div>
+<div class="qopt" data-val="b" onclick="quiz('q20','b')">B) CodePipeline — the orchestration layer that connects source, build, test, and deploy stages</div>
+<div class="qopt" data-val="c" onclick="quiz('q20','b')">C) CodeDeploy — it handles deployment strategies</div>
+<div class="qopt" data-val="d" onclick="quiz('q20','b')">D) CodeCommit — it hosts the source repository</div>
+</div>
+<div class="qfb ok">✓ Correct! CodePipeline is the orchestrator — it chains together CodeCommit/GitHub (source), CodeBuild (build/test), and CodeDeploy (deploy) into a fully automated pipeline.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 21 ===== -->
+<div class="section" id="s21">
+<span class="badge badge-purple">DevOps</span>
+<h2 class="t">Blue/Green &amp; Canary Deployments</h2>
+<p class="intro">Zero-downtime deployment strategies are essential for production systems. Knowing when to use blue/green vs canary vs rolling is a key architect question.</p>
+
+<h3>Deployment Strategy Comparison</h3>
+<table><thead><tr><th>Strategy</th><th>How It Works</th><th>Rollback Speed</th><th>Cost</th></tr></thead><tbody>
+<tr><td><strong>Rolling</strong></td><td>Replace instances gradually (20% at a time)</td><td>Slow — re-deploy old version</td><td>Same cost</td></tr>
+<tr><td><strong>Blue/Green</strong></td><td>Two identical environments — shift 100% traffic at once</td><td>Instant — switch back to blue</td><td>2× cost during transition</td></tr>
+<tr><td><strong>Canary</strong></td><td>Shift small % of traffic to new version, monitor, then expand</td><td>Fast — shift traffic back</td><td>Small overhead</td></tr>
+<tr><td><strong>In-place</strong></td><td>Update instances without replacement</td><td>Slow — rollback by re-deploying</td><td>Lowest</td></tr>
+</tbody></table>
+
+<h3>Implementation on AWS</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Blue/Green with CodeDeploy + ECS</span>
+{
+  "deploymentStyle": {
+    "deploymentType": "BLUE_GREEN",
+    "deploymentOption": "WITH_TRAFFIC_CONTROL"
+  },
+  "blueGreenDeploymentConfiguration": {
+    "terminateBlueInstancesOnDeploymentSuccess": {
+      "action": "TERMINATE",
+      "terminationWaitTimeInMinutes": 5  <span class="cm">// keep blue alive for quick rollback</span>
+    }
+  }
+}
+
+<span class="cm"># Canary with Lambda (CodeDeploy)</span>
+{
+  "deploymentConfig": "CodeDeployDefault.LambdaCanary10Percent5Minutes"
+  <span class="cm">// 10% traffic to new version for 5 min, then 100% if no alarms fire</span>
+  <span class="cm">// Rollback triggers: CloudWatch alarms on error rate, latency</span>
+}
+
+<span class="cm"># ALB weighted routing for canary (ECS/EC2)</span>
+aws elbv2 modify-rule \
+  --rule-arn $RULE_ARN \
+  --actions '[
+    {"Type":"forward","TargetGroupArn":"$BLUE_TG","Weight":90},
+    {"Type":"forward","TargetGroupArn":"$GREEN_TG","Weight":10}
+  ]'</code></pre></div>
+
+<div class="qbox" id="q21">
+<h4>Q: Which deployment strategy allows instant rollback by simply switching traffic back to the previous environment?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q21','b')">A) Rolling deployment</div>
+<div class="qopt" data-val="b" onclick="quiz('q21','b')">B) Blue/Green deployment — two environments run in parallel, rollback = instant traffic flip</div>
+<div class="qopt" data-val="c" onclick="quiz('q21','b')">C) In-place deployment</div>
+<div class="qopt" data-val="d" onclick="quiz('q21','b')">D) Canary deployment</div>
+</div>
+<div class="qfb ok">✓ Correct! Blue/Green keeps the old (blue) environment alive alongside the new (green). Rollback is a single traffic switch — no re-deployment needed.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 22 ===== -->
+<div class="section" id="s22">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Disaster Recovery &amp; RTO/RPO</h2>
+<p class="intro">DR strategy selection is a critical architect decision — it's always a trade-off between cost and recovery objectives. Know all four AWS DR patterns cold.</p>
+
+<h3>RTO vs RPO</h3>
+<div class="diagram"><span class="hl">RPO</span> (Recovery Point Objective)
+  How much DATA can you afford to lose?
+  Max age of the backup you restore from
+  Low RPO = continuous replication (expensive)
+
+<span class="hl2">RTO</span> (Recovery Time Objective)
+  How long can you afford to be DOWN?
+  Time from disaster to full restoration
+  Low RTO = hot standby (very expensive)</div>
+
+<h3>AWS DR Strategies (Cost vs RTO/RPO)</h3>
+<table><thead><tr><th>Strategy</th><th>RTO</th><th>RPO</th><th>Cost</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Backup &amp; Restore</strong></td><td>Hours</td><td>Hours</td><td>$</td><td>Backup to S3/Glacier, restore when needed. Minimal running cost.</td></tr>
+<tr><td><strong>Pilot Light</strong></td><td>10–30 min</td><td>Minutes</td><td>$$</td><td>Minimal core running (DB replication). Scale out on failure.</td></tr>
+<tr><td><strong>Warm Standby</strong></td><td>Minutes</td><td>Seconds</td><td>$$$</td><td>Scaled-down full stack running. Scale up on failure.</td></tr>
+<tr><td><strong>Multi-site Active/Active</strong></td><td>Near zero</td><td>Near zero</td><td>$$$$</td><td>Full stack in multiple regions, traffic split. No failover needed.</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Multi-region Active/Active with Route 53 latency routing</span>
+aws route53 change-resource-record-sets \
+  --hosted-zone-id ZONE_ID \
+  --change-batch '{
+    "Changes": [
+      {
+        "Action": "CREATE",
+        "ResourceRecordSet": {
+          "Name": "api.example.com",
+          "Type": "A",
+          "SetIdentifier": "us-east-1",
+          "Region": "us-east-1",
+          "AliasTarget": { "DNSName": "us-east-1-alb.amazonaws.com" }
+        }
+      },
+      {
+        "Action": "CREATE",
+        "ResourceRecordSet": {
+          "Name": "api.example.com",
+          "Type": "A",
+          "SetIdentifier": "eu-west-1",
+          "Region": "eu-west-1",
+          "AliasTarget": { "DNSName": "eu-west-1-alb.amazonaws.com" }
+        }
+      }
+    ]
+  }'
+
+<span class="cm"># Aurora Global Database — RPO &lt;1 second, RTO &lt;1 minute</span>
+<span class="cm"># Replicates to 5 secondary regions with &lt;1s lag</span>
+<span class="cm"># Manual or automated failover in &lt;1 minute</span></code></pre></div>
+
+<div class="qbox" id="q22">
+<h4>Q: Your RPO is 1 hour and RTO is 4 hours for a non-critical workload. Which DR strategy is most cost-effective?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q22','b')">A) Multi-site Active/Active — zero downtime</div>
+<div class="qopt" data-val="b" onclick="quiz('q22','b')">B) Backup &amp; Restore — hourly backups to S3, restore on failure. Lowest cost for relaxed RTO/RPO.</div>
+<div class="qopt" data-val="c" onclick="quiz('q22','b')">C) Warm Standby — keep a scaled-down stack running</div>
+<div class="qopt" data-val="d" onclick="quiz('q22','b')">D) Pilot Light — keep minimal core running</div>
+</div>
+<div class="qfb ok">✓ Correct! Backup &amp; Restore is the cheapest DR strategy. With 1hr RPO and 4hr RTO, hourly S3 backups + documented restore procedures satisfies the requirements at minimal cost.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 23 ===== -->
+<div class="section" id="s23">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Cost Optimization</h2>
+<p class="intro">Cost optimization is a Well-Architected pillar — senior engineers are expected to make cost-conscious design decisions and know the tools for visibility and control.</p>
+
+<h3>Cost Optimization Levers</h3>
+<table><thead><tr><th>Lever</th><th>Typical Savings</th><th>How</th></tr></thead><tbody>
+<tr><td>Savings Plans</td><td>40–66%</td><td>1/3-year compute commitment (flexible across family/region)</td></tr>
+<tr><td>Reserved Instances</td><td>40–72%</td><td>1/3-year commitment to specific instance type/region</td></tr>
+<tr><td>Spot Instances</td><td>70–90%</td><td>Interruptible EC2 — batch, ML, stateless workers</td></tr>
+<tr><td>Right-sizing</td><td>20–40%</td><td>AWS Compute Optimizer recommendations</td></tr>
+<tr><td>S3 Lifecycle Policies</td><td>30–80%</td><td>Auto-tier old data to Glacier</td></tr>
+<tr><td>Graviton (ARM)</td><td>20–40%</td><td>AWS Graviton3 — better price/performance than x86</td></tr>
+<tr><td>NAT Gateway</td><td>Varies</td><td>Replace with VPC Endpoints for S3/DynamoDB (free gateway endpoints)</td></tr>
+</tbody></table>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># S3 Lifecycle policy — move objects to cheaper storage automatically</span>
+{
+  "Rules": [{
+    "ID": "archive-old-data",
+    "Status": "Enabled",
+    "Transitions": [
+      { "Days": 30, "StorageClass": "STANDARD_IA" },
+      { "Days": 90, "StorageClass": "GLACIER" },
+      { "Days": 365, "StorageClass": "DEEP_ARCHIVE" }
+    ],
+    "Expiration": { "Days": 2555 }  <span class="cm">// delete after 7 years</span>
+  }]
+}
+
+<span class="cm"># Cost Allocation Tags — track costs per team/project</span>
+aws resourcegroupstaggingapi tag-resources \
+  --resource-arn-list arn:aws:ec2:us-east-1:123:instance/i-abc123 \
+  --tags '{"Project":"OrderService","Environment":"prod","Team":"backend"}'
+
+<span class="cm"># Enable AWS Cost Anomaly Detection</span>
+<span class="cm"># Sends alert when spend exceeds expected threshold (ML-based)</span></code></pre></div>
+
+<div class="qbox" id="q23">
+<h4>Q: For fault-tolerant batch processing workloads (ML training, image processing), which EC2 purchasing model gives the highest discount?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q23','c')">A) Reserved Instances — 3-year commitment</div>
+<div class="qopt" data-val="b" onclick="quiz('q23','c')">B) On-Demand — pay as you go</div>
+<div class="qopt" data-val="c" onclick="quiz('q23','c')">C) Spot Instances — up to 90% discount, ideal for interruptible fault-tolerant workloads</div>
+<div class="qopt" data-val="d" onclick="quiz('q23','c')">D) Dedicated Hosts — compliance-grade hardware</div>
+</div>
+<div class="qfb ok">✓ Correct! Spot Instances offer up to 90% discount by using spare EC2 capacity. They can be interrupted with a 2-minute warning — perfect for fault-tolerant batch, ML training, and stateless workers.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 24 ===== -->
+<div class="section" id="s24">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Route 53 &amp; DNS Failover</h2>
+<p class="intro">Route 53 is more than DNS — it's a global traffic manager with health checks, failover, latency routing, and geolocation policies that enable sophisticated multi-region architectures.</p>
+
+<h3>Route 53 Routing Policies</h3>
+<table><thead><tr><th>Policy</th><th>How It Works</th><th>Use Case</th></tr></thead><tbody>
+<tr><td><strong>Simple</strong></td><td>Single record, no health check</td><td>Basic DNS with one endpoint</td></tr>
+<tr><td><strong>Failover</strong></td><td>Primary/secondary — routes to secondary when primary health check fails</td><td>Active-passive DR</td></tr>
+<tr><td><strong>Latency</strong></td><td>Routes to region with lowest latency from user's location</td><td>Multi-region active/active</td></tr>
+<tr><td><strong>Geolocation</strong></td><td>Routes based on user's country/continent</td><td>Data sovereignty, localized content</td></tr>
+<tr><td><strong>Geoproximity</strong></td><td>Routes based on geographic distance + bias weights</td><td>Fine-grained traffic shifting</td></tr>
+<tr><td><strong>Weighted</strong></td><td>Distributes traffic by percentage weights</td><td>Canary deployments, A/B testing</td></tr>
+<tr><td><strong>Multi-Value</strong></td><td>Returns up to 8 healthy records</td><td>Client-side load balancing</td></tr>
+</tbody></table>
+
+<h3>Health Checks + Failover Architecture</h3>
+<div class="diagram"><span class="hl">Route 53</span>
+  ├── Primary Record → <span class="hl2">us-east-1 ALB</span>  ← Health Check: /health
+  │     If unhealthy (3 consecutive failures) →
+  └── Secondary Record → <span class="hl3">eu-west-1 ALB</span>  ← DNS automatically fails over
+        (60-120s for health check failure + TTL to propagate)</div>
+
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Route 53 Health Check — monitors endpoint availability</span>
+aws route53 create-health-check \
+  --caller-reference "$(date +%s)" \
+  --health-check-config '{
+    "IPAddress": "203.0.113.25",
+    "Port": 443,
+    "Type": "HTTPS",
+    "ResourcePath": "/health",
+    "FullyQualifiedDomainName": "api.us-east-1.example.com",
+    "RequestInterval": 30,
+    "FailureThreshold": 3,
+    "EnableSNI": true
+  }'
+
+<span class="cm"># Private health checks — use CloudWatch alarms for VPC-internal endpoints</span>
+<span class="cm"># Route 53 Application Recovery Controller — managed failover with safety guardrails</span></code></pre></div>
+
+<div class="qbox" id="q24">
+<h4>Q: Which Route 53 routing policy routes traffic to the region with the lowest network latency from the user's location?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q24','b')">A) Geolocation — routes based on user's country</div>
+<div class="qopt" data-val="b" onclick="quiz('q24','b')">B) Latency routing — uses AWS latency measurements to direct users to the fastest region</div>
+<div class="qopt" data-val="c" onclick="quiz('q24','b')">C) Failover routing — active/passive configuration</div>
+<div class="qopt" data-val="d" onclick="quiz('q24','b')">D) Weighted routing — distributes by percentage</div>
+</div>
+<div class="qfb ok">✓ Correct! Latency routing measures actual network latency between users and each AWS region, routing each request to the fastest responding region — ideal for global active/active architectures.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 25 ===== -->
+<div class="section" id="s25">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Event-Driven Architecture</h2>
+<p class="intro">Event-driven architecture decouples producers from consumers, enabling resilient, scalable systems. AWS provides a complete event-driven toolkit — knowing when to use each service is key.</p>
+
+<h3>Event-Driven Patterns on AWS</h3>
+<div class="diagram"><span class="hl">Domain Event</span> (something happened)
+  │
+  ├── <span class="hl2">EventBridge</span> — rule-based routing to 50+ targets
+  │     Best for: AWS service events, SaaS integrations, complex routing
+  │
+  ├── <span class="hl3">SNS + SQS Fan-out</span> — push to many queues
+  │     Best for: Fan-out to multiple microservices
+  │
+  ├── <span class="hl2">Kinesis Data Streams</span> — ordered, replay-able stream
+  │     Best for: High-volume real-time analytics, ordered events
+  │
+  └── <span class="hl3">DynamoDB Streams</span> — CDC from DynamoDB
+        Best for: Reacting to database changes (trigger Lambda)</div>
+
+<h3>Saga Pattern for Distributed Transactions</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// Choreography-based Saga (EventBridge)</span>
+<span class="cm">// Each service publishes events, others react</span>
+
+<span class="cm">// 1. Order Service → publishes "OrderCreated"</span>
+<span class="cm">// 2. Payment Service → listens "OrderCreated" → publishes "PaymentProcessed" or "PaymentFailed"</span>
+<span class="cm">// 3. Inventory Service → listens "PaymentProcessed" → publishes "InventoryReserved"</span>
+<span class="cm">// 4. Shipping Service → listens "InventoryReserved" → publishes "ShipmentCreated"</span>
+
+<span class="cm">// Compensation (rollback) on failure:</span>
+<span class="cm">// PaymentFailed → Order Service listens → publishes "OrderCancelled"</span>
+<span class="cm">// InventoryFailed → Payment Service listens → publishes "PaymentRefunded"</span>
+
+<span class="cm">// Orchestration-based Saga (Step Functions)</span>
+<span class="cm">// Central orchestrator controls the workflow</span>
+<span class="cm">// Explicit compensation states in the state machine</span>
+<span class="cm">// Better visibility, easier debugging</span></code></pre></div>
+
+<h3>Idempotency — Critical for Event-Driven Systems</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="cm">// SQS at-least-once: same message may arrive twice</span>
+<span class="cm">// Lambda must be idempotent — handle duplicates safely</span>
+
+<span class="kw">async function</span> <span class="fn">processOrder</span>(event) {
+  <span class="kw">const</span> { orderId } = event;
+
+  <span class="cm">// Check if already processed (DynamoDB conditional write)</span>
+  <span class="kw">try</span> {
+    <span class="kw">await</span> dynamodb.<span class="fn">put</span>({
+      TableName: <span class="st">'ProcessedEvents'</span>,
+      Item: { orderId, processedAt: <span class="kw">new</span> Date().<span class="fn">toISOString</span>() },
+      ConditionExpression: <span class="st">'attribute_not_exists(orderId)'</span>  <span class="cm">// reject duplicate</span>
+    }).<span class="fn">promise</span>();
+  } <span class="kw">catch</span> (e) {
+    <span class="kw">if</span> (e.code === <span class="st">'ConditionalCheckFailedException'</span>) <span class="kw">return</span>;  <span class="cm">// already processed</span>
+    <span class="kw">throw</span> e;
+  }
+  <span class="cm">// process order...</span>
+}</code></pre></div>
+
+<div class="qbox" id="q25">
+<h4>Q: In a Saga pattern, what is a "compensation transaction"?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q25','b')">A) A transaction that consolidates billing across services</div>
+<div class="qopt" data-val="b" onclick="quiz('q25','b')">B) A reverse transaction that undoes a previously completed step when a later step fails</div>
+<div class="qopt" data-val="c" onclick="quiz('q25','b')">C) A read-only transaction that checks consistency</div>
+<div class="qopt" data-val="d" onclick="quiz('q25','b')">D) A transaction that retries a failed step automatically</div>
+</div>
+<div class="qfb ok">✓ Correct! Compensation transactions are "undo" operations — e.g., if shipping fails, trigger a PaymentRefund and InventoryRelease to maintain data consistency without a distributed 2PC transaction.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 26 ===== -->
+<div class="section" id="s26">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Serverless Architecture Patterns</h2>
+<p class="intro">Serverless isn't just Lambda — it's a full architecture philosophy. Knowing when serverless fits, how to design it for scale, and its trade-offs is essential for architect-level interviews.</p>
+
+<h3>Full Serverless Stack</h3>
+<div class="diagram"><span class="hl">Frontend</span>: S3 + CloudFront (static hosting, global CDN)
+     ↓
+<span class="hl2">API Layer</span>: API Gateway HTTP API (throttling, auth)
+     ↓
+<span class="hl3">Auth</span>: Cognito User Pools + JWT authorizer
+     ↓
+<span class="hl2">Compute</span>: Lambda functions (per endpoint)
+     ↓
+<span class="hl3">Data</span>: DynamoDB (on-demand) + S3 (objects) + ElastiCache (sessions)
+     ↓
+<span class="hl2">Async</span>: SQS → Lambda (background jobs)
+     ↓
+<span class="hl3">Observability</span>: CloudWatch + X-Ray + Lambda Powertools</div>
+
+<h3>Lambda Powertools</h3>
+<div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">from</span> aws_lambda_powertools <span class="kw">import</span> Logger, Tracer, Metrics
+<span class="kw">from</span> aws_lambda_powertools.metrics <span class="kw">import</span> MetricUnit
+
+logger = Logger()         <span class="cm"># structured JSON logging + correlation IDs</span>
+tracer = Tracer()         <span class="cm"># X-Ray tracing with cold start annotations</span>
+metrics = Metrics(namespace=<span class="st">"MyApp"</span>)
+
+<span class="dc">@logger.inject_lambda_context</span>
+<span class="dc">@tracer.capture_lambda_handler</span>
+<span class="dc">@metrics.log_metrics</span>
+<span class="kw">def</span> <span class="fn">handler</span>(event, context):
+    logger.info(<span class="st">"Processing order"</span>, extra={<span class="st">"order_id"</span>: event[<span class="st">"orderId"</span>]})
+    metrics.add_metric(name=<span class="st">"OrdersProcessed"</span>, unit=MetricUnit.Count, value=<span class="nm">1</span>)
+
+    <span class="kw">with</span> tracer.provider.<span class="fn">in_subsegment</span>(<span class="st">"##payment"</span>):
+        result = <span class="fn">process_payment</span>(event)
+
+    <span class="kw">return</span> {<span class="st">"statusCode"</span>: <span class="nm">200</span>, <span class="st">"body"</span>: json.<span class="fn">dumps</span>(result)}</code></pre></div>
+
+<h3>Serverless Trade-offs</h3>
+<table><thead><tr><th>Benefit</th><th>Trade-off</th></tr></thead><tbody>
+<tr><td>No server management</td><td>Cold starts affect latency-sensitive workloads</td></tr>
+<tr><td>Auto-scales to zero</td><td>Limited execution time (15 min Lambda max)</td></tr>
+<tr><td>Pay per use</td><td>Can be expensive at very high constant throughput</td></tr>
+<tr><td>Built-in HA</td><td>Debugging distributed systems is harder</td></tr>
+<tr><td>Rapid development</td><td>Vendor lock-in (Lambda runtime, DynamoDB API)</td></tr>
+</tbody></table>
+
+<div class="qbox" id="q26">
+<h4>Q: What is Lambda Powertools primarily used for?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q26','b')">A) Packaging Lambda deployment bundles</div>
+<div class="qopt" data-val="b" onclick="quiz('q26','b')">B) A suite of utilities for structured logging, tracing, metrics, and event validation in Lambda</div>
+<div class="qopt" data-val="c" onclick="quiz('q26','b')">C) Provisioned Concurrency configuration</div>
+<div class="qopt" data-val="d" onclick="quiz('q26','b')">D) Layer management for Lambda dependencies</div>
+</div>
+<div class="qfb ok">✓ Correct! Lambda Powertools (AWS Labs) provides production-ready utilities: structured JSON logging with correlation IDs, X-Ray tracing decorators, custom CloudWatch metrics, and idempotency helpers.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ===== SECTION 27 ===== -->
+<div class="section" id="s27">
+<span class="badge badge-amber">Architecture</span>
+<h2 class="t">Anti-patterns &amp; Wrap-up</h2>
+<p class="intro">Knowing the common AWS anti-patterns is as important as knowing best practices — these are the mistakes senior engineers are hired to prevent.</p>
+
+<h3>Top AWS Anti-patterns</h3>
+<table><thead><tr><th>Anti-pattern</th><th>Problem</th><th>Fix</th></tr></thead><tbody>
+<tr><td>Binding to 0.0.0.0</td><td>Services exposed on all network interfaces</td><td>Bind to localhost/specific IPs; use Security Groups</td></tr>
+<tr><td>Hardcoded credentials</td><td>Keys committed to code/config</td><td>IAM Roles + Secrets Manager</td></tr>
+<tr><td>Single-AZ architecture</td><td>One AZ failure = full outage</td><td>Always deploy Multi-AZ with ALB</td></tr>
+<tr><td>No DLQ on SQS/Lambda</td><td>Failed messages loop forever or silently dropped</td><td>Always configure DLQ + CloudWatch alarm</td></tr>
+<tr><td>Lambda in VPC without endpoints</td><td>All outbound traffic through NAT Gateway (expensive + slow)</td><td>Use VPC Gateway Endpoints for S3/DynamoDB</td></tr>
+<tr><td>Ignoring CloudTrail</td><td>No audit trail for security incidents</td><td>Enable multi-region trail + log file validation</td></tr>
+<tr><td>Hot partition in DynamoDB</td><td>High-cardinality partition key concentration → throttling</td><td>Design partition keys for even distribution</td></tr>
+<tr><td>No tagging strategy</td><td>Can't attribute costs or ownership</td><td>Enforce tags via AWS Config + SCPs</td></tr>
+</tbody></table>
+
+<h3>Interview Preparation Checklist</h3>
+<div class="callout success"><div class="ct">You're Ready When You Can...</div>
+<ul>
+<li>Explain Multi-AZ vs Read Replica and when to use each</li>
+<li>Design a VPC with public/private/isolated subnets + NAT Gateway</li>
+<li>Choose between SQS Standard, FIFO, SNS, and EventBridge for a given scenario</li>
+<li>Describe all 4 DR strategies and select the right one for given RTO/RPO</li>
+<li>Explain how KMS envelope encryption works</li>
+<li>Design an ECS Fargate service with ALB, Auto Scaling, and CI/CD pipeline</li>
+<li>Articulate the 6 Well-Architected pillars with examples</li>
+<li>Explain Lambda cold starts and 3 ways to mitigate them</li>
+<li>Design a multi-account landing zone with SCPs and centralized logging</li>
+<li>Choose between blue/green, canary, and rolling deployments</li>
+</ul>
+</div>
+
+<div class="qbox" id="q27">
+<h4>Q: A Lambda function in a VPC needs to read from S3 and DynamoDB. The team notices high NAT Gateway costs. What is the fix?</h4>
+<div class="qopts">
+<div class="qopt" data-val="a" onclick="quiz('q27','c')">A) Move Lambda out of the VPC</div>
+<div class="qopt" data-val="b" onclick="quiz('q27','c')">B) Increase NAT Gateway bandwidth</div>
+<div class="qopt" data-val="c" onclick="quiz('q27','c')">C) Add VPC Gateway Endpoints for S3 and DynamoDB — traffic routes privately without going through NAT</div>
+<div class="qopt" data-val="d" onclick="quiz('q27','c')">D) Switch to EC2 instances instead of Lambda</div>
+</div>
+<div class="qfb ok">✓ Correct! VPC Gateway Endpoints for S3 and DynamoDB are FREE and route traffic privately within AWS — eliminating NAT Gateway data processing charges which can be significant at scale.</div>
+</div>
+<div class="nav-btns"><button class="btn btn-s" onclick="prev()">← Prev</button><button class="btn btn-p" onclick="next()">Next →</button></div>
+</div>
+
+</main>
+</div>
+<script>
+const TOTAL=28;
+let cur=0,done=new Set();
+function goTo(i){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s'+i).classList.add('active');
+  document.getElementById('n'+i).classList.add('active');
+  done.add(cur);
+  document.getElementById('c'+cur).textContent='✓';
+  document.getElementById('n'+cur).classList.add('done');
+  cur=i;
+  updatePB();
+  window.scrollTo(0,0);
+}
+function updatePB(){
+  const p=Math.round(done.size/TOTAL*100);
+  document.getElementById('pb').style.width=p+'%';
+  document.getElementById('pbl').textContent=done.size+' of '+TOTAL+' completed';
+}
+function prev(){if(cur>0)goTo(cur-1);}
+function next(){if(cur<TOTAL-1)goTo(cur+1);}
+document.querySelectorAll('.cp').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const pre=b.nextElementSibling;
+    const code=pre?pre.textContent:'';
+    navigator.clipboard.writeText(code).then(()=>{b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);});
+  });
+});
+function quiz(id,correct){
+  const box=document.getElementById(id);
+  box.querySelectorAll('.qopt').forEach(o=>{
+    o.classList.add('disabled');
+    if(o.dataset.val===correct)o.classList.add('correct');
+    else o.classList.add('wrong');
+  });
+  const fb=box.querySelector('.qfb');
+  if(fb)fb.classList.add('show');
+}
+</script>
+</body>
+</html>

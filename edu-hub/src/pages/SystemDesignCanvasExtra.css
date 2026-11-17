@@ -1,0 +1,35 @@
+.sim-outcome-pill {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.sim-outcome-pill.ok {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.sim-outcome-pill.fail {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.sim-log-row.error .log-msg {
+  color: #f87171 !important;
+  font-weight: 700;
+}
+
+.sim-log-row.warn .log-msg {
+  color: #fbbf24 !important;
+}
+
+.tracker-actions-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.tracker-actions-hint strong {
+  color: #22d3ee;
+}

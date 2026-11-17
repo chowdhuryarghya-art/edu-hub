@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GraphQL – From Zero to Interview-Ready</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 270px; min-width: 270px; background: #1e2330; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 860px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #30363d; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #e6edf3; }
+  #sidebar-header p { font-size: 11px; color: #8b949e; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #30363d; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #f97316; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #8b949e; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8b949e; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #8b949e; transition: background 0.15s, color 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #2d333b; color: #e6edf3; }
+  .nav-item.active { background: #2d333b; color: #ffa657; border-left-color: #f97316; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #30363d; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #b45309; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #fff7ed; color: #c2410c; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .section-badge.advanced { background: #ede9fe; color: #6d28d9; }
+  .section-badge.interview { background: #fef3c7; color: #92400e; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .section-intro { color: #57606a; margin-bottom: 28px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 28px 0 8px; color: #1f2328; }
+  h4 { font-size: 14px; font-weight: 700; margin: 18px 0 6px; color: #444d56; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  strong { color: #1f2328; }
+  .code-wrap { position: relative; margin: 14px 0; }
+  pre { background: #161b22; color: #e6edf3; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #30363d; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  p code, li code { background: #f0f2f5; color: #d63384; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  .copy-btn { position: absolute; top: 8px; right: 10px; background: #30363d; color: #8b949e; border: none; border-radius: 5px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
+  .copy-btn:hover { background: #444d56; color: #e6edf3; }
+  .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .st { color: #a5d6ff; } .cm { color: #8b949e; font-style: italic; } .nm { color: #79c0ff; } .dc { color: #ffa657; } .bl { color: #56d364; } .gq { color: #ffa657; } .gf { color: #d2a8ff; } .gt { color: #79c0ff; }
+  .callout { border-left: 4px solid #f97316; background: #fff7ed; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout.danger { border-color: #ef4444; background: #fef2f2; }
+  .callout.info { border-color: #3b82d4; background: #eff6ff; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #c2410c; }
+  .callout.warn .callout-title { color: #92400e; }
+  .callout.danger .callout-title { color: #991b1b; }
+  .callout.info .callout-title { color: #1d4ed8; }
+  .callout.success .callout-title { color: #065f46; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+  th { background: #f0f2f5; text-align: left; padding: 9px 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #57606a; border: 1px solid #e5e7eb; }
+  td { padding: 9px 14px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .quiz-box { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 22px 24px; margin: 24px 0; }
+  .quiz-box h4 { margin-top: 0; font-size: 15px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .quiz-opt { padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 7px; cursor: pointer; font-size: 14px; transition: border-color 0.15s, background 0.15s; }
+  .quiz-opt:hover { border-color: #f97316; background: #fff7ed; }
+  .quiz-opt.correct { border-color: #10b981; background: #ecfdf5; }
+  .quiz-opt.wrong { border-color: #ef4444; background: #fef2f2; }
+  .quiz-opt.disabled { pointer-events: none; }
+  .quiz-feedback { margin-top: 12px; font-size: 14px; padding: 10px 14px; border-radius: 7px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: #ecfdf5; color: #065f46; }
+  .quiz-feedback.bad { background: #fef2f2; color: #991b1b; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 40px; padding-top: 24px; border-top: 1px solid #e5e7eb; }
+  .btn { padding: 9px 22px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.15s; }
+  .btn-primary { background: #ea580c; color: #fff; }
+  .btn-primary:hover { background: #c2410c; }
+  .btn-secondary { background: #f0f2f5; color: #444d56; border: 1px solid #e5e7eb; }
+  .btn-secondary:hover { background: #e5e7eb; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+  .chip { background: #f0f2f5; color: #57606a; border: 1px solid #e5e7eb; border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 600; }
+  .diagram { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; margin: 16px 0; font-family: "Cascadia Code",monospace; font-size: 12.5px; color: #8b949e; line-height: 1.8; overflow-x: auto; white-space: pre; }
+  .diagram .hl { color: #ffa657; } .diagram .hl2 { color: #56d364; } .diagram .hl3 { color: #79c0ff; }
+  .tag-interview { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+  .section-divider { border: none; border-top: 1px solid #e5e7eb; margin: 30px 0; }
+  #sidebar::-webkit-scrollbar { width: 4px; } #sidebar::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+  @media (max-width: 768px) { #sidebar { display: none; } #main { padding: 24px 18px 60px; } }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🔶 GraphQL Tutorial</h1>
+    <p>Zero to Interview-Ready</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 22 completed</div>
+  </div>
+  <div class="nav-section">Foundations</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> What is GraphQL?</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Schema &amp; Types</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> Queries &amp; Mutations</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Resolvers &amp; Execution</div>
+  <div class="nav-section">Intermediate</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Subscriptions</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> Fragments &amp; Scalars</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> Auth &amp; Context</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> N+1 &amp; DataLoader</div>
+  <div class="nav-section">Advanced</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Federation</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> Persisted Queries</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> Error Handling</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> Security &amp; Limits</div>
+  <div class="nav-item" onclick="goTo(12)" id="nav12"><span class="check" id="chk12">○</span><span class="num">13</span> Schema Evolution</div>
+  <div class="nav-section">Production &amp; Architecture</div>
+  <div class="nav-item" onclick="goTo(13)" id="nav13"><span class="check" id="chk13">○</span><span class="num">14</span> Testing GraphQL APIs</div>
+  <div class="nav-item" onclick="goTo(14)" id="nav14"><span class="check" id="chk14">○</span><span class="num">15</span> Caching Strategies</div>
+  <div class="nav-item" onclick="goTo(15)" id="nav15"><span class="check" id="chk15">○</span><span class="num">16</span> Monitoring &amp; Apollo Studio</div>
+  <div class="nav-item" onclick="goTo(16)" id="nav16"><span class="check" id="chk16">○</span><span class="num">17</span> Pagination: Cursor vs Offset</div>
+  <div class="nav-item" onclick="goTo(17)" id="nav17"><span class="check" id="chk17">○</span><span class="num">18</span> File Uploads</div>
+  <div class="nav-item" onclick="goTo(18)" id="nav18"><span class="check" id="chk18">○</span><span class="num">19</span> Real-world Resolver Patterns</div>
+  <div class="nav-item" onclick="goTo(19)" id="nav19"><span class="check" id="chk19">○</span><span class="num">20</span> Schema Design at Scale</div>
+  <div class="nav-item" onclick="goTo(20)" id="nav20"><span class="check" id="chk20">○</span><span class="num">21</span> GraphQL Clients</div>
+  <div class="nav-item" onclick="goTo(21)" id="nav21"><span class="check" id="chk21">○</span><span class="num">22</span> Anti-patterns &amp; Wrap-up</div>
+</nav>
+<main id="main">
+
+<!-- SEC 0 -->
+<div class="section active" id="sec0">
+  <span class="section-badge">Getting Started</span>
+  <h2 class="section-title">What is GraphQL? <span class="tag-interview">Interview Q1</span></h2>
+  <p class="section-intro">GraphQL is a query language for APIs and a runtime for executing those queries. It was created by Facebook in 2012 and open-sourced in 2015. It solves fundamental problems with REST.</p>
+  <h3>The problems GraphQL solves</h3>
+  <table>
+    <tr><th></th><th>REST</th><th>GraphQL</th></tr>
+    <tr><td>Endpoints</td><td>Many (one per resource)</td><td>Single <code>/graphql</code></td></tr>
+    <tr><td>Data shape</td><td>Fixed by server</td><td>Defined by client</td></tr>
+    <tr><td>Over-fetching</td><td>Common — extra fields returned</td><td>Eliminated — ask for exactly what you need</td></tr>
+    <tr><td>Under-fetching</td><td>Multiple round-trips for related data</td><td>One query fetches everything</td></tr>
+    <tr><td>Type system</td><td>Optional (OpenAPI)</td><td>Built-in, strongly typed</td></tr>
+    <tr><td>Versioning</td><td>URL or headers (<code>/v2/</code>)</td><td>Additive schema evolution</td></tr>
+  </table>
+  <h3>A concrete example</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># REST: need 3 separate API calls</span>
+<span class="cm"># GET /users/1</span>
+<span class="cm"># GET /users/1/posts</span>
+<span class="cm"># GET /posts/42/comments</span>
+
+<span class="cm"># GraphQL: one query, exactly the data you want</span>
+<span class="gq">query</span> {
+  <span class="gf">user</span>(<span class="gt">id</span>: <span class="st">"1"</span>) {
+    <span class="gf">name</span>
+    <span class="gf">email</span>
+    <span class="gf">posts</span> {
+      <span class="gf">title</span>
+      <span class="gf">comments</span> {
+        <span class="gf">body</span>
+        <span class="gf">author</span> { <span class="gf">name</span> }
+      }
+    }
+  }
+}
+</code></pre></div>
+  <h3>Key trade-offs to know for interviews</h3>
+  <ul>
+    <li><strong>HTTP caching is harder</strong> — all queries are POSTs to one endpoint (use Persisted Queries to enable GETs)</li>
+    <li><strong>N+1 problem</strong> — naive resolver implementations cause database query explosions (use DataLoader)</li>
+    <li><strong>Schema design upfront</strong> — more investment than REST but pays off with type safety</li>
+    <li><strong>Observability</strong> — you need operation-level metrics, not just endpoint-level</li>
+  </ul>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What does "over-fetching" mean in the context of REST APIs?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q0')">Making too many API calls in a short time</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q0')">The server returns more fields than the client actually needs, wasting bandwidth</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q0')">Fetching data that is already cached</div>
+    </div>
+    <div class="quiz-feedback" id="q0"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-primary" onclick="next(0)">Next: Schema &amp; Types →</button></div>
+</div>
+
+<!-- SEC 1 -->
+<div class="section" id="sec1">
+  <span class="section-badge">Foundations</span>
+  <h2 class="section-title">Schema &amp; Types</h2>
+  <p class="section-intro">The schema is the contract between the client and server. It defines every type, field, and operation available in your API.</p>
+  <h3>SDL — Schema Definition Language</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># Scalar types: String, Int, Float, Boolean, ID</span>
+<span class="cm"># ! means non-nullable (required)</span>
+
+<span class="kw">type</span> <span class="gt">User</span> {
+  <span class="gf">id</span>:        <span class="gt">ID</span>!
+  <span class="gf">name</span>:      <span class="gt">String</span>!
+  <span class="gf">email</span>:     <span class="gt">String</span>!
+  <span class="gf">age</span>:       <span class="gt">Int</span>           <span class="cm"># nullable — can be null</span>
+  <span class="gf">posts</span>:     [<span class="gt">Post</span>!]!      <span class="cm"># non-null list of non-null Posts</span>
+}
+
+<span class="kw">type</span> <span class="gt">Post</span> {
+  <span class="gf">id</span>:        <span class="gt">ID</span>!
+  <span class="gf">title</span>:     <span class="gt">String</span>!
+  <span class="gf">author</span>:    <span class="gt">User</span>!
+  <span class="gf">published</span>: <span class="gt">Boolean</span>!
+}
+
+<span class="cm"># Entry points — root types</span>
+<span class="kw">type</span> <span class="gt">Query</span> {
+  <span class="gf">user</span>(<span class="gt">id</span>: <span class="gt">ID</span>!): <span class="gt">User</span>
+  <span class="gf">posts</span>: [<span class="gt">Post</span>!]!
+}
+
+<span class="kw">type</span> <span class="gt">Mutation</span> {
+  <span class="gf">createPost</span>(<span class="gt">input</span>: <span class="gt">CreatePostInput</span>!): <span class="gt">Post</span>!
+}
+
+<span class="cm"># Input types — for mutation arguments</span>
+<span class="kw">input</span> <span class="gt">CreatePostInput</span> {
+  <span class="gf">title</span>:    <span class="gt">String</span>!
+  <span class="gf">authorId</span>: <span class="gt">ID</span>!
+}
+</code></pre></div>
+  <h3>Enums, Unions, and Interfaces</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># Enum — restricted set of values</span>
+<span class="kw">enum</span> <span class="gt">Role</span> { ADMIN  USER  MODERATOR }
+
+<span class="cm"># Interface — shared fields across types</span>
+<span class="kw">interface</span> <span class="gt">Node</span> { <span class="gf">id</span>: <span class="gt">ID</span>! }
+<span class="kw">type</span> <span class="gt">Article</span> <span class="kw">implements</span> <span class="gt">Node</span> { <span class="gf">id</span>: <span class="gt">ID</span>!  <span class="gf">title</span>: <span class="gt">String</span>! }
+
+<span class="cm"># Union — one of several types (no shared fields)</span>
+<span class="kw">union</span> <span class="gt">SearchResult</span> = <span class="gt">User</span> | <span class="gt">Post</span> | <span class="gt">Article</span>
+
+<span class="cm"># Query using inline fragments to handle union types</span>
+<span class="gq">query</span> {
+  <span class="gf">search</span>(<span class="gt">text</span>: <span class="st">"GraphQL"</span>) {
+    <span class="kw">... on</span> <span class="gt">User</span>    { <span class="gf">name</span> <span class="gf">email</span> }
+    <span class="kw">... on</span> <span class="gt">Post</span>    { <span class="gf">title</span> }
+    <span class="kw">... on</span> <span class="gt">Article</span> { <span class="gf">title</span> }
+  }
+}
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What does <code>!</code> mean on a field type like <code>name: String!</code>?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'correct','q1')">The field is non-nullable — the server guarantees it will never return <code>null</code></div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q1')">The field is required in input arguments only</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q1')">The field must be unique across all objects</div>
+    </div>
+    <div class="quiz-feedback" id="q1"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(1)">← Back</button><button class="btn btn-primary" onclick="next(1)">Next: Queries &amp; Mutations →</button></div>
+</div>
+<!-- SEC 2 -->
+<div class="section" id="sec2">
+  <span class="section-badge">Foundations</span>
+  <h2 class="section-title">Queries, Mutations &amp; Subscriptions <span class="tag-interview">Interview Q3</span></h2>
+  <p class="section-intro">GraphQL has three operation types. Each has different semantics — knowing them cold is table-stakes for any GraphQL interview.</p>
+  <h3>Query — read data (runs in parallel)</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">type</span> <span class="gt">Query</span> {
+  <span class="gf">user</span>(<span class="gt">id</span>: <span class="gt">ID</span>!): <span class="gt">User</span>
+  <span class="gf">posts</span>(<span class="gt">limit</span>: <span class="gt">Int</span> = <span class="nm">10</span>): [<span class="gt">Post</span>!]!
+}
+
+<span class="cm"># Client query with variables — no string interpolation!</span>
+<span class="gq">query</span> <span class="gf">GetUser</span>($id: <span class="gt">ID</span>!) {
+  <span class="gf">user</span>(id: $id) {
+    <span class="gf">name</span>
+    <span class="gf">email</span>
+    <span class="gf">posts</span> { <span class="gf">title</span> }
+  }
+}
+<span class="cm"># Variables sent separately: { "id": "123" }</span>
+</code></pre></div>
+  <h3>Mutation — write data (runs serially)</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">type</span> <span class="gt">Mutation</span> {
+  <span class="gf">createPost</span>(<span class="gt">input</span>: <span class="gt">CreatePostInput</span>!): <span class="gt">Post</span>!
+  <span class="gf">deletePost</span>(<span class="gt">id</span>: <span class="gt">ID</span>!): <span class="gt">Boolean</span>!
+}
+
+<span class="gq">mutation</span> <span class="gf">NewPost</span>($input: <span class="gt">CreatePostInput</span>!) {
+  <span class="gf">createPost</span>(input: $input) { <span class="gf">id</span> <span class="gf">title</span> }
+}
+<span class="cm"># Multiple mutations in one request execute SERIALLY to avoid race conditions</span>
+<span class="cm"># Multiple queries execute in PARALLEL</span>
+</code></pre></div>
+  <h3>Subscription — real-time push (WebSocket)</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">type</span> <span class="gt">Subscription</span> {
+  <span class="gf">messageAdded</span>(<span class="gt">channelId</span>: <span class="gt">ID</span>!): <span class="gt">Message</span>!
+}
+
+<span class="gq">subscription</span> <span class="gf">OnMessage</span>($channelId: <span class="gt">ID</span>!) {
+  <span class="gf">messageAdded</span>(channelId: $channelId) { <span class="gf">id</span> <span class="gf">body</span> <span class="gf">author</span> { <span class="gf">name</span> } }
+}
+<span class="cm"># Server uses Pub/Sub (Redis) to push events via persistent WebSocket</span>
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — You send one request with 3 mutations. In what order do they execute?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q2')">In parallel — same as queries</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q2')">Serially — one at a time, in the order they appear, to prevent race conditions</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q2')">Order depends on the server implementation</div>
+    </div>
+    <div class="quiz-feedback" id="q2"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(2)">← Back</button><button class="btn btn-primary" onclick="next(2)">Next: Resolvers &amp; Execution →</button></div>
+</div>
+
+<!-- SEC 3 -->
+<div class="section" id="sec3">
+  <span class="section-badge">Foundations</span>
+  <h2 class="section-title">Resolvers &amp; The Execution Engine <span class="tag-interview">Interview Q8 &amp; Q9</span></h2>
+  <p class="section-intro">Resolvers are the functions that power each field. GraphQL walks your query tree calling resolvers top-down.</p>
+  <h3>Resolver signature: (parent, args, context, info)</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> resolvers = {
+  Query: {
+    user: (parent, args, context, info) => {
+      <span class="cm">// parent  — resolved value of the parent field (null for root Query)</span>
+      <span class="cm">// args    — { id: "123" }</span>
+      <span class="cm">// context — { currentUser, db, loaders }</span>
+      <span class="cm">// info    — AST field info, path, schema</span>
+      <span class="kw">return</span> context.db.<span class="fn">findUser</span>(args.id);
+    }
+  },
+  User: {
+    posts: (user, args, context) => context.db.<span class="fn">findPostsByUser</span>(user.id)
+  }
+};
+</code></pre></div>
+  <h3>How GraphQL walks the query tree</h3>
+  <div class="diagram">  <span class="gq">query</span> { user(id:"1") { name  posts { title } } }
+
+  <span class="hl">1.</span> Query.user  →  returns { id:"1", name:"Alice" }
+  <span class="hl2">2.</span> User.name   →  default resolver returns "Alice"
+  <span class="hl2">2.</span> User.posts  →  resolver returns [{ id:5, title:"Hello" }]
+  <span class="hl3">3.</span> Post.title  →  default resolver returns "Hello"
+
+  Default resolver: (parent) => parent[fieldName]  — no code needed!</div>
+  <h3>Custom scalars <span class="tag-interview">Interview Q9</span></h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> { GraphQLScalarType, Kind } = <span class="fn">require</span>(<span class="st">'graphql'</span>);
+
+<span class="kw">const</span> DateScalar = <span class="kw">new</span> GraphQLScalarType({
+  name: <span class="st">'Date'</span>,
+  <span class="fn">serialize</span>:    (v) => v.<span class="fn">toISOString</span>(),          <span class="cm">// outgoing: Date → String</span>
+  <span class="fn">parseValue</span>:   (v) => <span class="kw">new</span> <span class="fn">Date</span>(v),              <span class="cm">// from variables</span>
+  <span class="fn">parseLiteral</span>: (ast) => ast.kind === Kind.STRING  <span class="cm">// from inline literal</span>
+    ? <span class="kw">new</span> <span class="fn">Date</span>(ast.value) : <span class="bl">null</span>,
+});
+<span class="cm">// Use in schema: scalar Date    createdAt: Date!</span>
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What is the <code>parent</code> argument in a resolver?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q3')">The HTTP request object</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q3')">The resolved value returned by the parent field's resolver — passed down to every child field resolver</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q3')">The GraphQL schema parent type definition</div>
+    </div>
+    <div class="quiz-feedback" id="q3"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(3)">← Back</button><button class="btn btn-primary" onclick="next(3)">Next: Subscriptions →</button></div>
+</div>
+
+<!-- SEC 4 -->
+<div class="section" id="sec4">
+  <span class="section-badge">Intermediate</span>
+  <h2 class="section-title">Subscriptions at Scale <span class="tag-interview">Interview Q11</span></h2>
+  <p class="section-intro">Subscriptions enable real-time server-to-client push. Single-server in-memory PubSub is easy; scaling it across instances requires a shared backend like Redis.</p>
+  <h3>Basic setup</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> { PubSub } = <span class="fn">require</span>(<span class="st">'graphql-subscriptions'</span>);
+<span class="kw">const</span> pubsub = <span class="kw">new</span> <span class="fn">PubSub</span>(); <span class="cm">// in-memory — single server only!</span>
+
+<span class="kw">const</span> resolvers = {
+  Mutation: {
+    sendMessage: <span class="kw">async</span> (_, { channelId, body }, { db }) => {
+      <span class="kw">const</span> msg = <span class="kw">await</span> db.<span class="fn">createMessage</span>({ channelId, body });
+      pubsub.<span class="fn">publish</span>(<span class="st">`MSG_</span>${channelId}<span class="st">`</span>, { messageAdded: msg });
+      <span class="kw">return</span> msg;
+    }
+  },
+  Subscription: {
+    messageAdded: {
+      <span class="fn">subscribe</span>: (_, { channelId }) => pubsub.<span class="fn">asyncIterator</span>(<span class="st">`MSG_</span>${channelId}<span class="st">`</span>)
+    }
+  }
+};
+</code></pre></div>
+  <h3>Horizontal scaling with Redis PubSub</h3>
+  <div class="diagram">  Client A ─WS─▶ <span class="hl">Server 1</span> ─subscribe─▶ <span class="hl3">Redis</span>
+  Client B ─WS─▶ <span class="hl2">Server 2</span> ─publish──▶  <span class="hl3">Redis</span> ──▶ <span class="hl">Server 1</span> ──▶ Client A
+
+  Any server publishes; Redis fans out to ALL subscribed server instances.</div>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> { RedisPubSub } = <span class="fn">require</span>(<span class="st">'graphql-redis-subscriptions'</span>);
+<span class="kw">const</span> pubsub = <span class="kw">new</span> <span class="fn">RedisPubSub</span>({
+  publisher:  <span class="kw">new</span> Redis({ host: process.env.REDIS_HOST }),
+  subscriber: <span class="kw">new</span> Redis({ host: process.env.REDIS_HOST }),
+});
+<span class="cm">// Swap the pubsub variable — all resolver code stays identical</span>
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — Why doesn't in-memory PubSub work with multiple server instances?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q4')">WebSockets require a shared memory space</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q4')">The event bus is isolated per process — a client on Server 1 won't receive events published on Server 2</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q4')">Redis is always faster, so it's preferred</div>
+    </div>
+    <div class="quiz-feedback" id="q4"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(4)">← Back</button><button class="btn btn-primary" onclick="next(4)">Next: Fragments &amp; Scalars →</button></div>
+</div>
+
+<!-- SEC 5 -->
+<div class="section" id="sec5">
+  <span class="section-badge">Intermediate</span>
+  <h2 class="section-title">Fragments <span class="tag-interview">Interview Q5</span></h2>
+  <p class="section-intro">Fragments are reusable field selections. They keep queries DRY and are the building block of component-driven GraphQL clients.</p>
+  <h3>Named fragments — reuse field selections</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="gq">fragment</span> <span class="gf">UserCard</span> <span class="gq">on</span> <span class="gt">User</span> {
+  <span class="gf">id</span>
+  <span class="gf">name</span>
+  <span class="gf">avatarUrl</span>
+}
+
+<span class="gq">query</span> <span class="gf">GetPosts</span> {
+  <span class="gf">posts</span> { <span class="gf">title</span>  <span class="gf">author</span> { ...<span class="gf">UserCard</span> } }  <span class="cm"># spread fragment</span>
+}
+
+<span class="gq">query</span> <span class="gf">GetComments</span> {
+  <span class="gf">comments</span> { <span class="gf">body</span>  <span class="gf">author</span> { ...<span class="gf">UserCard</span> } }  <span class="cm"># reused</span>
+}
+</code></pre></div>
+  <h3>Inline fragments — for unions and interfaces</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="gq">query</span> <span class="gf">Search</span>($text: <span class="gt">String</span>!) {
+  <span class="gf">search</span>(text: $text) {
+    <span class="cm"># Inline fragments — conditionally select fields per concrete type</span>
+    ... <span class="gq">on</span> <span class="gt">Book</span>   { <span class="gf">title</span> <span class="gf">pageCount</span> }
+    ... <span class="gq">on</span> <span class="gt">Movie</span>  { <span class="gf">title</span> <span class="gf">duration</span> }
+    ... <span class="gq">on</span> <span class="gt">Author</span> { <span class="gf">name</span> <span class="gf">bookCount</span> }
+    <span class="gf">__typename</span>  <span class="cm"># always available — tells you which type was returned</span>
+  }
+}
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — When do you NEED an inline fragment?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q5')">When a fragment has more than 5 fields</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q5')">When a field returns a union or interface type and you need to select fields specific to each concrete type</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q5')">When the query is a mutation</div>
+    </div>
+    <div class="quiz-feedback" id="q5"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(5)">← Back</button><button class="btn btn-primary" onclick="next(5)">Next: Auth &amp; Context →</button></div>
+</div>
+
+<!-- SEC 6 -->
+<div class="section" id="sec6">
+  <span class="section-badge">Intermediate</span>
+  <h2 class="section-title">Auth &amp; Context <span class="tag-interview">Interview Q4</span></h2>
+  <p class="section-intro">GraphQL has no built-in auth. The standard pattern: validate JWT in context, check permissions in resolvers or directives.</p>
+  <h3>Authentication via context builder</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code"><span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({ typeDefs, resolvers });
+
+<span class="cm">// Runs once per request — before any resolver</span>
+<span class="kw">const</span> context = ({ req }) => {
+  <span class="kw">const</span> token = req.headers.authorization?.split(<span class="st">' '</span>)[<span class="nm">1</span>];
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user = token ? <span class="fn">verifyJWT</span>(token) : <span class="bl">null</span>;
+    <span class="kw">return</span> { user, db, loaders: <span class="fn">createLoaders</span>(db) };
+  } <span class="kw">catch</span> {
+    <span class="kw">return</span> { user: <span class="bl">null</span>, db };
+  }
+};
+</code></pre></div>
+  <h3>Authorization approaches</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// 1. Resolver-level (simple but scattered)</span>
+deletePost: (_, { id }, { user }) => {
+  <span class="kw">if</span> (!user) <span class="kw">throw new</span> <span class="fn">GraphQLError</span>(<span class="st">'Not authenticated'</span>, { extensions: { code: <span class="st">'UNAUTHENTICATED'</span> }});
+  <span class="kw">if</span> (!user.isAdmin) <span class="kw">throw new</span> <span class="fn">GraphQLError</span>(<span class="st">'Forbidden'</span>, { extensions: { code: <span class="st">'FORBIDDEN'</span> }});
+  <span class="kw">return</span> db.<span class="fn">deletePost</span>(id);
+}
+
+<span class="cm">// 2. Schema directive (declarative, clean)</span>
+<span class="kw">type</span> <span class="gt">Mutation</span> {
+  <span class="gf">deletePost</span>(<span class="gt">id</span>: <span class="gt">ID</span>!): <span class="gt">Boolean</span> <span class="dc">@auth</span>(requires: ADMIN)
+}
+
+<span class="cm">// 3. graphql-shield (separate permission layer — best for complex rules)</span>
+<span class="kw">const</span> permissions = <span class="fn">shield</span>({
+  Mutation: { deletePost: <span class="fn">and</span>(<span class="fn">isAuthenticated</span>, <span class="fn">isAdmin</span>) }
+});
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — Where should JWT validation happen in a GraphQL server?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q6')">Inside each resolver that needs authentication</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q6')">In the context builder — once per request. All resolvers then read <code>context.user</code>.</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q6')">In the schema type definitions</div>
+    </div>
+    <div class="quiz-feedback" id="q6"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(6)">← Back</button><button class="btn btn-primary" onclick="next(6)">Next: N+1 &amp; DataLoader →</button></div>
+</div>
+
+<!-- SEC 7 -->
+<div class="section" id="sec7">
+  <span class="section-badge">Intermediate</span>
+  <h2 class="section-title">The N+1 Problem &amp; DataLoader <span class="tag-interview">Interview Q2</span></h2>
+  <p class="section-intro">The N+1 problem is the #1 GraphQL performance pitfall. DataLoader is the canonical fix — it batches and caches per-request.</p>
+  <h3>The problem</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Query: posts { title author { name } }</span>
+<span class="cm">// 1 query: SELECT * FROM posts  → 100 rows</span>
+<span class="cm">// N queries: SELECT * FROM users WHERE id = 1</span>
+<span class="cm">//            SELECT * FROM users WHERE id = 2</span>
+<span class="cm">//            ... × 100 = 101 total DB queries!</span>
+</code></pre></div>
+  <h3>The fix: DataLoader</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> DataLoader = <span class="fn">require</span>(<span class="st">'dataloader'</span>);
+
+<span class="cm">// Batch function: receives array of ALL keys collected in the same event loop tick</span>
+<span class="kw">const</span> userLoader = <span class="kw">new</span> <span class="fn">DataLoader</span>(<span class="kw">async</span> (userIds) => {
+  <span class="kw">const</span> users = <span class="kw">await</span> db.<span class="fn">findUsersByIds</span>(userIds); <span class="cm">// ONE query for ALL ids</span>
+  <span class="kw">return</span> userIds.<span class="fn">map</span>(id => users.<span class="fn">find</span>(u => u.id === id)); <span class="cm">// preserve order!</span>
+});
+
+<span class="cm">// Resolver: .load() queues — doesn't fire immediately</span>
+Post: { author: (post) => userLoader.<span class="fn">load</span>(post.authorId) }
+<span class="cm">// Called 100x — but DataLoader fires ONE batch query</span>
+
+<span class="cm">// IMPORTANT: create a new loader PER REQUEST (not global)</span>
+<span class="cm">// Global loader = stale cache across requests = data leaks between users</span>
+<span class="kw">const</span> <span class="fn">createLoaders</span> = () => ({
+  users: <span class="kw">new</span> <span class="fn">DataLoader</span>(ids => db.<span class="fn">findUsersByIds</span>(ids)),
+});
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What happens if you reuse the same DataLoader instance globally across all requests?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q7')">It runs out of memory faster</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q7')">Results are cached globally — one user may receive stale or another user's cached data (data leak / security issue)</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q7')">The batch function stops working after the first request</div>
+    </div>
+    <div class="quiz-feedback" id="q7"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(7)">← Back</button><button class="btn btn-primary" onclick="next(7)">Next: Federation →</button></div>
+</div>
+
+<!-- SEC 8 -->
+<div class="section" id="sec8">
+  <span class="section-badge">Advanced</span>
+  <h2 class="section-title">Apollo Federation <span class="tag-interview">Interview Q6</span></h2>
+  <p class="section-intro">Federation lets multiple teams each own a subgraph. The Apollo Router composes them into one unified supergraph that clients query as a single API.</p>
+  <h3>Schema stitching vs Federation</h3>
+  <table>
+    <tr><th></th><th>Schema Stitching</th><th>Apollo Federation</th></tr>
+    <tr><td>Ownership</td><td>Gateway owns merge config</td><td>Each subgraph declares its own schema</td></tr>
+    <tr><td>Composition</td><td>Manual, at gateway</td><td>Automatic (Rover CLI / Managed Federation)</td></tr>
+    <tr><td>Cross-service types</td><td>Manual type merging</td><td><code>@key</code> directive — automatic entity resolution</td></tr>
+    <tr><td>Recommended?</td><td>Legacy</td><td>✅ Modern choice</td></tr>
+  </table>
+  <h3>Federation in action</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Users subgraph — owns User type</span>
+<span class="kw">type</span> <span class="gt">User</span> <span class="dc">@key</span>(fields: <span class="st">"id"</span>) {
+  <span class="gf">id</span>:    <span class="gt">ID</span>!
+  <span class="gf">name</span>:  <span class="gt">String</span>!
+  <span class="gf">email</span>: <span class="gt">String</span>!
+}
+
+<span class="cm">// Orders subgraph — extends User with orders</span>
+<span class="kw">extend type</span> <span class="gt">User</span> <span class="dc">@key</span>(fields: <span class="st">"id"</span>) {
+  <span class="gf">id</span>:     <span class="gt">ID</span>! <span class="dc">@external</span>
+  <span class="gf">orders</span>: [<span class="gt">Order</span>!]!
+}
+<span class="cm">// Resolver in Orders subgraph:</span>
+<span class="cm">// User: { orders: (user) => db.findOrdersByUserId(user.id) }</span>
+</code></pre></div>
+  <div class="diagram">  Client  ──▶  <span class="hl">Apollo Router</span> (supergraph)
+                     │
+         ┌──────────┴──────────┐
+         ▼                     ▼
+  <span class="hl2">Users subgraph</span>      <span class="hl3">Orders subgraph</span>
+  (owns User type)    (extends User.orders)</div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What does <code>@key(fields: "id")</code> do in Apollo Federation?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q8')">It makes the field non-nullable</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q8')">It designates the primary key for an entity, allowing the Apollo Router to stitch the type across subgraphs by resolving it from its owning subgraph</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q8')">It creates an index on that field in the database</div>
+    </div>
+    <div class="quiz-feedback" id="q8"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(8)">← Back</button><button class="btn btn-primary" onclick="next(8)">Next: Persisted Queries →</button></div>
+</div>
+
+<!-- SEC 9 -->
+<div class="section" id="sec9">
+  <span class="section-badge">Advanced</span>
+  <h2 class="section-title">Persisted Queries <span class="tag-interview">Interview Q7</span></h2>
+  <p class="section-intro">Automatic Persisted Queries (APQ) reduce payload size and unlock HTTP GET caching for GraphQL — two things REST has for free.</p>
+  <h3>How APQ works</h3>
+  <div class="diagram">  <span class="hl">First request (cold miss):</span>
+  Client → { extensions: { persistedQuery: { sha256Hash: "abc123" } } }
+  Server: hash not in cache → "PersistedQueryNotFound"
+  Client → resends with full query + hash
+  Server: executes + caches hash→query
+
+  <span class="hl2">Subsequent requests (cache hit):</span>
+  Client → { extensions: { persistedQuery: { sha256Hash: "abc123" } } }
+  Server: hash found → executes from cache
+  = 64-char payload instead of full query string
+  = Can use HTTP GET → CDN and browser caching works!</div>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Apollo Client — enable APQ</span>
+<span class="kw">import</span> { createPersistedQueryLink } <span class="kw">from</span> <span class="st">'@apollo/client/link/persisted-queries'</span>;
+<span class="kw">import</span> { sha256 } <span class="kw">from</span> <span class="st">'crypto-hash'</span>;
+
+<span class="kw">const</span> link = <span class="fn">createPersistedQueryLink</span>({ sha256 }).<span class="fn">concat</span>(httpLink);
+<span class="cm">// That's all — the rest is automatic</span>
+
+<span class="cm">// Server production mode: allowlist only registered queries</span>
+<span class="cm">// Reject any ad-hoc queries — malicious queries can't run</span>
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — APQ enables HTTP GET for GraphQL queries. Why is this valuable?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q9')">GET is processed faster by Node.js servers</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q9')">GET requests are cacheable by CDNs and browsers — read queries become cacheable like REST GET endpoints</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q9')">GET requests bypass authentication</div>
+    </div>
+    <div class="quiz-feedback" id="q9"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(9)">← Back</button><button class="btn btn-primary" onclick="next(9)">Next: Error Handling →</button></div>
+</div>
+
+<!-- SEC 10 -->
+<div class="section" id="sec10">
+  <span class="section-badge">Advanced</span>
+  <h2 class="section-title">Error Handling <span class="tag-interview">Interview Q10</span></h2>
+  <p class="section-intro">GraphQL's partial success model is unique — a response can have both <code>data</code> and <code>errors</code> at the same time.</p>
+  <h3>Partial success response</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Even when a resolver throws, HTTP status is still 200</span>
+{
+  "data": {
+    "post": {
+      "title": "Hello",
+      "author": null      <span class="cm">// nullable field — resolver threw</span>
+    }
+  },
+  "errors": [{
+    "message": "User not found",
+    "path": ["post", "author"],
+    "extensions": { "code": "NOT_FOUND" }
+  }]
+}
+</code></pre></div>
+  <h3>Null propagation rule</h3>
+  <div class="diagram">  If a <span class="hl">non-nullable (!) field</span> resolver throws:
+    → that field becomes null
+    → null propagates UP to the nearest nullable ancestor
+    → that ancestor becomes null too
+
+  <span class="hl2">Risk:</span> A single failing resolver in a deeply nested non-nullable tree
+  can null out the entire response. Design schemas carefully!</div>
+  <h3>Production error handling</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code"><span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({
+  typeDefs, resolvers,
+  <span class="fn">formatError</span>: (formattedErr) => {
+    <span class="cm">// Strip stack traces and internal details in production</span>
+    <span class="kw">if</span> (formattedErr.extensions?.code === <span class="st">'INTERNAL_SERVER_ERROR'</span>) {
+      logger.<span class="fn">error</span>(formattedErr);
+      <span class="kw">return</span> { message: <span class="st">'Internal server error'</span>, extensions: { code: <span class="st">'INTERNAL_SERVER_ERROR'</span> }};
+    }
+    <span class="kw">return</span> formattedErr;
+  }
+});
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — A nullable field's resolver throws an error. What is the HTTP response status code?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q10')">500 — because a resolver threw</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q10')">200 — GraphQL returns <code>data</code> (partial, field is null) and <code>errors</code> array. HTTP layer stays 200.</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q10')">404 — because the resource was not found</div>
+    </div>
+    <div class="quiz-feedback" id="q10"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(10)">← Back</button><button class="btn btn-primary" onclick="next(10)">Next: Security →</button></div>
+</div>
+
+<!-- SEC 11 -->
+<div class="section" id="sec11">
+  <span class="section-badge">Advanced</span>
+  <h2 class="section-title">Security: Complexity &amp; Depth Limiting <span class="tag-interview">Interview Q12</span></h2>
+  <p class="section-intro">GraphQL's flexibility is a security risk. Without safeguards, a client can craft queries that DoS your server with a single request.</p>
+  <h3>The attack: exponential query</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code"><span class="cm"># 100 friends per level × 5 depths = 10 billion potential DB lookups</span>
+{ friends { friends { friends { friends { friends { name } } } } } }
+</code></pre></div>
+  <h3>Depth limiting + Complexity limiting</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> depthLimit = <span class="fn">require</span>(<span class="st">'graphql-depth-limit'</span>);
+<span class="kw">const</span> { createComplexityRule } = <span class="fn">require</span>(<span class="st">'graphql-query-complexity'</span>);
+
+<span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({
+  typeDefs, resolvers,
+  validationRules: [
+    <span class="fn">depthLimit</span>(<span class="nm">7</span>),              <span class="cm">// reject queries > 7 levels deep</span>
+    <span class="fn">createComplexityRule</span>({
+      maximumComplexity: <span class="nm">1000</span>,  <span class="cm">// total field-cost budget</span>
+      estimators: [<span class="fn">simpleEstimator</span>({ defaultComplexity: <span class="nm">1</span> })]
+    })
+  ]
+});
+</code></pre></div>
+  <h3>Full production security checklist</h3>
+  <table>
+    <tr><th>Protection</th><th>Tool</th></tr>
+    <tr><td>Depth limit</td><td><code>graphql-depth-limit</code></td></tr>
+    <tr><td>Complexity limit</td><td><code>graphql-query-complexity</code></td></tr>
+    <tr><td>Rate limiting</td><td>Gateway / reverse proxy by IP or token</td></tr>
+    <tr><td>Query allowlist</td><td>APQ + server-side allowlist (production only)</td></tr>
+    <tr><td>Disable introspection</td><td><code>introspection: process.env.NODE_ENV !== 'production'</code></td></tr>
+    <tr><td>Query timeout</td><td>Max execution time via plugin</td></tr>
+  </table>
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — Why disable introspection in production?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q11')">Introspection queries are very slow</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q11')">It exposes your entire schema to attackers — they can discover field names, types, and craft targeted malicious queries</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q11')">It breaks Apollo Client in production</div>
+    </div>
+    <div class="quiz-feedback" id="q11"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(11)">← Back</button><button class="btn btn-primary" onclick="next(11)">Next: Schema Evolution →</button></div>
+</div>
+
+<!-- SEC 12 -->
+<div class="section" id="sec12">
+  <span class="section-badge interview">Interview Ready</span>
+  <h2 class="section-title">Schema Evolution &amp; Wrap-up <span class="tag-interview">Interview Q13</span></h2>
+  <p class="section-intro">GraphQL APIs evolve without versions. The golden rule: only add fields — never remove or change existing ones without a proper deprecation cycle.</p>
+  <h3>Breaking vs non-breaking changes</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># ✅ Safe — additive changes only</span>
+<span class="kw">type</span> <span class="gt">User</span> {
+  <span class="gf">id</span>:       <span class="gt">ID</span>!
+  <span class="gf">name</span>:     <span class="gt">String</span>!
+  <span class="gf">username</span>: <span class="gt">String</span>       <span class="cm"># ✅ new nullable field</span>
+  <span class="gf">fullName</span>: <span class="gt">String</span> <span class="dc">@deprecated</span>(reason: <span class="st">"Use name"</span>)  <span class="cm"># mark old</span>
+}
+
+<span class="cm"># ❌ Breaking — NEVER without migration:</span>
+<span class="cm"># Remove a field       → clients that use it break</span>
+<span class="cm"># Rename a field       → clients break</span>
+<span class="cm"># Change String → Int  → type mismatch</span>
+<span class="cm"># Add ! to nullable   → clients expecting null break</span>
+</code></pre></div>
+  <h3>Detecting breaks in CI with graphql-inspector</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code"><span class="cm"># CLI — compare old vs new schema</span>
+<span class="cm"># npx graphql-inspector diff old-schema.graphql new-schema.graphql</span>
+<span class="cm"># ✖ Field 'User.email' was removed     ← Breaking! CI fails</span>
+<span class="cm"># ✔ Field 'User.username' was added    ← Safe</span>
+
+<span class="cm"># Apollo Studio: usage-aware schema checks</span>
+<span class="cm"># rover graph check my-graph --schema ./schema.graphql</span>
+<span class="cm"># Only blocks if clients are ACTIVELY using the removed field</span>
+</code></pre></div>
+  <div class="quiz-box">
+    <h4>🧠 Final Check — Which of these schema changes is a breaking change?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q12')">Adding a new nullable field <code>username: String</code> to a type</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q12')">Changing an existing field from <code>String</code> to <code>Int</code></div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q12')">Adding <code>@deprecated</code> to a field</div>
+    </div>
+    <div class="quiz-feedback" id="q12"></div>
+  </div>
+  <hr class="section-divider">
+  <div class="callout success">
+    <div class="callout-title">🎉 Tutorial Complete!</div>
+    Review <code>GraphQL/interview_qa.md</code> to practise articulating your answers. All 13 interview questions are now within your grasp.
+  </div>
+  <h3>Topics you can now explain</h3>
+  <div class="chips">
+    <span class="chip">REST vs GraphQL trade-offs</span>
+    <span class="chip">N+1 &amp; DataLoader</span>
+    <span class="chip">Query/Mutation/Subscription</span>
+    <span class="chip">Auth via context</span>
+    <span class="chip">Fragments &amp; inline fragments</span>
+    <span class="chip">Federation vs Stitching</span>
+    <span class="chip">Persisted Queries (APQ)</span>
+    <span class="chip">Resolver execution chain</span>
+    <span class="chip">Custom scalars</span>
+    <span class="chip">Partial success errors</span>
+    <span class="chip">Subscriptions at scale</span>
+    <span class="chip">Complexity &amp; depth limits</span>
+    <span class="chip">Additive schema evolution</span>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(12)">← Back</button><button class="btn btn-primary" onclick="next(12)">Next →</button></div>
+</div>
+
+<!-- SEC 13 -->
+<div class="section" id="sec13">
+  <span class="section-badge advanced">Production</span>
+  <h2 class="section-title">Testing GraphQL APIs</h2>
+  <p class="section-intro">Effective testing of a GraphQL API requires unit-testing resolvers, integration-testing the full schema, and contract-testing against consumers. Each layer catches different bugs.</p>
+
+  <h3>Testing Pyramid for GraphQL</h3>
+  <div class="diagram"><span class="hl">Contract / E2E</span>  — few; test full client-server round-trip
+        /\
+       /  \
+  <span class="hl2">Integration</span>     — test schema + resolver chain with real DB (or test container)
+      /        \
+    /            \
+  <span class="hl3">Unit (resolver)</span>  — mock datasources; test business logic in isolation</div>
+
+  <h3>Unit-testing a Resolver</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// userResolver.test.ts</span>
+<span class="kw">import</span> { userResolver } <span class="kw">from</span> <span class="st">'./userResolver'</span>;
+
+<span class="kw">const</span> mockCtx = {
+  dataSources: {
+    userAPI: {
+      <span class="fn">getUser</span>: jest.<span class="fn">fn</span>().<span class="fn">mockResolvedValue</span>({ id: <span class="st">'1'</span>, name: <span class="st">'Alice'</span> })
+    }
+  },
+  user: { id: <span class="st">'1'</span>, role: <span class="st">'user'</span> }
+};
+
+test(<span class="st">'Query.user returns user from datasource'</span>, <span class="kw">async</span> () => {
+  <span class="kw">const</span> result = <span class="kw">await</span> userResolver.Query.<span class="fn">user</span>(<span class="kw">null</span>, { id: <span class="st">'1'</span> }, mockCtx);
+  expect(result).<span class="fn">toEqual</span>({ id: <span class="st">'1'</span>, name: <span class="st">'Alice'</span> });
+  expect(mockCtx.dataSources.userAPI.getUser).<span class="fn">toHaveBeenCalledWith</span>(<span class="st">'1'</span>);
+});</code></pre></div>
+
+  <h3>Integration Test with graphql() Executor</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">import</span> { graphql } <span class="kw">from</span> <span class="st">'graphql'</span>;
+<span class="kw">import</span> { schema } <span class="kw">from</span> <span class="st">'./schema'</span>;
+
+test(<span class="st">'full query executes against in-memory schema'</span>, <span class="kw">async</span> () => {
+  <span class="kw">const</span> { data, errors } = <span class="kw">await</span> <span class="fn">graphql</span>({
+    schema,
+    source: <span class="st">`query { user(id: "1") { id name } }`</span>,
+    contextValue: { dataSources: { userAPI: { <span class="fn">getUser</span>: async () => ({ id: <span class="st">'1'</span>, name: <span class="st">'Alice'</span> }) } } }
+  });
+  expect(errors).<span class="fn">toBeUndefined</span>();
+  expect(data?.user).<span class="fn">toMatchObject</span>({ id: <span class="st">'1'</span>, name: <span class="st">'Alice'</span> });
+});</code></pre></div>
+
+  <div class="callout info">
+    <div class="callout-title">Jest + graphql executor</div>
+    The <code>graphql()</code> function executes a query against any schema in-process — no HTTP server needed. This makes integration tests extremely fast and eliminates network flakiness.
+  </div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Which layer of the test pyramid should test that a resolver correctly calls its DataSource?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q13')">E2E / contract test</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q13')">Unit test — mock the DataSource and assert the call was made with the right arguments</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q13')">No test needed — DataSources are tested separately</div>
+    </div>
+    <div class="quiz-feedback" id="q13"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(13)">← Back</button><button class="btn btn-primary" onclick="next(13)">Next →</button></div>
+</div>
+
+<!-- SEC 14 -->
+<div class="section" id="sec14">
+  <span class="section-badge advanced">Performance</span>
+  <h2 class="section-title">Caching Strategies <span class="tag-interview">Interview Q14</span></h2>
+  <p class="section-intro">GraphQL's flexible query shape breaks naive HTTP caching. Understanding the three caching layers — HTTP, CDN, and response-level — is essential for high-traffic APIs.</p>
+
+  <h3>Three Caching Layers</h3>
+  <table>
+    <thead><tr><th>Layer</th><th>Mechanism</th><th>Scope</th></tr></thead>
+    <tbody>
+      <tr><td>HTTP (CDN)</td><td>Automatic Persisted Queries (APQ) via GET</td><td>Public, per-query</td></tr>
+      <tr><td>Response cache</td><td><code>@cacheControl</code> directive + CDN headers</td><td>Per-type / per-field</td></tr>
+      <tr><td>DataSource cache</td><td>In-memory or Redis cache in DataSource layer</td><td>Per-entity, server-side</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Apollo Server <code>@cacheControl</code></h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># schema — annotate types and fields with cache hints</span>
+type <span class="gf">Product</span> <span class="gq">@cacheControl</span>(maxAge: 300) {
+  id:    <span class="gt">ID</span>!
+  name:  <span class="gt">String</span>!
+  price: <span class="gt">Float</span>!  <span class="gq">@cacheControl</span>(maxAge: 30)   <span class="cm"># price changes more often</span>
+  owner: <span class="gf">User</span>     <span class="gq">@cacheControl</span>(scope: PRIVATE)  <span class="cm"># never CDN-cache user data</span>
+}
+
+<span class="cm">// Apollo Server — enable cache control headers</span>
+<span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({
+  schema,
+  plugins: [<span class="fn">ApolloServerPluginCacheControl</span>({ defaultMaxAge: 0 })]
+});
+<span class="cm">// Response includes: Cache-Control: max-age=30, public</span></code></pre></div>
+
+  <h3>DataSource-level Redis Cache</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">class</span> <span class="fn">ProductAPI</span> {
+  <span class="kw">async</span> <span class="fn">getProduct</span>(id: string) {
+    <span class="kw">const</span> key = <span class="st">`product:${id}`</span>;
+    <span class="kw">const</span> cached = <span class="kw">await</span> redis.<span class="fn">get</span>(key);
+    <span class="kw">if</span> (cached) <span class="kw">return</span> JSON.<span class="fn">parse</span>(cached);
+    <span class="kw">const</span> product = <span class="kw">await</span> db.<span class="fn">findById</span>(id);
+    <span class="kw">await</span> redis.<span class="fn">setEx</span>(key, <span class="nm">300</span>, JSON.<span class="fn">stringify</span>(product));
+    <span class="kw">return</span> product;
+  }
+}</code></pre></div>
+
+  <div class="callout warn">
+    <div class="callout-title">Private Data Warning</div>
+    Any field marked <code>PRIVATE</code> scope (e.g., user email) must never be CDN-cached. Apollo sets <code>Cache-Control: private</code> for responses containing private-scoped fields — ensure your CDN respects this header.
+  </div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Why does a standard CDN struggle to cache GraphQL POST requests?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q14')">CDNs don't support JSON</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q14')">POST bodies are not cached by CDNs by default — all queries hit the same URL, so CDNs can't distinguish them. APQ + GET requests solve this by encoding the query in the URL.</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q14')">GraphQL responses are always too large to cache</div>
+    </div>
+    <div class="quiz-feedback" id="q14"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(14)">← Back</button><button class="btn btn-primary" onclick="next(14)">Next →</button></div>
+</div>
+
+<!-- SEC 15 -->
+<div class="section" id="sec15">
+  <span class="section-badge advanced">Observability</span>
+  <h2 class="section-title">Monitoring &amp; Apollo Studio</h2>
+  <p class="section-intro">Blind production GraphQL APIs are a reliability risk. Apollo Studio (formerly Graph Manager), OpenTelemetry, and custom metrics expose query performance, error rates, and schema usage.</p>
+
+  <h3>Key Metrics to Track</h3>
+  <table>
+    <thead><tr><th>Metric</th><th>Why It Matters</th></tr></thead>
+    <tbody>
+      <tr><td>Operation latency (p50/p95/p99)</td><td>Spot slow resolvers before they hit users</td></tr>
+      <tr><td>Error rate by operation</td><td>Detect regressions after deploys</td></tr>
+      <tr><td>Field usage</td><td>Know which fields clients actually use before deprecating</td></tr>
+      <tr><td>Cache hit ratio</td><td>Validate DataLoader and response cache effectiveness</td></tr>
+      <tr><td>Query complexity</td><td>Detect expensive queries before they overload the DB</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Apollo Studio Integration</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">import</span> { ApolloServer } <span class="kw">from</span> <span class="st">'@apollo/server'</span>;
+<span class="kw">import</span> { ApolloServerPluginUsageReporting } <span class="kw">from</span> <span class="st">'@apollo/server/plugin/usageReporting'</span>;
+
+<span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({
+  schema,
+  plugins: [
+    <span class="fn">ApolloServerPluginUsageReporting</span>({
+      sendVariableValues: { <span class="fn">exceptFieldNames</span>: [<span class="st">'password'</span>, <span class="st">'token'</span>] },
+      sendHeaders: { <span class="fn">onlyNames</span>: [<span class="st">'x-request-id'</span>] }
+    })
+  ]
+});
+<span class="cm">// Set APOLLO_KEY env var — metrics stream to Apollo Studio automatically</span></code></pre></div>
+
+  <h3>Custom OpenTelemetry Spans</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Apollo Plugin — add a span per resolver</span>
+<span class="kw">const</span> tracingPlugin = {
+  <span class="kw">async</span> <span class="fn">requestDidStart</span>() {
+    <span class="kw">return</span> {
+      <span class="kw">async</span> <span class="fn">executionDidStart</span>() {
+        <span class="kw">return</span> {
+          <span class="fn">willResolveField</span>({ info }) {
+            <span class="kw">const</span> span = tracer.<span class="fn">startSpan</span>(<span class="st">`resolver:${info.parentType}.${info.fieldName}`</span>);
+            <span class="kw">return</span> () => span.<span class="fn">end</span>();  <span class="cm">// called after resolver completes</span>
+          }
+        };
+      }
+    };
+  }
+};</code></pre></div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; How does Apollo Studio's usage-aware schema check differ from a naive breaking-change check?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q15')">It checks for syntax errors only</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q15')">It blocks all removals regardless of usage</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q15')">It combines schema diff with real traffic data — if a field you're removing has zero active client usage, the check passes. If clients are actively using it, the check fails and blocks the deploy.</div>
+    </div>
+    <div class="quiz-feedback" id="q15"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(15)">← Back</button><button class="btn btn-primary" onclick="next(15)">Next →</button></div>
+</div>
+
+<!-- SEC 16 -->
+<div class="section" id="sec16">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">Pagination: Cursor vs Offset <span class="tag-interview">Interview Q16</span></h2>
+  <p class="section-intro">GraphQL's Relay Connection spec is the industry standard for cursor-based pagination. Understanding its structure and the tradeoffs vs offset pagination is a senior-level expectation.</p>
+
+  <h3>Relay Connection Spec</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># Schema</span>
+type <span class="gf">Query</span> {
+  users(first: <span class="gt">Int</span>, after: <span class="gt">String</span>, last: <span class="gt">Int</span>, before: <span class="gt">String</span>): <span class="gf">UserConnection</span>!
+}
+
+type <span class="gf">UserConnection</span> {
+  edges:    [<span class="gf">UserEdge</span>!]!
+  pageInfo: <span class="gf">PageInfo</span>!
+}
+
+type <span class="gf">UserEdge</span> {
+  node:   <span class="gf">User</span>!
+  cursor: <span class="gt">String</span>!   <span class="cm"># opaque, base64-encoded position</span>
+}
+
+type <span class="gf">PageInfo</span> {
+  hasNextPage:     <span class="gt">Boolean</span>!
+  hasPreviousPage: <span class="gt">Boolean</span>!
+  startCursor:     <span class="gt">String</span>
+  endCursor:       <span class="gt">String</span>
+}</code></pre></div>
+
+  <h3>Resolver Implementation</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Query.users resolver</span>
+<span class="kw">async function</span> <span class="fn">users</span>(_, { first = <span class="nm">10</span>, after }, ctx) {
+  <span class="kw">const</span> afterId = after ? <span class="fn">decodeCursor</span>(after) : <span class="kw">null</span>;
+
+  <span class="kw">const</span> rows = <span class="kw">await</span> ctx.db.<span class="fn">query</span>(<span class="st">`
+    SELECT * FROM users
+    WHERE ($1::int IS NULL OR id > $1)
+    ORDER BY id ASC LIMIT $2
+  `</span>, [afterId, first + <span class="nm">1</span>]);  <span class="cm">// fetch +1 to detect hasNextPage</span>
+
+  <span class="kw">const</span> hasNextPage = rows.length > first;
+  <span class="kw">if</span> (hasNextPage) rows.<span class="fn">pop</span>();
+
+  <span class="kw">return</span> {
+    edges: rows.<span class="fn">map</span>(r => ({ node: r, cursor: <span class="fn">encodeCursor</span>(r.id) })),
+    pageInfo: {
+      hasNextPage,
+      hasPreviousPage: !!afterId,
+      startCursor: rows[<span class="nm">0</span>] ? <span class="fn">encodeCursor</span>(rows[<span class="nm">0</span>].id) : <span class="kw">null</span>,
+      endCursor:   rows[rows.length-<span class="nm">1</span>] ? <span class="fn">encodeCursor</span>(rows[rows.length-<span class="nm">1</span>].id) : <span class="kw">null</span>
+    }
+  };
+}</code></pre></div>
+
+  <table>
+    <thead><tr><th>Approach</th><th>Pros</th><th>Cons</th></tr></thead>
+    <tbody>
+      <tr><td>Cursor (Relay)</td><td>Stable, O(log n) per page, handles inserts</td><td>No random-page access</td></tr>
+      <tr><td>Offset</td><td>Random access, simple SQL</td><td>O(n) DB scan, skips on live inserts</td></tr>
+    </tbody>
+  </table>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; What does the cursor in a Relay connection represent?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q16')">The total count of items</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q16')">An opaque, stable pointer to a specific position in the dataset — typically a base64-encoded primary key or composite key — used as a WHERE clause anchor for the next page query</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q16')">The page number multiplied by page size</div>
+    </div>
+    <div class="quiz-feedback" id="q16"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(16)">← Back</button><button class="btn btn-primary" onclick="next(16)">Next →</button></div>
+</div>
+
+<!-- SEC 17 -->
+<div class="section" id="sec17">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">File Uploads</h2>
+  <p class="section-intro">GraphQL wasn't designed for binary data, but the <code>graphql-upload</code> spec extends it with multipart form data. Know both the standard approach and why REST/presigned URLs are often better.</p>
+
+  <h3>graphql-upload Pattern</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># Schema — scalar Upload is provided by graphql-upload</span>
+scalar <span class="gt">Upload</span>
+
+type <span class="gf">Mutation</span> {
+  uploadAvatar(file: <span class="gt">Upload</span>!): <span class="gf">UploadResult</span>!
+}
+
+<span class="cm">// Resolver</span>
+<span class="kw">async function</span> <span class="fn">uploadAvatar</span>(_, { file }, ctx) {
+  <span class="kw">const</span> { createReadStream, filename, mimetype } = <span class="kw">await</span> file;
+
+  <span class="cm">// Validate mime type before storing</span>
+  <span class="kw">const</span> allowed = [<span class="st">'image/jpeg'</span>, <span class="st">'image/png'</span>, <span class="st">'image/webp'</span>];
+  <span class="kw">if</span> (!allowed.<span class="fn">includes</span>(mimetype))
+    <span class="kw">throw new</span> <span class="fn">GraphQLError</span>(<span class="st">'Invalid file type'</span>, { extensions: { code: <span class="st">'BAD_USER_INPUT'</span> } });
+
+  <span class="kw">const</span> stream = <span class="fn">createReadStream</span>();
+  <span class="kw">const</span> url = <span class="kw">await</span> ctx.storage.<span class="fn">upload</span>({ stream, filename });
+  <span class="kw">return</span> { url };
+}</code></pre></div>
+
+  <h3>Presigned URL Pattern (Recommended)</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># Better: GraphQL just generates a presigned URL; client uploads directly to S3/GCS</span>
+type <span class="gf">Mutation</span> {
+  createUploadUrl(filename: <span class="gt">String</span>!, contentType: <span class="gt">String</span>!): <span class="gf">PresignedUpload</span>!
+}
+
+type <span class="gf">PresignedUpload</span> {
+  uploadUrl: <span class="gt">String</span>!   <span class="cm"># PUT to this URL directly from browser</span>
+  fileKey:   <span class="gt">String</span>!   <span class="cm"># use this key in subsequent mutations</span>
+}
+
+<span class="cm">// Advantages: no binary data in GraphQL server, direct S3 transfer,</span>
+<span class="cm">// no memory pressure, built-in CDN caching</span></code></pre></div>
+
+  <div class="callout info">
+    <div class="callout-title">Presigned URLs vs graphql-upload</div>
+    For production systems, presigned S3/GCS URLs are strongly preferred. The client uploads directly to object storage — the GraphQL server never handles the binary stream, eliminating memory pressure and simplifying horizontal scaling.
+  </div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Why are presigned upload URLs preferred over streaming uploads through a GraphQL resolver?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q17')">Presigned URLs are required by the GraphQL spec</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q17')">Presigned URLs bypass the GraphQL server entirely — the client uploads directly to object storage, eliminating memory pressure, binary streaming complexity, and horizontal scaling concerns from the API layer</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q17')">graphql-upload is deprecated and no longer maintained</div>
+    </div>
+    <div class="quiz-feedback" id="q17"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(17)">← Back</button><button class="btn btn-primary" onclick="next(17)">Next →</button></div>
+</div>
+
+<!-- SEC 18 -->
+<div class="section" id="sec18">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">Real-world Resolver Patterns</h2>
+  <p class="section-intro">Production resolvers are layered — they validate context, delegate to a DataSource or service layer, handle partial errors, and never expose raw database errors to clients.</p>
+
+  <h3>The Resolver Responsibility Stack</h3>
+  <div class="diagram"><span class="hl">GraphQL Resolver</span>  (thin — orchestrate only)
+        │
+        ▼
+<span class="hl2">Service Layer</span>       (business logic, validation, auth checks)
+        │
+        ▼
+<span class="hl3">DataSource / Repository</span>  (DB / REST API / cache)
+        │
+        ▼
+<span class="hl2">Database / External Service</span></div>
+
+  <h3>Pattern: Resolver Delegation</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// ❌ Fat resolver — business logic mixed with data access</span>
+<span class="kw">const</span> resolvers = {
+  Mutation: {
+    <span class="kw">async</span> <span class="fn">createOrder</span>(_, { input }, ctx) {
+      <span class="kw">if</span> (!ctx.user) <span class="kw">throw new</span> <span class="fn">GraphQLError</span>(<span class="st">'Unauthorized'</span>);
+      <span class="kw">if</span> (input.items.length === <span class="nm">0</span>) <span class="kw">throw new</span> <span class="fn">GraphQLError</span>(<span class="st">'Empty order'</span>);
+      <span class="kw">const</span> total = input.items.<span class="fn">reduce</span>((s, i) => s + i.price * i.qty, <span class="nm">0</span>);
+      <span class="kw">const</span> order = <span class="kw">await</span> ctx.db.<span class="fn">query</span>(<span class="st">'INSERT INTO orders ...'</span>);
+      <span class="kw">await</span> ctx.emailSvc.<span class="fn">sendConfirmation</span>(order);
+      <span class="kw">return</span> order;
+    }
+  }
+};
+
+<span class="cm">// ✅ Thin resolver — delegates to service</span>
+<span class="kw">const</span> resolvers = {
+  Mutation: {
+    <span class="fn">createOrder</span>: (_, { input }, ctx) => ctx.services.order.<span class="fn">create</span>(ctx.user, input)
+  }
+};</code></pre></div>
+
+  <h3>Handling Partial Errors</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm">// Return partial data + errors array in same response</span>
+<span class="kw">const</span> resolvers = {
+  Query: {
+    <span class="kw">async</span> <span class="fn">dashboard</span>(_, __, ctx) {
+      <span class="kw">const</span> [user, orders, recommendations] = <span class="kw">await</span> Promise.<span class="fn">allSettled</span>([
+        ctx.dataSources.userAPI.<span class="fn">getUser</span>(ctx.user.id),
+        ctx.dataSources.orderAPI.<span class="fn">getOrders</span>(ctx.user.id),
+        ctx.dataSources.recAPI.<span class="fn">getRecommendations</span>(ctx.user.id)
+      ]);
+
+      <span class="kw">return</span> {
+        user:            user.status === <span class="st">'fulfilled'</span> ? user.value : <span class="kw">null</span>,
+        orders:          orders.status === <span class="st">'fulfilled'</span> ? orders.value : [],
+        recommendations: recommendations.status === <span class="st">'fulfilled'</span> ? recommendations.value : []
+      };
+    }
+  }
+};</code></pre></div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Why should resolvers be "thin" and delegate to a service layer?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q18')">GraphQL requires resolvers to be less than 10 lines</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q18')">Thin resolvers keep business logic testable and reusable independently of the GraphQL transport layer — the same service can be called from REST, jobs, or tests without invoking the GraphQL executor</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q18')">Fat resolvers cause memory leaks</div>
+    </div>
+    <div class="quiz-feedback" id="q18"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(18)">← Back</button><button class="btn btn-primary" onclick="next(18)">Next →</button></div>
+</div>
+
+<!-- SEC 19 -->
+<div class="section" id="sec19">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">Schema Design at Scale <span class="tag-interview">Interview Q19</span></h2>
+  <p class="section-intro">Schema design decisions made early are hard to undo. Naming conventions, nullability, input types vs inline arguments, and domain modeling all affect long-term maintainability.</p>
+
+  <h3>Nullability Strategy</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="cm"># ❌ Over-nullable — every field is optional, clients must null-check everything</span>
+type <span class="gf">User</span> {
+  id:    <span class="gt">ID</span>
+  name:  <span class="gt">String</span>
+  email: <span class="gt">String</span>
+}
+
+<span class="cm"># ✅ Explicit nullability — non-null for fields that are ALWAYS present</span>
+type <span class="gf">User</span> {
+  id:    <span class="gt">ID</span>!      <span class="cm"># always exists — non-null</span>
+  name:  <span class="gt">String</span>!  <span class="cm"># always exists — non-null</span>
+  email: <span class="gt">String</span>   <span class="cm"># optional — user may not have verified email</span>
+}
+
+<span class="cm"># ❌ Inline argument explosion</span>
+type <span class="gf">Mutation</span> {
+  createUser(name: <span class="gt">String</span>!, email: <span class="gt">String</span>!, age: <span class="gt">Int</span>!, role: <span class="gt">String</span>!): <span class="gf">User</span>!
+}
+
+<span class="cm"># ✅ Input types — groupable, reusable, versionable</span>
+input <span class="gf">CreateUserInput</span> { name: <span class="gt">String</span>!; email: <span class="gt">String</span>!; age: <span class="gt">Int</span>!; role: <span class="gt">String</span>! }
+type <span class="gf">Mutation</span> {
+  createUser(input: <span class="gf">CreateUserInput</span>!): <span class="gf">User</span>!
+}</code></pre></div>
+
+  <h3>Domain Modeling Best Practices</h3>
+  <table>
+    <thead><tr><th>Pattern</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>Naming</td><td>Use domain language — <code>Order</code>, not <code>OrderEntity</code>; <code>cancel</code>, not <code>setStatusCancelled</code></td></tr>
+      <tr><td>Mutations</td><td>Return the mutated object (not just a boolean) — enables cache updates</td></tr>
+      <tr><td>Union return types</td><td>Use unions for mutations: <code>CreateUserResult = User | ValidationError | DuplicateError</code></td></tr>
+      <tr><td>Relay IDs</td><td>Use globally unique IDs (<code>base64(type:id)</code>) for cross-service caching</td></tr>
+    </tbody>
+  </table>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Why should GraphQL mutations return the mutated object rather than a boolean?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q19')">To reduce query complexity scores</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q19')">Returning the full updated object allows clients (Apollo Client, urql) to automatically update their local cache without a separate refetch — improving UI consistency and reducing network round-trips</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q19')">Boolean return types are banned in the GraphQL spec</div>
+    </div>
+    <div class="quiz-feedback" id="q19"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(19)">← Back</button><button class="btn btn-primary" onclick="next(19)">Next →</button></div>
+</div>
+
+<!-- SEC 20 -->
+<div class="section" id="sec20">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">GraphQL Clients — Apollo &amp; urql</h2>
+  <p class="section-intro">Choosing and configuring the right GraphQL client — Apollo Client, urql, or a lightweight fetch wrapper — has a major impact on caching behaviour, bundle size, and developer experience.</p>
+
+  <h3>Apollo Client Setup</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">import</span> { ApolloClient, InMemoryCache, HttpLink, from } <span class="kw">from</span> <span class="st">'@apollo/client'</span>;
+<span class="kw">import</span> { onError } <span class="kw">from</span> <span class="st">'@apollo/client/link/error'</span>;
+
+<span class="kw">const</span> errorLink = <span class="fn">onError</span>(({ graphQLErrors, networkError }) => {
+  <span class="kw">if</span> (graphQLErrors)
+    graphQLErrors.<span class="fn">forEach</span>(({ message, extensions }) =>
+      logger.<span class="fn">error</span>({ code: extensions?.code }, message));
+  <span class="kw">if</span> (networkError) logger.<span class="fn">error</span>(<span class="st">'Network error'</span>, networkError);
+});
+
+<span class="kw">export const</span> client = <span class="kw">new</span> <span class="fn">ApolloClient</span>({
+  link: <span class="fn">from</span>([errorLink, <span class="kw">new</span> <span class="fn">HttpLink</span>({ uri: <span class="st">'/graphql'</span>, credentials: <span class="st">'include'</span> })]),
+  cache: <span class="kw">new</span> <span class="fn">InMemoryCache</span>({
+    typePolicies: {
+      User: { keyFields: [<span class="st">'id'</span>] }  <span class="cm">// cache normalization by id</span>
+    }
+  })
+});</code></pre></div>
+
+  <h3>Client Comparison</h3>
+  <table>
+    <thead><tr><th>Client</th><th>Bundle</th><th>Cache</th><th>Best For</th></tr></thead>
+    <tbody>
+      <tr><td>Apollo Client</td><td>~47KB</td><td>Normalized InMemoryCache</td><td>Complex apps with many shared entities</td></tr>
+      <tr><td>urql</td><td>~16KB</td><td>Document + normalized (via Graphcache)</td><td>Smaller apps, better defaults</td></tr>
+      <tr><td>fetch / graphql-request</td><td>&lt;2KB</td><td>None (bring your own)</td><td>Server-side rendering, simple CLIs</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <div class="callout-title">Normalized Cache</div>
+    Apollo's <code>InMemoryCache</code> normalizes by <code>__typename + id</code>. When a mutation returns a <code>User</code> with the same <code>id</code>, every query referencing that user updates automatically — this is why mutations should return the full object.
+  </div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; What is cache normalization in Apollo Client and why does it matter?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q20')">It compresses cached data to save memory</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q20')">It stores each entity once, keyed by <code>__typename:id</code>. When any query returns the same entity, all components subscribed to it re-render automatically — eliminating stale data across different queries that reference the same object</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q20')">It encrypts queries before sending to the server</div>
+    </div>
+    <div class="quiz-feedback" id="q20"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(20)">← Back</button><button class="btn btn-primary" onclick="next(20)">Next →</button></div>
+</div>
+
+<!-- SEC 21 -->
+<div class="section" id="sec21">
+  <span class="section-badge advanced">Architecture</span>
+  <h2 class="section-title">Anti-patterns &amp; Wrap-up</h2>
+  <p class="section-intro">Recognising GraphQL anti-patterns in a codebase — and articulating why they're problematic — is exactly what senior-level interviewers look for. Be ready with examples and fixes.</p>
+
+  <h3>Top GraphQL Anti-patterns</h3>
+  <table>
+    <thead><tr><th>Anti-pattern</th><th>Problem</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Fetching everything in one monster query</td><td>Over-fetching, high complexity, brittle</td><td>Use fragments; paginate; split queries</td></tr>
+      <tr><td>No query complexity / depth limits</td><td>Malicious nested queries can crash the server</td><td><code>graphql-query-complexity</code> + max depth plugin</td></tr>
+      <tr><td>Resolvers that call resolvers directly</td><td>Bypasses DataLoader batching, causes N+1</td><td>Extract to service layer; share DataSources</td></tr>
+      <tr><td>Introspection enabled in production</td><td>Exposes full schema to attackers</td><td>Disable via <code>introspection: false</code> in production</td></tr>
+      <tr><td>Synchronous DataLoader</td><td>DataLoader batching only works across microtask ticks</td><td>Ensure batch function is async and awaited</td></tr>
+      <tr><td>Leaking resolver errors to clients</td><td>Stack traces / DB errors in response</td><td>Use <code>formatError</code> to sanitize; only pass <code>extensions.code</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>formatError — sanitize production errors</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code><span class="kw">const</span> server = <span class="kw">new</span> <span class="fn">ApolloServer</span>({
+  schema,
+  <span class="fn">formatError</span>(formattedError, error) {
+    <span class="cm">// Log original error server-side</span>
+    logger.<span class="fn">error</span>(error);
+
+    <span class="cm">// Strip stack traces and internal details from client response</span>
+    <span class="kw">if</span> (formattedError.extensions?.code === <span class="st">'INTERNAL_SERVER_ERROR'</span>) {
+      <span class="kw">return</span> { message: <span class="st">'Internal server error'</span>, extensions: { code: <span class="st">'INTERNAL_SERVER_ERROR'</span> } };
+    }
+    <span class="kw">return</span> formattedError;
+  }
+});</code></pre></div>
+
+  <hr class="section-divider">
+  <div class="callout success">
+    <div class="callout-title">&#x1F389; Tutorial Complete!</div>
+    You've covered all 22 sections — from GraphQL fundamentals to production architecture. Review <code>GraphQL/interview_qa.md</code> to practise articulating your answers out loud.
+  </div>
+
+  <h3>Skills you can now demonstrate</h3>
+  <div class="chips">
+    <span class="chip">REST vs GraphQL tradeoffs</span>
+    <span class="chip">Schema &amp; type system</span>
+    <span class="chip">Resolver execution chain</span>
+    <span class="chip">N+1 &amp; DataLoader</span>
+    <span class="chip">Subscriptions at scale</span>
+    <span class="chip">Federation vs Stitching</span>
+    <span class="chip">Persisted Queries (APQ)</span>
+    <span class="chip">Auth via context</span>
+    <span class="chip">Depth limiting &amp; complexity</span>
+    <span class="chip">Relay cursor pagination</span>
+    <span class="chip">Cache normalization</span>
+    <span class="chip">Thin resolvers &amp; service layer</span>
+    <span class="chip">Schema evolution</span>
+    <span class="chip">Presigned file uploads</span>
+    <span class="chip">Apollo Studio monitoring</span>
+    <span class="chip">formatError sanitization</span>
+  </div>
+
+  <div class="quiz-box">
+    <h4>&#x1F9E0; Final Check — What is the safest way to handle an unexpected resolver error in production?</h4>
+    <div class="quiz-options">
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q21')">Return the raw error message to help the client debug</div>
+      <div class="quiz-opt" onclick="quiz(this,'correct','q21')">Log the full error server-side, then use <code>formatError</code> to return a sanitized generic message and a machine-readable <code>extensions.code</code> to the client — never expose stack traces or DB details</div>
+      <div class="quiz-opt" onclick="quiz(this,'wrong','q21')">Let Apollo Server handle it automatically without any configuration</div>
+    </div>
+    <div class="quiz-feedback" id="q21"></div>
+  </div>
+  <div class="nav-btns"><button class="btn btn-secondary" onclick="prev(21)">← Back</button><button class="btn btn-primary" onclick="goTo(0)">&#8635; Restart</button></div>
+</div>
+
+</main>
+</div>
+<script>
+const TOTAL = 22;
+let completed = new Set();
+let current = 0;
+function goTo(idx) {
+  document.getElementById('sec'+current).classList.remove('active');
+  document.getElementById('nav'+current).classList.remove('active');
+  current = idx;
+  document.getElementById('sec'+current).classList.add('active');
+  document.getElementById('nav'+current).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function next(idx) { completed.add(idx); updateProgress(); markDone(idx); if (idx+1<TOTAL) goTo(idx+1); }
+function prev(idx) { if (idx-1>=0) goTo(idx-1); }
+function markDone(idx) {
+  const c=document.getElementById('chk'+idx), n=document.getElementById('nav'+idx);
+  if(c){c.textContent='✓';c.classList.add('check');} if(n) n.classList.add('done');
+}
+function updateProgress() {
+  const p=Math.round((completed.size/TOTAL)*100);
+  document.getElementById('progressBar').style.width=p+'%';
+  document.getElementById('progressLabel').textContent=completed.size+' of '+TOTAL+' completed';
+}
+function quiz(el,result,feedbackId) {
+  const opts=el.parentElement.querySelectorAll('.quiz-opt'), fb=document.getElementById(feedbackId);
+  opts.forEach(o=>o.classList.add('disabled')); el.classList.add(result); fb.classList.add('show');
+  if(result==='correct'){fb.classList.add('ok');fb.textContent='✅ Correct!';}
+  else{fb.classList.add('bad');fb.textContent='❌ Not quite — review the content above.';
+    opts.forEach(o=>{if(o.getAttribute('onclick')&&o.getAttribute('onclick').includes("'correct'"))o.classList.add('correct');});}
+}
+function copyCode(btn) {
+  navigator.clipboard.writeText(btn.nextElementSibling.innerText).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});
+}
+</script>
+</body>
+</html>

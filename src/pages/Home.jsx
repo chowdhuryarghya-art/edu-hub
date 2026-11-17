@@ -90,75 +90,68 @@ export default function Home({ onOpenCommand, onOpenPro }) {
     <div className="edu-home">
       {/* Top Header Navbar */}
       <nav className="home-top-nav">
-          <div className="top-nav-links">
-            {/* 1. Tutorials */}
-            <a href="#tracks-section" onClick={scrollToTracks} className="nav-pill-link highlight-pill">
-              <BookOpen size={14} />
-              <span>Tutorials</span>
-            </a>
+        <div className="top-nav-tabs">
+          {/* 1. Tutorials */}
+          <a href="#tracks-section" onClick={scrollToTracks} className="nav-tab-btn active-tab">
+            <BookOpen size={14} className="tab-icon" />
+            <span>Tutorials</span>
+          </a>
 
-            {/* 2. Code Playground */}
-            <Link to="/code-editor" className="nav-pill-link">
-              <Play size={14} style={{ color: '#ea580c' }} />
-              <span>Code Playground</span>
-            </Link>
+          {/* 2. Code Playground */}
+          <Link to="/code-editor" className="nav-tab-btn">
+            <Play size={14} className="tab-icon play-icon" />
+            <span>Playground</span>
+          </Link>
 
-            {/* 3. Mock Interview Arena */}
-            <Link to="/interview-arena" className="nav-pill-link">
-              <Flame size={14} style={{ color: '#f59e0b' }} />
-              <span>Mock Interview Arena</span>
-            </Link>
+          {/* 3. Mock Interview Arena */}
+          <Link to="/interview-arena" className="nav-tab-btn">
+            <Flame size={14} className="tab-icon flame-icon" />
+            <span>Interview Arena</span>
+          </Link>
 
-            {/* 4. System Design Canvas */}
-            <Link to="/system-design-canvas" className="nav-pill-link">
-              <Layout size={14} style={{ color: '#2563eb' }} />
-              <span>System Design Canvas</span>
-            </Link>
+          {/* 4. System Design Canvas */}
+          <Link to="/system-design-canvas" className="nav-tab-btn">
+            <Layout size={14} className="tab-icon layout-icon" />
+            <span>System Design</span>
+          </Link>
 
-            {/* 5. Cheat Sheets */}
-            <Link to="/cheatsheets" className="nav-pill-link">
-              <FileText size={14} style={{ color: '#10b981' }} />
-              <span>Cheat Sheets</span>
-            </Link>
+          {/* 5. Cheat Sheets */}
+          <Link to="/cheatsheets" className="nav-tab-btn">
+            <FileText size={14} className="tab-icon file-icon" />
+            <span>Cheat Sheets</span>
+          </Link>
 
-            {/* 6. Readiness Matrix */}
-            <Link to="/readiness" className="nav-pill-link">
-              <Activity size={14} style={{ color: '#8b5cf6' }} />
-              <span>Readiness Matrix</span>
-            </Link>
+          {/* 6. Readiness Matrix */}
+          <Link to="/readiness" className="nav-tab-btn">
+            <Activity size={14} className="tab-icon activity-icon" />
+            <span>Readiness Matrix</span>
+          </Link>
+        </div>
 
-            {/* Right side actions */}
-            <div className="top-nav-right-actions">
-              {/* Persona Switcher Pill */}
-              <button
-                className="nav-pill-link profile-switcher-pill"
-                onClick={openPreferenceModal}
-                style={{
-                  background: activePersona ? `${activePersona.color}15` : 'rgba(2, 132, 199, 0.1)',
-                  borderColor: activePersona?.color || '#0284c7',
-                  color: activePersona?.color || '#0284c7'
-                }}
-                title="Change your learning track"
-              >
-                <span className="dot" style={{ backgroundColor: activePersona?.color || '#0284c7' }}></span>
-                <span>{activePersona ? `🎯 Track: ${activePersona.shortTitle}` : '✨ Set Track'}</span>
-                <ChevronDown size={13} />
-              </button>
+        {/* Right side actions */}
+        <div className="top-nav-right-actions">
+          {/* Persona Switcher Pill */}
+          <button
+            className="nav-tab-btn profile-switcher-pill"
+            onClick={openPreferenceModal}
+            style={{
+              background: activePersona ? `${activePersona.color}18` : 'rgba(2, 132, 199, 0.12)',
+              borderColor: activePersona?.color || '#0284c7',
+              color: activePersona?.color || '#38bdf8'
+            }}
+            title="Change your learning track"
+          >
+            <span className="dot" style={{ backgroundColor: activePersona?.color || '#38bdf8' }}></span>
+            <span>{activePersona ? `Track: ${activePersona.shortTitle}` : 'Set Track'}</span>
+            <ChevronDown size={13} />
+          </button>
 
-              <button className="command-trigger-btn" onClick={onOpenCommand} title="Quick Search (Ctrl+K)">
-                <Command size={13} />
-                <span>Ctrl + K</span>
-              </button>
-
-              {onOpenPro && (
-                <button className="nav-pill-link pro-nav-btn" onClick={onOpenPro} title="Upgrade to Edu Hub Pro">
-                  <Crown size={13} style={{ color: '#f59e0b' }} />
-                  <span>Pro</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </nav>
+          <button className="command-trigger-btn" onClick={onOpenCommand} title="Quick Search (Ctrl+K)">
+            <Command size={13} />
+            <span>Ctrl + K</span>
+          </button>
+        </div>
+      </nav>
 
         {/* Hero Section */}
         <header className="hero-section">

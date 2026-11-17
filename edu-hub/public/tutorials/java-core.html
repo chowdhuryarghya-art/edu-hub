@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Core &amp; ICSE/ISC OOP Curriculum – Zero to Mastery</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f7f8fa; color: #1f2328; font-size: 15px; line-height: 1.7; }
+  #app { display: flex; min-height: 100vh; }
+  #sidebar { width: 310px; min-width: 310px; background: #1c1917; color: #c9d1d9; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 0 40px; }
+  #main { flex: 1; max-width: 920px; padding: 40px 48px 80px; overflow-x: hidden; }
+  #sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid #292524; }
+  #sidebar-header h1 { font-size: 15px; font-weight: 700; color: #f8fafc; }
+  #sidebar-header p { font-size: 11px; color: #a8a29e; margin-top: 3px; }
+  .progress-bar-wrap { margin: 10px 20px 0; background: #292524; border-radius: 4px; height: 5px; }
+  .progress-bar-fill { height: 5px; background: #ea580c; border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: #a8a29e; padding: 4px 20px 0; }
+  .nav-section { padding: 14px 20px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #a8a29e; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; font-size: 13px; color: #a8a29e; transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: #292524; color: #f8fafc; }
+  .nav-item.active { background: #292524; color: #fdba74; border-left-color: #ea580c; }
+  .nav-item.done .check { color: #3fb950; }
+  .nav-item .check { font-size: 12px; min-width: 14px; }
+  .nav-item .num { font-size: 10px; background: #292524; border-radius: 10px; padding: 1px 6px; min-width: 22px; text-align: center; }
+  .nav-item.active .num { background: #c2410c; color: #fff; }
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section-badge { display: inline-block; background: #fff7ed; color: #c2410c; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h2.section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+  .section-intro { color: #57606a; margin-bottom: 24px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; color: #1e293b; }
+  p { margin-bottom: 12px; } ul, ol { padding-left: 22px; margin-bottom: 12px; } li { margin-bottom: 5px; }
+  pre { background: #1c1917; color: #f5f5f4; border-radius: 8px; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; border: 1px solid #292524; margin: 14px 0; }
+  code { font-family: "Cascadia Code","Fira Code","Consolas",monospace; }
+  p code, li code { background: #fef3c7; color: #b45309; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: "Cascadia Code",monospace; }
+  .callout { border-left: 4px solid #ea580c; background: #fff7ed; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 14px; }
+  .callout.success { border-color: #10b981; background: #ecfdf5; }
+  .callout.info { border-color: #0284c7; background: #f0f9ff; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; color: #c2410c; }
+  .callout.success .callout-title { color: #047857; }
+  .callout.warn .callout-title { color: #b45309; }
+  .nav-btns { display: flex; gap: 12px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .btn { padding: 9px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #ea580c; color: #fff; }
+  .btn-primary:hover { background: #c2410c; }
+  .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  table.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  table.data-table th, table.data-table td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+
+  /* Q&A Accordion Cards */
+  .qa-section { margin: 28px 0 16px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  .qa-section-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .qa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 14px; background: #f8fafc; color: #1e293b; user-select: none; }
+  .qa-header:hover { background: #f1f5f9; }
+  .qa-header .icon { font-size: 12px; color: #ea580c; }
+  .qa-body { padding: 14px 16px; font-size: 13.5px; line-height: 1.6; color: #334155; border-top: 1px solid #e2e8f0; background: #ffffff; display: none; }
+  .qa-body.open { display: block; }
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>☕ Java Core &amp; ICSE OOP</h1>
+    <p>ICSE/ISC Board to Professional OOP Mastery</p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 14 completed</div>
+  </div>
+  <div class="nav-section">Part 1: Architecture &amp; Syntax</div>
+  <div class="nav-item active" onclick="goTo(0)" id="nav0"><span class="check" id="chk0">○</span><span class="num">1</span> JVM Architecture &amp; Bytecode</div>
+  <div class="nav-item" onclick="goTo(1)" id="nav1"><span class="check" id="chk1">○</span><span class="num">2</span> Tokens, Primitives &amp; Casting</div>
+  <div class="nav-item" onclick="goTo(2)" id="nav2"><span class="check" id="chk2">○</span><span class="num">3</span> Operators &amp; Math Functions</div>
+  <div class="nav-item" onclick="goTo(3)" id="nav3"><span class="check" id="chk3">○</span><span class="num">4</span> Branching &amp; Switch Patterns</div>
+  <div class="nav-item" onclick="goTo(4)" id="nav4"><span class="check" id="chk4">○</span><span class="num">5</span> Loops &amp; Iteration Patterns</div>
+  <div class="nav-section">Part 2: Object-Oriented Principles</div>
+  <div class="nav-item" onclick="goTo(5)" id="nav5"><span class="check" id="chk5">○</span><span class="num">6</span> The 4 Pillars of OOP</div>
+  <div class="nav-item" onclick="goTo(6)" id="nav6"><span class="check" id="chk6">○</span><span class="num">7</span> Classes, Constructors &amp; Static</div>
+  <div class="nav-item" onclick="goTo(7)" id="nav7"><span class="check" id="chk7">○</span><span class="num">8</span> Method Overloading vs Overriding</div>
+  <div class="nav-item" onclick="goTo(8)" id="nav8"><span class="check" id="chk8">○</span><span class="num">9</span> Abstract Classes &amp; Interfaces</div>
+  <div class="nav-section">Part 3: Arrays, Memory &amp; Strings</div>
+  <div class="nav-item" onclick="goTo(9)" id="nav9"><span class="check" id="chk9">○</span><span class="num">10</span> 1D &amp; 2D Array Algorithms</div>
+  <div class="nav-item" onclick="goTo(10)" id="nav10"><span class="check" id="chk10">○</span><span class="num">11</span> String Immutability &amp; Regex</div>
+  <div class="nav-item" onclick="goTo(11)" id="nav11"><span class="check" id="chk11">○</span><span class="num">12</span> JVM Memory: Stack, Heap &amp; GC</div>
+  <div class="nav-section">Part 4: Enterprise Foundations</div>
+  <div class="nav-item" onclick="goTo(12)" id="nav12"><span class="check" id="chk12">○</span><span class="num">13</span> Robust Exception Handling</div>
+  <div class="nav-item" onclick="goTo(13)" id="nav13"><span class="check" id="chk13">○</span><span class="num">14</span> Java Collections Framework</div>
+</nav>
+
+<main id="main">
+  <!-- Module 1 -->
+  <div class="section active" id="sec0">
+    <span class="section-badge">Module 1 · Architecture</span>
+    <h2 class="section-title">Java Architecture, JDK, JRE &amp; JVM Bytecode Engine</h2>
+    <p class="section-intro">Understand the "Write Once, Run Anywhere" (WORA) philosophy and how source code transforms into verified executable bytecode.</p>
+
+    <h3>1. The Two-Stage Hybrid Execution Model</h3>
+    <pre><code>[App.java (Source Code)]
+       │
+       ▼ (javac Compiler)
+[App.class (Bytecode)]  &lt;--- Platform Neutral Instruction Set
+       │
+       ▼ (Class Loader Subsystem)
+[Java Virtual Machine (JVM Runtime)]
+  ├── Bytecode Verifier (Security boundary checks)
+  ├── Execution Engine
+  │     ├── Interpreter (Fast startup line execution)
+  │     ├── JIT Compiler (Compiles Hotspots into direct Host Machine Code)
+  │     └── Garbage Collector (Autonomous Heap reclamation)
+  └── Memory Areas (Method Area, Heap, JVM Stack, PC Registers, Native Stack)
+       │
+       ▼
+[Host OS (Windows / Linux / macOS / ARM CPU)]</code></pre>
+
+    <h3>2. JDK vs JRE vs JVM Breakdown</h3>
+    <table class="data-table">
+      <tr><th>Component</th><th>Full Name</th><th>Target Audience</th><th>Inclusions</th></tr>
+      <tr><td><strong>JDK</strong></td><td>Java Development Kit</td><td>Software Developers</td><td>JRE + Compilers (<code>javac</code>), Debuggers (<code>jdb</code>), Profilers (<code>jconsole</code>), Archivers (<code>jar</code>).</td></tr>
+      <tr><td><strong>JRE</strong></td><td>Java Runtime Environment</td><td>End Users / Servers</td><td>JVM + Core Java Class Libraries (rt.jar, java.lang, java.util).</td></tr>
+      <tr><td><strong>JVM</strong></td><td>Java Virtual Machine</td><td>Execution Engine</td><td>Abstract computing machine that interprets/JIT-compiles bytecode into native machine instructions.</td></tr>
+    </table>
+
+    <div class="qa-section">
+      <div class="qa-section-title">💡 ICSE/ISC Board &amp; Placement Q&amp;A</div>
+      <div class="qa-card">
+        <div class="qa-header" onclick="toggleQA(this)">
+          <span>Q1: Why is Java considered both a compiled and an interpreted language?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="qa-body">
+          Java source code (<code>.java</code>) is first <strong>compiled</strong> by <code>javac</code> into platform-independent intermediate bytecode (<code>.class</code>). This bytecode is then <strong>interpreted and JIT-compiled</strong> by the target machine's JVM into native machine instructions during execution.
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-primary" onclick="markAndNext(0)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 2 -->
+  <div class="section" id="sec1">
+    <span class="section-badge">Module 2 · Types &amp; Tokens</span>
+    <h2 class="section-title">Java Tokens, Primitive Data Types &amp; Type Casting</h2>
+    <p class="section-intro">Master identifiers, keywords, 8 primitive data types, literals, automatic widening, and narrowing explicit type casting.</p>
+
+    <h3>1. The 8 Java Primitive Types</h3>
+    <table class="data-table">
+      <tr><th>Type</th><th>Size</th><th>Default</th><th>Range</th><th>Wrapper Class</th></tr>
+      <tr><td><code>byte</code></td><td>8-bit (1 byte)</td><td>0</td><td>-128 to 127</td><td><code>Byte</code></td></tr>
+      <tr><td><code>short</code></td><td>16-bit (2 bytes)</td><td>0</td><td>-32,768 to 32,767</td><td><code>Short</code></td></tr>
+      <tr><td><code>int</code></td><td>32-bit (4 bytes)</td><td>0</td><td>$-2^{31}$ to $2^{31}-1$</td><td><code>Integer</code></td></tr>
+      <tr><td><code>long</code></td><td>64-bit (8 bytes)</td><td>0L</td><td>$-2^{63}$ to $2^{63}-1$</td><td><code>Long</code></td></tr>
+      <tr><td><code>float</code></td><td>32-bit (4 bytes)</td><td>0.0f</td><td>IEEE 754 Floating point</td><td><code>Float</code></td></tr>
+      <tr><td><code>double</code></td><td>64-bit (8 bytes)</td><td>0.0d</td><td>Double precision floating point</td><td><code>Double</code></td></tr>
+      <tr><td><code>char</code></td><td>16-bit (2 bytes)</td><td>'\u0000'</td><td>0 to 65,535 (Unicode encoding)</td><td><code>Character</code></td></tr>
+      <tr><td><code>boolean</code></td><td>1-bit JVM-defined</td><td>false</td><td><code>true</code> or <code>false</code></td><td><code>Boolean</code></td></tr>
+    </table>
+
+    <h3>2. Implicit Widening vs Explicit Narrowing</h3>
+    <pre><code>// 1. Automatic Widening (Safe: byte -> short -> int -> long -> float -> double):
+int smallNum = 42;
+double wideNum = smallNum; // 42.0 (Automatic)
+
+// 2. Explicit Narrowing (Potential Data Truncation):
+double price = 199.95;
+int truncatedPrice = (int) price; // Truncates decimal part to 199</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(1)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 3 -->
+  <div class="section" id="sec2">
+    <span class="section-badge">Module 3 · Operators &amp; Math</span>
+    <h2 class="section-title">Operators, Precedence &amp; The `java.lang.Math` Library</h2>
+    <p class="section-intro">Understand prefix/postfix increment/decrement, ternary operators, and built-in mathematical library methods.</p>
+
+    <pre><code>public class MathDemo {
+    public static void main(String[] args) {
+        // Prefix vs Postfix Nuances
+        int a = 5;
+        int b = ++a * 2; // a becomes 6, b = 12
+        int c = a++ * 2; // c = 12, a becomes 7
+
+        // Ternary Operator: (condition) ? if_true : if_false
+        int max = (b > c) ? b : c;
+
+        // java.lang.Math Standard Library Functions
+        double sqrtVal = Math.sqrt(144.0);    // 12.0
+        double powerVal = Math.pow(2.0, 8.0);  // 256.0
+        int roundVal = Math.round(14.7f);     // 15
+        double randomVal = Math.random();     // [0.0, 1.0)
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(2)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 4 -->
+  <div class="section" id="sec3">
+    <span class="section-badge">Module 4 · Control Flow</span>
+    <h2 class="section-title">Branching Logic &amp; Modern Switch Expressions</h2>
+    <p class="section-intro">Evaluate multi-branch conditions with `if-else if-else` and enhanced `switch` statements.</p>
+
+    <pre><code>public class SwitchDemo {
+    public static String getDayCategory(int day) {
+        // Enhanced Modern Switch Expression (Java 14+)
+        return switch (day) {
+            case 1, 7 -> "Weekend (Relax)";
+            case 2, 3, 4, 5, 6 -> "Weekday (Coding & Work)";
+            default -> throw new IllegalArgumentException("Invalid day: " + day);
+        };
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(3)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 5 -->
+  <div class="section" id="sec4">
+    <span class="section-badge">Module 5 · Iteration</span>
+    <h2 class="section-title">Loops, Nested Iterations &amp; Series Generation</h2>
+    <p class="section-intro">Master entry-controlled (`for`, `while`) vs exit-controlled (`do-while`) loops and nested pattern algorithms.</p>
+
+    <pre><code>// Fibonacci Series Generation (First N terms):
+public static void printFibonacci(int n) {
+    int a = 0, b = 1;
+    System.out.print("Fibonacci (" + n + " terms): ");
+    for (int i = 0; i < n; i++) {
+        System.out.print(a + " ");
+        int next = a + b;
+        a = b;
+        b = next;
+    }
+    System.out.println();
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(4)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 6 -->
+  <div class="section" id="sec5">
+    <span class="section-badge">Module 6 · OOP Fundamentals</span>
+    <h2 class="section-title">The 4 Pillars of Object-Oriented Programming</h2>
+    <p class="section-intro">Encapsulation, Data Abstraction, Inheritance, and Dynamic Polymorphism.</p>
+
+    <table class="data-table">
+      <tr><th>Pillar</th><th>Core Definition</th><th>Java Implementation Mechanism</th></tr>
+      <tr><td><strong>Encapsulation</strong></td><td>Binding data with methods and restricting direct field access.</td><td><code>private</code> instance variables + public Getters/Setters.</td></tr>
+      <tr><td><strong>Abstraction</strong></td><td>Hiding internal implementation details and exposing only what is essential.</td><td><code>abstract class</code> and <code>interface</code> definitions.</td></tr>
+      <tr><td><strong>Inheritance</strong></td><td>Creating new classes reusing and extending parent behaviors (`IS-A`).</td><td><code>class Sub extends Super</code> and <code>super()</code> calls.</td></tr>
+      <tr><td><strong>Polymorphism</strong></td><td>Ability of an entity to take multiple forms (Many shapes).</td><td>Method Overloading (Compile-time) &amp; Overriding (Runtime).</td></tr>
+    </table>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(5)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 7 -->
+  <div class="section" id="sec6">
+    <span class="section-badge">Module 7 · Classes &amp; Constructors</span>
+    <h2 class="section-title">Classes, Constructors, `this`, `super` &amp; Static Scope</h2>
+    <p class="section-intro">Understand object instantiation, constructor overloading, constructor chaining, and memory sharing via `static`.</p>
+
+    <pre><code>public class Student {
+    // Static Variable: Shared across all instances in Method Area
+    private static int totalEnrolled = 0;
+
+    // Instance Variables: Unique to each instance on Heap
+    private String name;
+    private double gpa;
+
+    // Parameterized Constructor with 'this' pointer disambiguation
+    public Student(String name, double gpa) {
+        this.name = name;
+        this.gpa = gpa;
+        totalEnrolled++;
+    }
+
+    // Constructor Chaining (Overloaded Constructor)
+    public Student(String name) {
+        this(name, 0.0); // Calls the parameterized constructor above
+    }
+
+    public static int getTotalEnrolled() {
+        return totalEnrolled;
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(6)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 8 -->
+  <div class="section" id="sec7">
+    <span class="section-badge">Module 8 · Polymorphism</span>
+    <h2 class="section-title">Method Overloading vs Dynamic Method Overriding</h2>
+    <p class="section-intro">Understand Compile-time Early Binding vs Runtime Dynamic Method Dispatch via virtual method tables (vtable).</p>
+
+    <pre><code>class BankAccount {
+    protected double balance;
+
+    public BankAccount(double balance) {
+        this.balance = balance;
+    }
+
+    // Overridden Method in Parent
+    public double calculateInterest() {
+        return balance * 0.03; // Standard 3% interest
+    }
+}
+
+class HighYieldSavings extends BankAccount {
+    public HighYieldSavings(double balance) {
+        super(balance);
+    }
+
+    // Dynamic Runtime Override with @Override Annotation
+    @Override
+    public double calculateInterest() {
+        return balance * 0.07; // 7% High Yield interest
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Polymorphic reference: Parent type pointing to Child instance
+        BankAccount account = new HighYieldSavings(10000.0);
+        System.out.println("Interest: ₹" + account.calculateInterest()); // 700.0 (Runtime dynamic dispatch)
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(7)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 9 -->
+  <div class="section" id="sec8">
+    <span class="section-badge">Module 9 · Abstraction</span>
+    <h2 class="section-title">Abstract Classes vs Pure Interfaces</h2>
+    <p class="section-intro">Design contracts with partial implementation (`abstract class`) vs complete decoupled contracts (`interface`).</p>
+
+    <pre><code>// Contract definition
+interface PaymentGateway {
+    // Public abstract by default
+    boolean processPayment(double amount);
+
+    // Default method (Java 8+) for backward compatibility
+    default void logTransaction(String txId) {
+        System.out.println("[AUDIT LOG] Transaction recorded: " + txId);
+    }
+}
+
+class UPIPayment implements PaymentGateway {
+    @Override
+    public boolean processPayment(double amount) {
+        System.out.println("Processed UPI Payment of ₹" + amount);
+        return true;
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(8)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 10 -->
+  <div class="section" id="sec9">
+    <span class="section-badge">Module 10 · Arrays &amp; Matrices</span>
+    <h2 class="section-title">1D &amp; 2D Array Algorithms: Search, Sort &amp; Matrix Math</h2>
+    <p class="section-intro">Binary search, selection sort, and 2D matrix transpose / diagonal manipulations.</p>
+
+    <pre><code>// Binary Search on Sorted Array: O(log N)
+public static int binarySearch(int[] arr, int target) {
+    int low = 0, high = arr.length - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1; // Not found
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(9)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 11 -->
+  <div class="section" id="sec10">
+    <span class="section-badge">Module 11 · Strings &amp; Memory</span>
+    <h2 class="section-title">String Constant Pool, Immutability &amp; StringBuilder</h2>
+    <p class="section-intro">Understand why Strings are immutable, String Pool memory deduplication, and high-performance `StringBuilder` buffers.</p>
+
+    <pre><code>public class StringPoolDemo {
+    public static void main(String[] args) {
+        String s1 = "EduHub";            // Placed in String Constant Pool
+        String s2 = "EduHub";            // Reuses reference from pool
+        String s3 = new String("EduHub");// Creates distinct object on Heap
+
+        System.out.println(s1 == s2);      // TRUE (Identical memory references)
+        System.out.println(s1 == s3);      // FALSE (Distinct memory addresses)
+        System.out.println(s1.equals(s3)); // TRUE (Deep content value equality)
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(10)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 12 -->
+  <div class="section" id="sec11">
+    <span class="section-badge">Module 12 · JVM Memory Architecture</span>
+    <h2 class="section-title">JVM Memory Layout: Stack Frames, Heap &amp; Garbage Collection</h2>
+    <p class="section-intro">Explore Call Stacks, Heap Generation (Eden, Survivor, Tenured), Object References, and GC lifecycle.</p>
+
+    <pre><code>[JVM Runtime Memory Architecture]
+┌──────────────────────────────────────┐  ┌─────────────────────────────────┐
+│              JVM STACK               │  │              HEAP               │
+│ (Thread-Private, LIFO Stack Frames)  │  │ (Shared Object Instances)       │
+│                                      │  │                                 │
+│  main() frame:                       │  │  Student Instance #1:           │
+│   ├── int id = 101                   │  │   ├── name = "Alice"            │
+│   └── Student ref ───────────────────┼──┼──►└── gpa = 3.9                 │
+│                                      │  │                                 │
+│  calc() frame:                       │  │  String Pool:                   │
+│   └── double temp = 45.2             │  │   └── "Alice"                   │
+└──────────────────────────────────────┘  └─────────────────────────────────┘</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(11)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 13 -->
+  <div class="section" id="sec12">
+    <span class="section-badge">Module 13 · Error Handling</span>
+    <h2 class="section-title">Robust Exception Handling: Try, Catch, Finally &amp; Custom Throws</h2>
+    <p class="section-intro">Understand Checked vs Unchecked exceptions, Automatic Resource Management (try-with-resources), and custom exception classes.</p>
+
+    <pre><code>public class AccountService {
+    public void withdraw(double balance, double amount) throws InsufficientFundsException {
+        if (amount > balance) {
+            throw new InsufficientFundsException("Cannot withdraw ₹" + amount + ". Current balance is ₹" + balance);
+        }
+    }
+}
+
+// Custom Exception Definition (Checked Exception)
+class InsufficientFundsException extends Exception {
+    public InsufficientFundsException(String message) {
+        super(message);
+    }
+}</code></pre>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(11)">← Previous</button>
+      <button class="btn btn-primary" onclick="markAndNext(12)">Complete &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- Module 14 -->
+  <div class="section" id="sec13">
+    <span class="section-badge">Module 14 · Collections Framework</span>
+    <h2 class="section-title">Java Collections Framework: Lists, Sets &amp; HashMaps</h2>
+    <p class="section-intro">Work with generic collections (`ArrayList`, `HashSet`, `HashMap`) and understand time complexity trade-offs.</p>
+
+    <pre><code>import java.util.*;
+
+public class CollectionsDemo {
+    public static void main(String[] args) {
+        // Fast random access: O(1) read
+        List&lt;String&gt; studentList = new ArrayList&lt;&gt;();
+        studentList.add("Aarav");
+        studentList.add("Meera");
+
+        // Key-Value Hashing: O(1) average lookup/put
+        Map&lt;String, Double&gt; grades = new HashMap&lt;&gt;();
+        grades.put("Aarav", 94.5);
+        grades.put("Meera", 88.0);
+
+        for (Map.Entry&lt;String, Double&gt; entry : grades.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+    }
+}</code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">🎉 Curriculum Track Completed!</div>
+      <p>Congratulations! You have mastered core Java and object-oriented architectural patterns. Continue your journey in the <a href="/code-editor" style="color: #c2410c; font-weight: bold;">Java Playground</a> or test your knowledge in the <a href="/interview-arena?track=java-core" style="color: #c2410c; font-weight: bold;">Interview Arena</a>!</p>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goTo(12)">← Previous</button>
+      <button class="btn btn-primary" onclick="markDone(13)">🎉 Finish Track</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+  let currentSection = 0;
+  const total = 14;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed.size + ' of ' + total + ' completed';
+  }
+
+  function goTo(index) {
+    document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === index));
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === index));
+    currentSection = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markAndNext(index) {
+    markDone(index);
+    if (index + 1 < total) goTo(index + 1);
+  }
+
+  function markDone(index) {
+    completed.add(index);
+    const nav = document.getElementById('nav' + index);
+    if (nav) {
+      nav.classList.add('done');
+      document.getElementById('chk' + index).textContent = '✓';
+    }
+    updateProgress();
+  }
+
+  function toggleQA(el) {
+    const body = el.nextElementSibling;
+    const icon = el.querySelector('.icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '▼';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '▲';
+    }
+  }
+</script>
+</body>
+</html>

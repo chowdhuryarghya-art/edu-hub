@@ -53,6 +53,16 @@ p code,li code{background:#f0f2f5;color:#d63384;padding:1px 5px;border-radius:4p
 .callout.success{border-color:#10b981;background:#ecfdf5}
 .ct{font-weight:700;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#1d4ed8}
 .callout.warn .ct{color:#92400e}.callout.danger .ct{color:#991b1b}.callout.success .ct{color:#065f46}
+
+.problem-card{background:#f8fafc;border:1px solid #cbd5e1;border-left:5px solid #3b82d4;border-radius:8px;padding:15px 18px;margin:15px 0}
+.problem-card .tag{font-size:11px;font-weight:700;text-transform:uppercase;color:#2563eb;letter-spacing:.5px;margin-bottom:4px}
+.problem-card h4{margin:0 0 5px;color:#0f172a;font-size:15.5px}
+
+.pitfall-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;border-radius:8px;padding:13px 17px;margin:15px 0;font-size:13.5px}
+.pitfall-box .p-title{font-weight:700;color:#991b1b;text-transform:uppercase;font-size:11.5px;margin-bottom:3px}
+
+.output-block{background:#0b1120;color:#38bdf8;border:1px solid #1e293b;border-radius:6px;padding:12px 15px;font-family:"Cascadia Code",monospace;font-size:12.5px;margin:10px 0 15px;white-space:pre-wrap}
+
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
 th{background:#f0f2f5;text-align:left;padding:8px 13px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;border:1px solid #e5e7eb}
 td{padding:8px 13px;border:1px solid #e5e7eb;vertical-align:top}
@@ -199,6 +209,12 @@ poetry add --group dev pytest ruff mypy</code></pre></div>
 <h2 class="t">Variables &amp; Types</h2>
 <p class="intro">Python's dynamic type system combined with modern type hints gives you the best of both worlds — flexibility and IDE-level safety.</p>
 
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Parsing Mixed-Type External API Payloads</h4>
+  <p>An API endpoint receives a telemetry payload where values can be <code>int</code>, <code>str</code>, or <code>None</code>. You must safely parse and normalize these metrics, prevent runtime <code>TypeError</code> bugs on unexpected nulls, and extract threshold metrics using the walrus operator in a single pass.</p>
+</div>
+
 <h3>Type System Basics</h3>
 <p>Python is <strong>dynamically typed</strong> (types resolved at runtime) and <strong>strongly typed</strong> (no implicit coercion between unrelated types). Use <code>type(x)</code> and <code>isinstance(x, T)</code> for runtime checks.</p>
 
@@ -303,6 +319,17 @@ flat = [item <span class="kw">for</span> sub <span class="kw">in</span> matrix <
 <span class="badge badge-blue">Foundations</span>
 <h2 class="t">Functions Deep Dive</h2>
 <p class="intro">Python functions are first-class objects — master closures, argument patterns, and functional tools to write clean, reusable code.</p>
+
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>High-Frequency Financial Calculation with Memoization</h4>
+  <p>A risk management microservice repeatedly calculates recursive pricing curves and Fibonacci growth rates. Without caching, $O(2^n)$ calls trigger severe CPU bottlenecking and lag. We implement a thread-safe memoized decorator using <code>functools.lru_cache</code>.</p>
+</div>
+
+<div class="pitfall-box">
+  <div class="p-title">⚠️ Common Pitfall: Mutable Default Arguments</div>
+  <p>Defining <code>def add_item(item, items=[]):</code> attaches a single list object to function definition at compile time. Successive calls mutate the same shared list. Always use <code>items=None</code> with <code>if items is None: items = []</code>.</p>
+</div>
 
 <h3>Argument Patterns</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Positional-only (/) and keyword-only (*) parameters</span>
@@ -838,6 +865,17 @@ render(Circle())  <span class="cm"># works — Circle satisfies Drawable Protoco
 <h2 class="t">Generators &amp; Iterators</h2>
 <p class="intro">Generators are memory-efficient powerhouses — understanding <code>yield from</code> and the full generator protocol is expected at senior level.</p>
 
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Processing a 10 GB Web Server Access Log on a 512 MB Container</h4>
+  <p>You need to extract all HTTP <code>404</code> endpoints and aggregate total bandwidth across millions of lines without loading the entire file into memory or triggering an Out-Of-Memory (OOM) crash.</p>
+</div>
+
+<div class="pitfall-box">
+  <div class="p-title">⚠️ The Naive Approach: file.readlines()</div>
+  <p><code>lines = f.readlines()</code> allocates all 10 GB into memory at once, crashing the microservice. Generator pipelines stream one record at a time with $O(1)$ constant memory.</p>
+</div>
+
 <h3>Iterator Protocol</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="cm"># Custom iterator</span>
 <span class="kw">class</span> <span class="fn">Countdown</span>:
@@ -902,6 +940,12 @@ first10 = list(islice(naturals(), <span class="nm">10</span>))</code></pre></div
 <span class="badge badge-green">Advanced</span>
 <h2 class="t">Context Managers</h2>
 <p class="intro">Context managers go far beyond file handling — they're the right tool for any resource that needs guaranteed cleanup.</p>
+
+<div class="problem-card">
+  <div class="tag">🎯 Real-World Problem Scenario</div>
+  <h4>Transactional Database Connection with Automatic Rollback</h4>
+  <p>When multiple records are written across tables, any network failure or constraint error must immediately trigger a rollback and safely close the pooled database socket connection.</p>
+</div>
 
 <h3>__enter__ / __exit__ Protocol</h3>
 <div class="cw"><button class="cp">Copy</button><pre><code><span class="kw">import</span> time

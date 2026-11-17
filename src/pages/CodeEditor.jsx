@@ -481,6 +481,47 @@ async function runPythonInBrowser(code) {
   }
 }
 
+/* ─── In-Browser JavaScript / Node.js Engine Fallback ────────────── */
+async function runJavaScriptInBrowser(code) {
+  const stdoutLogs = [];
+  const stderrLogs = [];
+
+  const customConsole = {
+    log: (...args) => stdoutLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+    info: (...args) => stdoutLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+    warn: (...args) => stdoutLogs.push('[WARN] ' + args.map(String).join(' ')),
+    error: (...args) => stderrLogs.push(args.map(String).join(' ')),
+  };
+
+  class SimpleEventEmitter {
+    constructor() { this._events = {}; }
+    on(event, listener) { (this._events[event] = this._events[event] || []).push(listener); }
+    emit(event, ...args) { (this._events[event] || []).forEach(fn => fn(...args)); }
+  }
+
+  const customRequire = (mod) => {
+    if (mod === 'events') return { EventEmitter: SimpleEventEmitter };
+    return {};
+  };
+
+  try {
+    const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+    const runner = new AsyncFunction('console', 'require', 'EventEmitter', code);
+    await runner(customConsole, customRequire, SimpleEventEmitter);
+    return {
+      stdout: stdoutLogs.join('\n') || '(executed successfully with no output)',
+      stderr: stderrLogs.join('\n'),
+      exitCode: 0,
+    };
+  } catch (err) {
+    return {
+      stdout: stdoutLogs.join('\n'),
+      stderr: String(err),
+      exitCode: 1,
+    };
+  }
+}
+
 /* ─── Client Simulations for SQL, Scratch, C/C++ ────────────────── */
 function formatAsciiTable(rows) {
   if (rows === undefined || rows === null) return '(empty result set)';
@@ -758,10 +799,17 @@ async function executeCode(languageId, code) {
       body: JSON.stringify({ language: languageId, code }),
     });
     if (res.ok) {
-      return await res.json();
+      const result = await res.json();
+      if (result && (result.stdout !== undefined || result.stderr !== undefined)) {
+        return result;
+      }
     }
   } catch {
-    // Local server offline, proceed to browser runners
+    // Backend/Edge runner offline or unreachable, proceed to browser execution fallbacks
+  }
+
+  if (['node', 'javascript', 'graphql'].includes(languageId)) {
+    return await runJavaScriptInBrowser(code);
   }
 
   if (languageId === 'python') {

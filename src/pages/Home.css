@@ -9,111 +9,130 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 14px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-  gap: 12px;
-  position: sticky;
-  top: 12px;
-  z-index: 50;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-
-.brand-badge {
-  display: flex;
-  align-items: center;
+  padding: 8px 14px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 28px;
+  flex-wrap: nowrap;
   gap: 10px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #f8fafc;
-  letter-spacing: -0.02em;
+  position: sticky;
+  top: 10px;
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
-.brand-icon {
-  color: #38bdf8;
-}
-
-.top-nav-links {
+.top-nav-tabs {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  width: 100%;
+  gap: 3px;
+  background: rgba(2, 6, 23, 0.6);
+  padding: 3px 4px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  white-space: nowrap;
 }
 
-.nav-pill-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 13px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  color: #cbd5e1;
-  font-size: 0.82rem;
-  font-weight: 600;
-  transition: all 0.15s ease;
+.top-nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 
-.nav-pill-link:hover {
-  background: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-}
-
-.highlight-pill {
-  border-color: #0284c7;
-  color: #38bdf8;
-  background: rgba(2, 132, 199, 0.2);
-}
-
-.highlight-pill:hover {
-  background: rgba(2, 132, 199, 0.35);
-  color: #ffffff;
-}
-
-.command-trigger-btn {
-  display: flex;
+.nav-tab-btn {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  padding: 6px 11px;
+  border-radius: 7px;
   color: #94a3b8;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  transition: all 0.15s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
 }
 
-.command-trigger-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+.nav-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
 }
+
+.nav-tab-btn.active-tab {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+}
+
+.tab-icon {
+  flex-shrink: 0;
+}
+
+.play-icon { color: #f97316; }
+.flame-icon { color: #f59e0b; }
+.layout-icon { color: #38bdf8; }
+.file-icon { color: #10b981; }
+.activity-icon { color: #a855f7; }
 
 .top-nav-right-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
-  flex-wrap: wrap;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.pro-nav-btn {
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.35);
-  color: #fbbf24;
-  font-weight: 700;
+.profile-switcher-pill {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.pro-nav-btn:hover {
-  background: rgba(245, 158, 11, 0.25);
+.profile-switcher-pill:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.15);
+}
+
+.profile-switcher-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.command-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.command-trigger-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  border-color: #f59e0b;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 /* ── Hero Section ────────────────────────────────────────────── */
